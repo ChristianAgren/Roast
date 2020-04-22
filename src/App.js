@@ -1,15 +1,13 @@
-import React from 'react';
-import Layout from './layout/layout'
-import { 
-    BrowserRouter
-} from "react-router-dom";
+import React from "react";
+import Layout from "./layout/layout";
+import UserProvider from "./contexts/userContext";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Layout/>
-    </BrowserRouter>
-  );
+	return (
+		<UserProvider>
+			<Layout />
+		</UserProvider>
+	);
 }
 
 export default App;
