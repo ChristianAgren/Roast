@@ -1,36 +1,48 @@
 // @ts-nocheck
 import React from "react";
+import { makeStyles, createStyles, Container } from '@material-ui/core'
 import Main from "../components/main/main";
 import ChatRoom from "../components/chatRoom/chatRoom";
 import RoomNavigation from "../components/roomNavigation/roomNavigation";
-import { Switch, Route } from "react-router-dom";
 import { UserContext } from "../contexts/userContext";
 
-function Layout() {
-	const [inRoom, setInRoom] = React.useState(false);
+// const useStyles = makeStyles(() => {
+// 	createStyles({
+// 		'.MuiContainer-root': {
+// 			background: '#000'
+// 		},
+// 		rootWrapper: {
+// 			background: "#000", 
+// 		}
+// 	})
+// })
 
-	const handleSwitchRoom = (roomId) => {
-		console.log("roomId:", roomId);
-		setInRoom(roomId);
+function Layout() {
+	// const classes = useStyles()
+	const [changeView, setChangeView] = React.useState(false);
+
+	const handleChangeView = (roomId) => {
+		setChangeView(roomId);
 	};
 
 	return (
 		<UserContext.Consumer>
 			{(user) => (
-				<>
-					<RoomNavigation switchRoom={handleSwitchRoom} />
+				<Container
+					maxWidth="md"
+					style={{
+						position: 'relative',
+						background: "#0001",
+						minHeight: "100vh",
+						height: '100%'
+					}}
+				>
+					<RoomNavigation changeView={handleChangeView} />
 
-					<div style={{ marginTop: "4rem" }}>
-						{inRoom ? <ChatRoom /> : <Main />}
+					<div style={{ paddingTop: "4rem" }}>
+						{changeView ? <ChatRoom /> : <Main />}
 					</div>
-
-					<input
-						placeholder="name"
-						onChange={(e) => user.setUserName(e.target.value)}
-					/>
-					<h2>{user.name}</h2>
-					{console.log(user)}
-				</>
+				</Container>
 			)}
 		</UserContext.Consumer>
 	);

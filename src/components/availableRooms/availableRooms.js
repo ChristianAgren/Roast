@@ -4,13 +4,14 @@ import React from "react";
 
 import { UserContext } from "../../contexts/userContext";
 
-import { makeStyles, createStyles } from "@material-ui/core";
+// import { makeStyles, createStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => createStyles({}));
+// const useStyles = makeStyles((theme) => createStyles({}));
 
 function AvailableRooms(props) {
-	const classes = useStyles();
+	// const classes = useStyles();
 
+	
 	return (
 		<UserContext.Consumer>
 			{(user) => (
