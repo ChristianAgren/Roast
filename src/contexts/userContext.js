@@ -12,65 +12,65 @@ const user = {
 export const UserContext = React.createContext({
 	name: user.name,
 	socket: user.socket,
-
-	isDesktop: true,
 });
 
 export default class UserProvider extends React.Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
-			name: this.setUserName(),
+			// name: this.setUserName(),
 			socket: user.socket,
-			isDesktop: true,
-
-			setUserName: this.setUserName,
+			// setUserName: this.setUserName,
+			connectedRoom: '',
 			joinRoom: this.joinRoom,
+			chatlog: [],
+			createNewMessage: this.createNewMessage,
 		};
+		this.state.socket.on("chatlog", (data) => this.generateChatLog(data))
+		this.state.socket.on("user message", (data) => this.generateChatLog(data))
+		this.state.socket.on("server message", (data) => console.log(data))
 	}
-	componentDidMount = () => {
-		if (window.innerWidth < 680) {
-			this.setState({
-				isDesktop: false,
-			});
-		}
-		window.addEventListener("resize", () => {
-			if (window.innerWidth < 680) {
-				this.setState({
-					isDesktop: false,
-				});
-			} else {
-				this.setState({
-					isDesktop: true,
-				});
-			}
-		});
-	};
 
-	setUserName = (name) => {
-		this.setState({
-			name: name,
-		});
-	};
+
+	// setUserName = (name) => {
+	// 	console.log(name);
+	// };
 
 	joinRoom = (event, props) => {
 		const name = "bob";
 		const roomId = event.target.id;
-
-		console.log("name: ", name, "\nid: ", roomId);
-
+		const prevRoomId = this.state.connectedRoom
+		
 		// emit
-		this.state.socket.emit("join room", { name, roomId });
-
+		this.state.socket.emit("join room", { name, roomId, prevRoomId });
+		
 		// hey listen
-
+		
 		this.state.socket.on("join successful", (data) => {
-			console.log(data);
-			props.switchRoom(data.roomId);
+
+			this.setState({
+				connectedRoom: data.roomId
+			})	
+
+			props.changeView(data.roomId);
 			props.toggleDrawer();
 		});
 	};
+
+	generateChatLog = (serverChat) => {
+		const { server_chatlog } = serverChat
+
+		this.setState({
+			chatlog: server_chatlog
+		})
+	}
+
+	createNewMessage = (messageValue) => {
+		this.state.socket.emit('message', {
+			room: this.state.activeRoom,
+            message: messageValue
+        }) 
+	}
 
 	render() {
 		return (

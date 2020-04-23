@@ -4,18 +4,18 @@ import AvailableRooms from "../availableRooms/availableRooms";
 
 import {
 	Container,
-	Grid,
-	Paper,
+	// Grid,
+	// Paper,
 	makeStyles,
 	createStyles,
-	Typography,
-	IconButton,
-	Button,
-	SwipeableDrawer,
+	// Typography,
+	// IconButton,
+	// Button,
+	// SwipeableDrawer,
 	Collapse,
 	List,
 	ListItem,
-	ListItemText,
+	// ListItemText,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
@@ -40,8 +40,10 @@ const useStyles = makeStyles((theme) =>
 			top: "0",
 			left: "0",
 			right: "0",
+			zIndex: 1,
 
-			background: "#e7e7e7",
+
+			// background: "#e7e7e7",
 		},
 	})
 );
@@ -52,23 +54,28 @@ function RoomNavigation(props) {
 	const [drawer, setDrawer] = React.useState(false);
 
 	const toggleDrawer = () => {
-		setDrawer(!drawer);
+		setDrawer(!drawer);		
 	};
 
 	return (
-				<div className={classes.wrapper}>
-					<Collapse in={drawer} timeout="auto" unmountOnExit>
-						<List component="div" disablePadding>
-							<AvailableRooms
-								switchRoom={props.switchRoom}
-								toggleDrawer={toggleDrawer}
-							/>
-						</List>
-					</Collapse>
-					<ListItem button onClick={toggleDrawer} className={classes.drawer}>
-						{drawer ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-					</ListItem>
-				</div>
+		<div className={classes.wrapper}>
+			<Container
+				maxWidth="md"
+				style={{ background: "#e7e7e7", padding: 0, }}
+			>
+				<Collapse in={drawer} timeout="auto" unmountOnExit>
+					<List component="div" disablePadding>
+						<AvailableRooms
+							changeView={props.changeView}
+							toggleDrawer={toggleDrawer}
+						/>
+					</List>
+				</Collapse>
+				<ListItem button onClick={toggleDrawer} className={classes.drawer}>
+					{drawer ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+				</ListItem>
+			</Container>
+		</div>
 	);
 }
 
