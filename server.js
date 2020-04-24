@@ -1,27 +1,33 @@
+// @ts-nocheck
 const express = require("express");
 const path = require("path");
 const app = express();
 const socket = require("socket.io");
-let chatHistory = [
+
+let roomInformation = [
 	{
 		id: "1",
+		users: [],
 		history: [
 			{
-				name: 'Blob',
-				message: 'Hej hej hej hej hje'
+				name: "Blob",
+				message: "Hej hej hej hej hje",
+				client: true,
 			},
-		]
+		],
 	},
 	{
 		id: "2",
+		users: [],
 		history: [
 			{
-				name: 'Alvin',
-				message: 'it do b like that'
+				name: "Alvin",
+				message: "it do b like that",
+				client: true,
 			},
-		]
+		],
 	},
-]
+];
 
 app.use(express.static(path.join(__dirname, "build")));
 const port = process.env.PORT || 8080;
@@ -53,35 +59,85 @@ io.on("connection", function (socket) {
 		console.log(`${socket.id} disconnected`);
 	});
 
-	socket.on("test", (data) => {
-		console.log(data);
-	});
-
 	socket.on("join room", (data) => {
+		const user = {
+			name: data.name,
+			isTyping: false,
+		};
+
 		if (data.roomId != data.prevRoomId) {
-			socket.leave(data.prevRoomId, () => {
-				console.log(`${socket.id} left room: ${data.roomId}`);
-				io.to(data.prevRoomId).emit("server message", { server_message: `user left: ${data.roomId}` })
-			})
+			if (data.prevRoomId) {
+				socket.leave(data.prevRoomId, () => {
+					// console.log("adapter: ", socket.adapter.rooms);
+
+					const { users } = roomInformation.find(
+						(r) => r.id === data.prevRoomId
+					);
+					const leaver = users.findIndex((u) => u.name === data.name);
+
+					if (leaver != -1) {
+						users.splice(leaver, 1);
+						console.log(users);
+					}
+
+					console.log(`${user.name} left room: ${data.prevRoomId}`);
+					io.to(data.prevRoomId).emit("server message", {
+						server_message: `user left: ${data.prevRoomId}`,
+					});
+
+					io.to(data.prevRoomId).emit("notice", {
+						name: "",
+						message: user + " has left the room",
+					});
+				});
+			}
+
 			socket.join(data.roomId, () => {
+				// console.log("adapter: ", socket.adapter.rooms);
+
+				const { users } = roomInformation.find((r) => r.id === data.roomId);
+				users.push(user);
+				console.log(users);
+
 				console.log(`${socket.id} joined room: ${data.roomId}`);
-				socket.emit("join successful", data)
 
-				const { history } = chatHistory.find(h => h.id === data.roomId)
+				socket.emit("join successful", data);
 
-				io.to(data.roomId).emit("chatlog", { server_chatlog: history })
-				io.to(data.roomId).emit("server message", { server_message: `user connected to: ${data.roomId}` })
+				const { history } = roomInformation.find((h) => h.id === data.roomId);
+
+				io.to(socket.id).emit("chatlog", { server_chatlog: history });
+
+				io.to(data.roomId).emit("server message", {
+					server_message: `user connected to: ${data.roomId}`,
+				});
+
+				io.to(data.roomId).emit("notice", {
+					name: "",
+					message: user.name + " has joined the room",
+					client: false,
+				});
 			});
 		}
 
-		socket.on("message", (newMessage) => {
-			const { history } = chatHistory.find(h => h.id === data.roomId)
-			history.push({
-				name: 'new',
-				message: newMessage.message
-			})
-			io.to(data.roomId).emit("user message", { server_chatlog: history })
-		})
 	});
-
+			// socket.on("typing", (typingUser) => {
+			// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
+			// });
+	
+			socket.on("message", (newMessage) => {
+				const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
+	
+				const message = {
+					name: newMessage.name,
+					message: newMessage.message,
+					client: true,
+				};
+	
+				history.push(message);
+	
+				console.log("history: ", history);
+				console.log("room ID: ", newMessage.roomId);
+	
+				io.to(newMessage.roomId).emit("user message", message);
+			});
 });
