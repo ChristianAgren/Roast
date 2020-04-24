@@ -5,7 +5,7 @@ import io from "socket.io-client";
 const userSocket = io();
 
 const user = {
-	name: "bob",
+	name: "bobo" + Math.floor(Math.random() * 100),
 	socket: userSocket,
 };
 
@@ -18,59 +18,122 @@ export default class UserProvider extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// name: this.setUserName(),
+			name: user.name,
 			socket: user.socket,
-			// setUserName: this.setUserName,
-			connectedRoom: '',
+			connectedRoom: "",
 			joinRoom: this.joinRoom,
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
+
+			emitTyping: this.emitTyping,
+			usersTyping: [],
+
+			firstTime: true,
 		};
-		this.state.socket.on("chatlog", (data) => this.generateChatLog(data))
-		this.state.socket.on("user message", (data) => this.generateChatLog(data))
-		this.state.socket.on("server message", (data) => console.log(data))
+		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
+
+		this.state.socket.on("user message", (data) =>
+			this.generateChatMessage(data)
+		);
+		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
+
+		this.state.socket.on("server message", (data) => console.log(data));
+
+		// this.state.socket.on("typing", (data) => this.handleTyping(data));
+
+		this.state.socket.on("join successful", (data) => {
+			console.log("d");
+
+			this.setState(
+				{
+					connectedRoom: data.roomId,
+				},
+				() => console.log(this.state.connectedRoom)
+			);
+		});
 	}
 
+	joinRoom = (event) => {
+		event.preventDefault();
 
-	// setUserName = (name) => {
-	// 	console.log(name);
-	// };
-
-	joinRoom = (event, props) => {
-		const name = "bob";
+		const name = this.state.name;
 		const roomId = event.target.id;
-		const prevRoomId = this.state.connectedRoom
-		
+		const prevRoomId = this.state.connectedRoom;
+
+		this.setState({
+			firstTime: true,
+		});
 		// emit
 		this.state.socket.emit("join room", { name, roomId, prevRoomId });
-		
-		// hey listen
-		
-		this.state.socket.on("join successful", (data) => {
-
-			this.setState({
-				connectedRoom: data.roomId
-			})	
-
-			props.changeView(data.roomId);
-			props.toggleDrawer();
-		});
 	};
 
 	generateChatLog = (serverChat) => {
-		const { server_chatlog } = serverChat
+		const { server_chatlog } = serverChat;
+
+		console.log(server_chatlog);
 
 		this.setState({
-			chatlog: server_chatlog
-		})
-	}
+			chatlog: server_chatlog,
+		});
+	};
+
+	generateChatMessage = (chatMessage) => {
+		const chatWindow = document.getElementById("chat");
+		const prevContainerHeight = chatWindow.scrollHeight;
+
+		this.setState(
+			{
+				chatlog: [...this.state.chatlog, chatMessage],
+			},
+			() => this.scrollToBottom(prevContainerHeight)
+		);
+	};
 
 	createNewMessage = (messageValue) => {
-		this.state.socket.emit('message', {
-			room: this.state.activeRoom,
-            message: messageValue
-        }) 
-	}
+		this.state.socket.emit("message", {
+			roomId: this.state.connectedRoom,
+			name: this.state.name,
+			message: messageValue,
+		});
+	};
+
+	// emitTyping = (isTyping) => {
+	// 	this.state.socket.emit("typing", {
+	// 		name: this.state.name,
+	// 		isTyping,
+	// 	});
+	// };
+	handleTyping = (typingUser) => {
+		// const found = this.state.usersTyping.find((user) => data. === user);
+		// if (!found) {
+		// 	if (data.isTyping) {
+		// 		this.setState(
+		// 			{
+		// 				usersTyping: [...this.state.usersTyping, data],
+		// 			},
+		// 			() => console.log(this.state.usersTyping)
+		// 		);
+		// 	}
+		// }
+	};
+
+	scrollToBottom = (prevContainerHeight) => {
+		const chatWindow = document.getElementById("chat");
+
+		if (this.state.firstTime) {
+			chatWindow.scrollTop = chatWindow.scrollHeight;
+			this.setState({
+				firstTime: false,
+			});
+		} else if (
+			chatWindow.scrollTop + chatWindow.clientHeight >=
+			prevContainerHeight - 75
+		) {
+			chatWindow.scrollTop = chatWindow.scrollHeight;
+		} else {
+			//show a clickable notice that takes you to the bottom
+		}
+	};
 
 	render() {
 		return (

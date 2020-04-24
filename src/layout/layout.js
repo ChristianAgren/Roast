@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-import { makeStyles, createStyles, Container } from '@material-ui/core'
+import { makeStyles, createStyles, Container } from "@material-ui/core";
 import Main from "../components/main/main";
 import ChatRoom from "../components/chatRoom/chatRoom";
 import RoomNavigation from "../components/roomNavigation/roomNavigation";
@@ -12,7 +12,7 @@ import { UserContext } from "../contexts/userContext";
 // 			background: '#000'
 // 		},
 // 		rootWrapper: {
-// 			background: "#000", 
+// 			background: "#000",
 // 		}
 // 	})
 // })
@@ -31,17 +31,15 @@ function Layout() {
 				<Container
 					maxWidth="md"
 					style={{
-						position: 'relative',
+						position: "relative",
 						background: "#0001",
-						minHeight: "100vh",
-						height: '100%'
-					}}
-				>
+						paddingTop: "3rem",
+
+						height:"100vh"
+					}}>
 					<RoomNavigation changeView={handleChangeView} />
 
-					<div style={{ paddingTop: "4rem" }}>
-						{changeView ? <ChatRoom /> : <Main />}
-					</div>
+					{changeView ? <ChatRoom /> : <Main />}
 				</Container>
 			)}
 		</UserContext.Consumer>

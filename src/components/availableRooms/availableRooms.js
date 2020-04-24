@@ -11,7 +11,13 @@ import { UserContext } from "../../contexts/userContext";
 function AvailableRooms(props) {
 	// const classes = useStyles();
 
-	
+	const onJoinClick = (event, joinRoom) => {
+		joinRoom(event);
+
+		props.changeView(event.target.id);
+		props.toggleDrawer();
+	};
+
 	return (
 		<UserContext.Consumer>
 			{(user) => (
@@ -19,7 +25,7 @@ function AvailableRooms(props) {
 					<p>rooms</p>
 					<ul>
 						<li
-							onClick={(e) => user.joinRoom(e, props)}
+							onClick={(e) => onJoinClick(e, user.joinRoom)}
 							style={{ cursor: "pointer" }}
 							id="1">
 							hej1
@@ -28,7 +34,7 @@ function AvailableRooms(props) {
 					<p>locked rooms</p>
 					<ul>
 						<li
-							onClick={(e) => user.joinRoom(e, props)}
+							onClick={(e) => onJoinClick(e, user.joinRoom)}
 							style={{ cursor: "pointer" }}
 							id="2">
 							då1
