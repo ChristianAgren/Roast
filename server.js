@@ -3,6 +3,15 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const socket = require("socket.io");
+const server = require('http').createServer(app)
+const io = socket(server);
+const port = process.env.PORT || 8080;
+app.use(express.static(path.join(__dirname, "build")));
+
+// THIS IS LISTEN DON'T GO IN FFS
+server.listen(port, () => {
+	console.log(`Listening to requests on http://localhost:${port}`);
+});
 
 let roomInformation = [
 	{
@@ -29,8 +38,7 @@ let roomInformation = [
 	},
 ];
 
-app.use(express.static(path.join(__dirname, "build")));
-const port = process.env.PORT || 8080;
+
 
 const routesWithChildren = ["/"];
 
@@ -43,13 +51,7 @@ routesWithChildren.forEach(function (rootPath) {
 	});
 });
 
-// THIS IS LISTEN DON'T GO IN FFS
-const server = app.listen(port, () => {
-	console.log(`Listening to requests on http://localhost:${port}`);
-});
 
-// Socket setup
-const io = socket(server);
 
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
