@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme) =>
 				color: 'rgba(0, 0, 0, 0.54)'
 			},
 			'& .MuiInputBase-root': {
-				background: '#0001'
+				background: '#0001',
+				padding: theme.spacing(.3, 0, 0, .8)
 			},
 			'& .MuiSvgIcon-root': {
 				margin: theme.spacing(.5),
@@ -51,9 +52,6 @@ const useStyles = makeStyles((theme) =>
 				margin: theme.spacing(.5, 0),
 				display: 'flex',
 				flexDirection: 'column',
-			},
-			'& .MuiInputBase-inputMarginDense': {
-				padding: theme.spacing(.6, .8)
 			},
 			'& .MuiButton-containedPrimary': {
 				backgroundColor: '#0003',
