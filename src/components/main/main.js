@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-
+import { UserContext } from '../../contexts/userContext'
 import {
 	Button,
 	Container,
@@ -76,7 +76,7 @@ function Main() {
 	const [roomInputValues, setRoomInputValues] = React.useState({
 		roomId: '',
 		roomPassword: '',
-		roomIcon: '',
+		roomColor: '',
 		showPassword: false
 	})
 
@@ -97,97 +97,106 @@ function Main() {
 		event.preventDefault();
 	};
 
-	const handleCreateRoomClick = () => {
+	const handleCreateRoomClick = (createNewRoom) => {
 		console.log(`Will create room with following:`);
 		console.log(`Name: ${roomInputValues.roomId}`);
 		console.log(`Password: ${roomInputValues.roomPassword}`);
-		console.log(`Icon: ${roomInputValues.roomIcon}`);
+		console.log(`Color: ${roomInputValues.roomColor}`);
+
+		const { roomId, roomPassword, roomColor } = roomInputValues
+		console.log(roomId, roomPassword, roomColor);
+		
+		createNewRoom({roomId, roomPassword, roomColor})
 	}
 
 	return (
-		<Container maxWidth="sm">
-			<Grid container spacing={1} className={classes.mainContainer}>
-				<Grid item xs={12}>
-					<Typography variant="h3" className={classes.title}>
-						ADD NEW ROOM
+		<UserContext.Consumer>
+			{(user) =>
+				<Container maxWidth="sm">
+					<Grid container spacing={1} className={classes.mainContainer}>
+						<Grid item xs={12}>
+							<Typography variant="h3" className={classes.title}>
+								ADD NEW ROOM
 					</Typography>
-				</Grid>
-				<Grid item xs={12} >
-					<Typography variant="overline">
-						Name *
+						</Grid>
+						<Grid item xs={12} >
+							<Typography variant="overline">
+								Name *
 					</Typography>
-					<FormControl fullWidth>
-						<TextField
-							size="small"
-							id="room-name"
-							value={roomInputValues.roomID}
-							onChange={event => handleInputChange(event, 'roomId')}
-						/>
-					</FormControl>
-				</Grid>
-				<Grid item xs={12}>
-					<Typography variant="overline">
-						Password
+							<FormControl fullWidth>
+								<TextField
+									size="small"
+									id="room-name"
+									value={roomInputValues.roomID}
+									onChange={event => handleInputChange(event, 'roomId')}
+								/>
+							</FormControl>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="overline">
+								Password
 					</Typography>
-					<div style={{
-						display: 'flex',
-					}}>
-						{(roomInputValues.roomPassword.length !== 0)
-							? <LockIcon fontSize="large" />
-							: <LockOpenIcon fontSize="large" />
-						}
-						<FormControl fullWidth>
-							<Input
-								size="small"
-								id="room-password"
-								type={roomInputValues.showPassword ? 'text' : 'password'}
-								value={roomInputValues.roomPassword}
-								onChange={event => handleInputChange(event, 'roomPassword')}
-								endAdornment={
-									<InputAdornment position="end">
-										<IconButton
-											aria-label="toggle password visibility"
-											onClick={handleClickShowPassword}
-											onMouseDown={handleMouseDownPassword}
-										>
-											{roomInputValues.showPassword ? <Visibility /> : <VisibilityOff />}
-										</IconButton>
-									</InputAdornment>
+							<div style={{
+								display: 'flex',
+							}}>
+								{(roomInputValues.roomPassword.length !== 0)
+									? <LockIcon fontSize="large" />
+									: <LockOpenIcon fontSize="large" />
 								}
-							/>
-							<FormHelperText>
-								{(roomInputValues.roomPassword.length !== 0) ? "Room will be locked" : "Room will be open if left blank"}
-							</FormHelperText>
-						</FormControl>
-					</div>
-				</Grid>
-				<Grid item xs={12}>
-					<Typography variant="overline">
-						Icon
+								<FormControl fullWidth>
+									<Input
+										size="small"
+										id="room-password"
+										type={roomInputValues.showPassword ? 'text' : 'password'}
+										value={roomInputValues.roomPassword}
+										onChange={event => handleInputChange(event, 'roomPassword')}
+										endAdornment={
+											<InputAdornment position="end">
+												<IconButton
+													aria-label="toggle password visibility"
+													onClick={handleClickShowPassword}
+													onMouseDown={handleMouseDownPassword}
+												>
+													{roomInputValues.showPassword ? <Visibility /> : <VisibilityOff />}
+												</IconButton>
+											</InputAdornment>
+										}
+									/>
+									<FormHelperText>
+										{(roomInputValues.roomPassword.length !== 0) ? "Room will be locked" : "Room will be open if left blank"}
+									</FormHelperText>
+								</FormControl>
+							</div>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="overline">
+								Color
 					</Typography>
 
-					<FormControl fullWidth>
-						<TextField
-							size="small"
-							id="room-icon"
-							value={roomInputValues.roomIcon}
-							onChange={event => handleInputChange(event, 'roomIcon')}
-						/>
-					</FormControl>
-				</Grid>
-				<Grid item xs={12}>
-					<Button
-						variant="contained"
-						color="primary"
-						size="large"
-						startIcon={<SaveIcon />}
-						onClick={() => handleCreateRoomClick()}
-					>
-						Create
+							<FormControl fullWidth>
+								<TextField
+									size="small"
+									id="room-color"
+									value={roomInputValues.roomColor}
+									onChange={event => handleInputChange(event, 'roomColor')}
+								/>
+							</FormControl>
+						</Grid>
+						<Grid item xs={12}>
+							<Button
+								variant="contained"
+								color="primary"
+								size="large"
+								startIcon={<SaveIcon />}
+								onClick={() => handleCreateRoomClick(user.createNewRoom)}
+							>
+								Create
       				</Button>
-				</Grid>
-			</Grid>
-		</Container>
+						</Grid>
+					</Grid>
+				</Container>
+			}
+		</UserContext.Consumer>
 	);
 }
 
