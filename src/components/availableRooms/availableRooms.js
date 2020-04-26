@@ -68,64 +68,76 @@ function AvailableRooms(props) {
 			{
 				id: 1,
 				name: "Room 1",
-				password: ""
+				password: "",
+				color:"#ff8866"
 			},
 			{
 				id: 2,
 				name: "Room 2",
-				password: ""
+				password: "",
+				color:"#ff8866"
 			},
 			{
 				id: 4,
 				name: "Room 3",
-				password: ""
+				password: "",
+				color:"#ff8866"
 			},
 			{
 				id: 5,
 				name: "this is a very long string",
-				password: ""
+				password: "",
+				color:"#ff8866"
 			},
 			{
 				id: 6,
 				name: "short",
-				password: ""
+				password: "",
+				color:"#ff8866"
 			},
 			{
 				id: 7,
 				name: "smol",
-				password: ""
+				password: "",
+				color:"#ff8866"
 			},
 		],
 		locked: [
 			{
 				id: 3,
 				name: "lol",
-				password: "a"
+				password: "a",
+				color:"#ff8866"
 			},
 			{
 				id: 3123,
 				name: "lol",
-				password: "a"
+				password: "a",
+				color:"#ff8866"
 			},
 			{
 				id: 323,
 				name: "lol",
-				password: "a"
+				password: "a",
+				color:"#ff8866"
 			},
 			{
 				id: 353432,
 				name: "lol",
-				password: "a"
+				password: "a",
+				color:"#ff8866"
 			},
 			{
 				id: 345645,
 				name: "lol",
-				password: "a"
+				password: "a",
+				color:"#ff8866"
 			},
 			{
 				id: 375675,
 				name: "lol",
-				password: "a"
+				password: "a",
+				color:"#ff8866"
 			},
 		]
 	}
@@ -161,7 +173,9 @@ function AvailableRooms(props) {
 				// 	</ul>
 				// </>
 				<Container className={classes.mainContainer}>
+					
 					<Typography variant="overline">Open rooms</Typography>
+
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
