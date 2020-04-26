@@ -17,6 +17,8 @@ let roomInformation = [
 	{
 		id: "1",
 		users: [],
+		password: '',
+		color: '',
 		history: [
 			{
 				name: "Blob",
@@ -28,6 +30,8 @@ let roomInformation = [
 	{
 		id: "2",
 		users: [],
+		password: 'lock',
+		color: '',
 		history: [
 			{
 				name: "Alvin",
@@ -56,6 +60,30 @@ routesWithChildren.forEach(function (rootPath) {
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
 	console.log("made socket connection", socket.id);
+	let lockedRooms = [],
+		openRooms = []
+
+	roomInformation.forEach((room) => {
+		const availableRoom = {
+			id: room.id,
+			users: room.users,
+			password: room.password,
+			color: room.color
+		}
+		if (room.password.length != 0) {
+			lockedRooms.push(availableRoom)
+		} else {
+			openRooms.push(availableRoom)
+		}
+	})
+
+	const allRooms = {
+		open: openRooms,
+		locked: lockedRooms
+	}
+	console.log(allRooms);
+	
+	io.to(socket.id).emit("connection successful", allRooms)
 
 	socket.on("disconnect", () => {
 		console.log(`${socket.id} disconnected`);
@@ -70,7 +98,6 @@ io.on("connection", function (socket) {
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
 				socket.leave(data.prevRoomId, () => {
-					// console.log("adapter: ", socket.adapter.rooms);
 
 					const { users } = roomInformation.find(
 						(r) => r.id === data.prevRoomId
@@ -122,24 +149,39 @@ io.on("connection", function (socket) {
 		}
 
 	});
-			// socket.on("typing", (typingUser) => {
-			// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
-			// });
-	
-			socket.on("message", (newMessage) => {
-				const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
-	
-				const message = {
-					name: newMessage.name,
-					message: newMessage.message,
-					client: true,
-				};
-	
-				history.push(message);
-	
-				console.log("history: ", history);
-				console.log("room ID: ", newMessage.roomId);
-	
-				io.to(newMessage.roomId).emit("user message", message);
-			});
+	// socket.on("typing", (typingUser) => {
+	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
+	// });
+
+	socket.on("message", (newMessage) => {
+		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
+
+		const message = {
+			name: newMessage.name,
+			message: newMessage.message,
+			client: true,
+		};
+
+		history.push(message);
+
+		io.to(newMessage.roomId).emit("user message", message);
+	});
+
+	socket.on("create room", (roomValues) => {
+		const response = {
+			id: `${roomValues.id}-#${[...Array(5)].map(i => (~~(Math.random() * 36)).toString(36)).join('')}`,
+			password: roomValues.password,
+			color: roomValues.color,
+			users: [],
+		}
+		const newRoom = {
+			...response,
+			history: []
+		}
+
+		roomInformation.push(newRoom)
+		
+		io.emit("created new room", response)
+	})
+
 });

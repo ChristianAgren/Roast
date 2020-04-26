@@ -4,7 +4,7 @@ import React from "react";
 
 import { UserContext } from "../../contexts/userContext";
 import {
-	Button,
+	// Button,
 	Container,
 	Grid,
 	List,
@@ -63,73 +63,6 @@ const useStyles = makeStyles((theme) =>
 function AvailableRooms(props) {
 	const classes = useStyles();
 
-	const rooms = {
-		open: [
-			{
-				id: 1,
-				name: "Room 1",
-				password: ""
-			},
-			{
-				id: 2,
-				name: "Room 2",
-				password: ""
-			},
-			{
-				id: 4,
-				name: "Room 3",
-				password: ""
-			},
-			{
-				id: 5,
-				name: "this is a very long string",
-				password: ""
-			},
-			{
-				id: 6,
-				name: "short",
-				password: ""
-			},
-			{
-				id: 7,
-				name: "smol",
-				password: ""
-			},
-		],
-		locked: [
-			{
-				id: 3,
-				name: "lol",
-				password: "a"
-			},
-			{
-				id: 3123,
-				name: "lol",
-				password: "a"
-			},
-			{
-				id: 323,
-				name: "lol",
-				password: "a"
-			},
-			{
-				id: 353432,
-				name: "lol",
-				password: "a"
-			},
-			{
-				id: 345645,
-				name: "lol",
-				password: "a"
-			},
-			{
-				id: 375675,
-				name: "lol",
-				password: "a"
-			},
-		]
-	}
-
 	const onJoinClick = (event, joinRoom) => {
 		joinRoom(event);
 
@@ -140,45 +73,20 @@ function AvailableRooms(props) {
 	return (
 		<UserContext.Consumer>
 			{(user) => (
-				// <>
-				// 	<p>rooms</p>
-				// 	<ul>
-				// 		<li
-				// 			onClick={(e) => onJoinClick(e, user.joinRoom)}
-				// 			style={{ cursor: "pointer" }}
-				// 			id="1">
-				// 			hej1
-				// 		</li>
-				// 	</ul>
-				// 	<p>locked rooms</p>
-				// 	<ul>
-				// 		<li
-				// 			onClick={(e) => onJoinClick(e, user.joinRoom)}
-				// 			style={{ cursor: "pointer" }}
-				// 			id="2">
-				// 			då1
-				// 		</li>
-				// 	</ul>
-				// </>
 				<Container className={classes.mainContainer}>
 					<Typography variant="overline">Open rooms</Typography>
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
 								{
-									rooms.open.map((room) =>
-										<ListItem button key={`${room.id}:${room.name}`}>
+									user.availableRooms.open.map((room) =>
+										<ListItem button key={`${room.id}`}>
 											<FiberManualRecordIcon fontSize="small" className={classes.openIcon}/>
 											<ListItemText
-												primary={room.name}
+												primary={room.id}
 												secondary="olika användare etc"
 											/>
 										</ListItem>,
-										// <Grid item
-										// 	key={`${room.id}:${room.name}`}
-										// >
-										// 	<Button variant="contained">{room.name}</Button>
-										// </Grid>
 									)
 								}
 							</List>
@@ -189,23 +97,18 @@ function AvailableRooms(props) {
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
 								{
-									rooms.locked.map((room) =>
-										<ListItem button key={`${room.id}:${room.name}`}>
+									user.availableRooms.locked.map((room) =>
+										<ListItem button key={`${room.id}`}>
 											<ListItemAvatar>
 												<Avatar>
 													<LockIcon />
 												</Avatar>
 											</ListItemAvatar>
 											<ListItemText
-												primary={room.name}
+												primary={room.id}
 												secondary="olika användare etc"
 											/>
 										</ListItem>,
-										// <Grid item
-										// 	key={`${room.id}:${room.name}`}
-										// >
-										// 	<Button variant="contained">{room.name}</Button>
-										// </Grid>
 									)
 								}
 							</List>
