@@ -39,7 +39,11 @@ const useStyles = makeStyles((theme) => ({
 
         height: "100%",
         width:"calc(100% + 34px)",
-        paddingRight:"34px"
+		paddingRight:"34px",
+
+		display:"flex"
+		
+
 	},
 
 	clientMsg: {

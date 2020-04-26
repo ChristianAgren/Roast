@@ -16,47 +16,79 @@ import {
 	makeStyles,
 	createStyles,
 } from "@material-ui/core";
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import LockIcon from '@material-ui/icons/Lock';
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import LockIcon from "@material-ui/icons/Lock";
 
 const useStyles = makeStyles((theme) =>
 	createStyles({
 		mainContainer: {
-			padding: theme.spacing(1.5, 0, 1.5, 0),
-			display: 'flex',
-			flexDirection: 'column',
+			padding: theme.spacing(1.5, 0),
+			display: "flex",
+			flexDirection: "column",
 			// flexWrap: 'nowrap'
-			alignItems: 'center',
+			alignItems: "center",
 			// justifyContent: 'center'
 		},
 		hideRoomOverFlow: {
-			width: '100%',
-			overflowX: 'hidden',
-			overflowY: 'auto'
+			width: "100%",
+			overflowX: "hidden",
+			overflowY: "auto",
 		},
 		roomsContainer: {
-			display: 'flex',
-			flexDirection: 'column',
-			maxHeight: '35vh',
-			flexWrap: 'nowrap',
-			justifyContent: 'flex-start',
-			'& > .MuiGrid-item': {
-				padding: 0,
-				margin: theme.spacing(1, 0, 1, 3)
-			},
-			'& > .MuiGrid-item:last-child': {
-				padding: theme.spacing(0, 2.2, 0, 0)
-			},
-			'& .MuiButton-contained': {
-				backgroundColor: theme.palette.background.paper,
-				width: '3rem',
-				height: '3.5rem'
-			}
+			display: "flex",
+			flexDirection: "column",
+			maxHeight: "35vh",
+			flexWrap: "nowrap",
+			justifyContent: "flex-start",
+			padding: theme.spacing(1),
 		},
 		openIcon: {
-			color: 'green',
-			margin: theme.spacing(1, 2.5, 1, 1)
-		}
+			color: "green",
+			margin: theme.spacing(1, 2.5, 1, 1),
+		},
+
+		room: {
+			position: "relative",
+
+			margin: theme.spacing(1, 0, 4, 0),
+			padding: theme.spacing(0.5, 0.5),
+			borderRadius: "50rem",
+
+			display: "flex",
+		},
+
+		cutout: {
+			width: "1.5rem",
+			height: "1.5rem",
+
+			background: "#727070 !important",
+			borderRadius: "10rem",
+
+			marginRight: theme.spacing(2),
+
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+
+			"& > *": {
+				fontSize: "100%",
+			},
+		},
+		activeUsers: {
+			marginLeft: "auto",
+			marginRight: "2rem",
+		},
+		users: {
+			position: "absolute",
+			top: theme.spacing(4),
+			left: theme.spacing(2),
+
+			fontStyle: "italic",
+
+			[theme.breakpoints.down(300)]: {
+				display: "none",
+			},
+		},
 	})
 );
 
@@ -69,78 +101,41 @@ function AvailableRooms(props) {
 				id: 1,
 				name: "Room 1",
 				password: "",
-				color:"#ff8866"
+				users: ["BLOB", "dang3rz0ne"],
+				color: "#ff8866",
 			},
 			{
 				id: 2,
 				name: "Room 2",
 				password: "",
-				color:"#ff8866"
-			},
-			{
-				id: 4,
-				name: "Room 3",
-				password: "",
-				color:"#ff8866"
-			},
-			{
-				id: 5,
-				name: "this is a very long string",
-				password: "",
-				color:"#ff8866"
-			},
-			{
-				id: 6,
-				name: "short",
-				password: "",
-				color:"#ff8866"
-			},
-			{
-				id: 7,
-				name: "smol",
-				password: "",
-				color:"#ff8866"
+				users: ["BLOB", "dang3rz0ne", "Wrampa", "jebbo", "FlOW1r", "Skotzsha", "ivan", "celticFan89"],
+				color: "#ff8866",
 			},
 		],
 		locked: [
 			{
 				id: 3,
-				name: "lol",
+				name: "locked 1",
 				password: "a",
-				color:"#ff8866"
+				users: ["BLOB", "dang3rz0ne", "Wrampa"],
+				color: "#56bff4",
 			},
 			{
 				id: 3123,
-				name: "lol",
+				name: "locked 2",
 				password: "a",
-				color:"#ff8866"
+				users: ["BLOB", "dang3rz0ne", "Wrampa"],
+				color: "#56bff4",
 			},
 			{
 				id: 323,
-				name: "lol",
+				name: "locked 3",
 				password: "a",
-				color:"#ff8866"
+				users: ["BLOB", "dang3rz0ne", "Wrampa"],
+				color: "#56bff4",
 			},
-			{
-				id: 353432,
-				name: "lol",
-				password: "a",
-				color:"#ff8866"
-			},
-			{
-				id: 345645,
-				name: "lol",
-				password: "a",
-				color:"#ff8866"
-			},
-			{
-				id: 375675,
-				name: "lol",
-				password: "a",
-				color:"#ff8866"
-			},
-		]
-	}
+		],
+	};
 
 	const onJoinClick = (event, joinRoom) => {
 		joinRoom(event);
@@ -152,76 +147,80 @@ function AvailableRooms(props) {
 	return (
 		<UserContext.Consumer>
 			{(user) => (
-				// <>
-				// 	<p>rooms</p>
-				// 	<ul>
-				// 		<li
-				// 			onClick={(e) => onJoinClick(e, user.joinRoom)}
-				// 			style={{ cursor: "pointer" }}
-				// 			id="1">
-				// 			hej1
-				// 		</li>
-				// 	</ul>
-				// 	<p>locked rooms</p>
-				// 	<ul>
-				// 		<li
-				// 			onClick={(e) => onJoinClick(e, user.joinRoom)}
-				// 			style={{ cursor: "pointer" }}
-				// 			id="2">
-				// 			då1
-				// 		</li>
-				// 	</ul>
-				// </>
 				<Container className={classes.mainContainer}>
-					
 					<Typography variant="overline">Open rooms</Typography>
 
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
-								{
-									rooms.open.map((room) =>
-										<ListItem button key={`${room.id}:${room.name}`}>
-											<FiberManualRecordIcon fontSize="small" className={classes.openIcon}/>
-											<ListItemText
-												primary={room.name}
-												secondary="olika användare etc"
-											/>
-										</ListItem>,
-										// <Grid item
-										// 	key={`${room.id}:${room.name}`}
-										// >
-										// 	<Button variant="contained">{room.name}</Button>
-										// </Grid>
-									)
-								}
+								{rooms.open.map((room) => (
+									<ListItem
+										button
+										id={room.id}
+										onClick={(e) => onJoinClick(e, user.joinRoom)}
+										key={`${room.id}:${room.name}`}
+										style={{ background: room.color }}
+										className={classes.room}>
+										<div className={classes.cutout}></div>
+
+										<Typography>{room.name}</Typography>
+										<Typography className={classes.activeUsers}>
+											{room.users.length} : active users
+										</Typography>
+
+										<Typography
+											className={classes.users}
+											style={{ color: room.color }}>
+											{room.users.length > 5
+												? room.users
+														.slice(0, 5)
+														.toString()
+														.split(",")
+														.join(", ")
+														.concat(" ...")
+												: room.users.toString().split(",").join(", ")}
+										</Typography>
+									</ListItem>
+								))}
 							</List>
 						</Grid>
 					</div>
+
 					<Typography variant="overline">Locked rooms</Typography>
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
-								{
-									rooms.locked.map((room) =>
-										<ListItem button key={`${room.id}:${room.name}`}>
-											<ListItemAvatar>
-												<Avatar>
-													<LockIcon />
-												</Avatar>
-											</ListItemAvatar>
-											<ListItemText
-												primary={room.name}
-												secondary="olika användare etc"
-											/>
-										</ListItem>,
-										// <Grid item
-										// 	key={`${room.id}:${room.name}`}
-										// >
-										// 	<Button variant="contained">{room.name}</Button>
-										// </Grid>
-									)
-								}
+								{rooms.locked.map((room) => (
+									<ListItem
+										button
+										onClick={(e) => onJoinClick(e, user.joinRoom)}
+										id={room.id}
+										key={`${room.id}:${room.name}`}
+										style={{ background: room.color }}
+										className={classes.room}>
+										<div className={classes.cutout}>
+											<LockIcon style={{ color: room.color }} />
+										</div>
+
+										<Typography>{room.name}</Typography>
+										<Typography className={classes.activeUsers}>
+											{room.users.length} : active users
+										</Typography>
+
+										<Typography
+											className={classes.users}
+											style={{ color: room.color }}>
+											{room.users.length > 5
+												? room.users
+														.slice(0, 5)
+														.toString()
+														.split(",")
+														.join(", ")
+														.concat(" ...")
+												: room.users.toString().split(",").join(", ")}
+										</Typography>
+									</ListItem>
+								))}
 							</List>
 						</Grid>
 					</div>

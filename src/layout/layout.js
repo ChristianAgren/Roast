@@ -54,7 +54,7 @@ function Layout() {
 						height: "100vh",
 
 						display: "flex",
-						justifyContent: "center",
+						// justifyContent: "center",
 						alignItems: "center",
 					}}>
 					<RoomNavigation changeView={handleChangeView} />

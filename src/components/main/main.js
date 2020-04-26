@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) =>
 			},
 			"& .MuiInputBase-root": {
 				background: "#99ffc5",
-				color:"#4a4949",
+				color: "#4a4949",
 				padding: theme.spacing(0.3, 0, 0, 0.8),
 			},
 			"& .MuiSvgIcon-root": {
@@ -144,15 +144,20 @@ function Main() {
 							display: "flex",
 						}}>
 						{roomInputValues.roomPassword.length !== 0 ? (
-							<LockIcon fontSize="large" />
+							<LockIcon fontSize="large" style={{ color: "#ef7825" }} />
 						) : (
-							<LockOpenIcon fontSize="large" />
+							<LockOpenIcon fontSize="large" style={{ color: "#3da069" }} />
 						)}
 						<FormControl fullWidth>
 							<Input
 								size="small"
 								id="room-password"
 								type={roomInputValues.showPassword ? "text" : "password"}
+								style={
+									roomInputValues.roomPassword.length !== 0
+										? { background: "#ef7825" }
+										: { background: "#99ffc5" }
+								}
 								value={roomInputValues.roomPassword}
 								onChange={(event) => handleInputChange(event, "roomPassword")}
 								endAdornment={
@@ -171,10 +176,11 @@ function Main() {
 								}
 							/>
 							<FormHelperText
-								style={{
-									fontFamily: ' "Quantico", sans-serif',
-									color: "#99ffc5",
-								}}>
+								style={
+									roomInputValues.roomPassword.length !== 0
+										? { color: "#ef7825" }
+										: { color: "#99ffc5" }
+								}>
 								{roomInputValues.roomPassword.length !== 0
 									? "Room will be locked"
 									: "Room will be open if left blank"}
