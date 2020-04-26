@@ -14,6 +14,7 @@ export const UserContext = React.createContext({
 	socket: user.socket,
 });
 
+
 export default class UserProvider extends React.Component {
 	constructor(props) {
 		super(props);
@@ -22,6 +23,7 @@ export default class UserProvider extends React.Component {
 			socket: user.socket,
 			connectedRoom: "",
 			joinRoom: this.joinRoom,
+			availableRooms: {},
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
@@ -30,21 +32,30 @@ export default class UserProvider extends React.Component {
 
 			firstTime: true,
 		};
+		this.state.socket.on("connection successful", (data) => this.setAvailableRoomsInState(data))
+		this.state.socket.on("join successful", (data) => this.setRoomInState(data));
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
 		this.state.socket.on("user message", (data) =>
 			this.generateChatMessage(data)
 		);
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
 		this.state.socket.on("server message", (data) => console.log(data));
-		this.state.socket.on("created new room", (data) => console.log(data))
+		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data))
 		// this.state.socket.on("typing", (data) => this.handleTyping(data));
 
-		this.state.socket.on("join successful", (data) => {
-			this.setState(
-				{
-					connectedRoom: data.roomId,
-				}
-			);
+	}
+
+	setAvailableRoomsInState = (data) => {
+		console.log('yaay');
+		this.setState({
+			availableRooms: data
+		}, () => console.log(this.state.availableRooms)
+		)
+	}
+
+	setRoomInState = (data) => {
+		this.setState({
+			connectedRoom: data.roomId,
 		});
 	}
 
@@ -95,6 +106,27 @@ export default class UserProvider extends React.Component {
 			password: roomValues.roomPassword,
 			color: roomValues.roomColor
 		})
+	}
+
+	updateAvailableRooms = (room) => {
+		let updateArray;
+		let anchor;
+
+		if (room.password.length != 0) {
+			updateArray = [ ...this.state.availableRooms.locked ]
+			anchor = 'locked'
+		} else {
+			updateArray = [ ...this.state.availableRooms.open ]
+			anchor = "open"
+		}
+
+		updateArray.push(room)
+		this.setState({
+			availableRooms: {
+				...this.state.availableRooms,
+				[anchor]: updateArray
+			}
+		}, () => console.log(this.state.availableRooms))
 	}
 
 	// emitTyping = (isTyping) => {
