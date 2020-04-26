@@ -8,7 +8,6 @@ const io = socket(server);
 const port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, "build")));
 
-// THIS IS LISTEN DON'T GO IN FFS
 server.listen(port, () => {
 	console.log(`Listening to requests on http://localhost:${port}`);
 });
@@ -76,6 +75,18 @@ io.on("connection", function (socket) {
 						(r) => r.id === data.prevRoomId
 					);
 					const leaver = users.findIndex((u) => u.name === data.name);
+
+					// rooms måste skicka users så vi kan ta bort rummet om det är tomt
+					// Här kallar vi på removeRoom i userContext som uppdaterar rooms listan som ska mappas ut
+					// Om rooms.users är tom sätt splice:a ut rummet ur roomslistan.
+					// Om users är en tom lista, ta bort rummet
+					
+					// const roomToRemove = rooms.findIndex((r) => r.roomId === data.prevRoomId)
+
+					// if (users === []) {
+					// 	removeRoom(roomToRemove)
+					// }
+					
 
 					if (leaver != -1) {
 						users.splice(leaver, 1);

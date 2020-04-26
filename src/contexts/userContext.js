@@ -24,7 +24,7 @@ export default class UserProvider extends React.Component {
 			joinRoom: this.joinRoom,
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
-
+			//rooms: [], //rooms array för att uppdatera state på rooms när rummet är tomt
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 
@@ -66,6 +66,16 @@ export default class UserProvider extends React.Component {
 		// emit
 		this.state.socket.emit("join room", { name, roomId, prevRoomId });
 	};
+
+	// Tar bort rummet utan användare i
+
+	// removeRoom = (roomToRemove) => {
+	// 	const newRoomList = this.state.rooms.splice(roomToRemove, 1)
+
+	// 	this.setState({
+	// 		rooms: newRoomList
+	// 	})
+	// }
 
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;

@@ -153,6 +153,8 @@ function AvailableRooms(props) {
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
+								{/* {Om rooms inte är tom gör detta} annars visa meddelande typ "var den första att skapa ett rum"*/}
+								{/* Ta in en user.rooms från userContext för att kunna få uppdaterad lista */}
 								{rooms.open.map((room) => (
 									<ListItem
 										button
