@@ -21,6 +21,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
+
 const useStyles = makeStyles((theme) =>
 	createStyles({
 		root: {
@@ -34,7 +35,6 @@ const useStyles = makeStyles((theme) =>
 		mainContainer: {
 			display: "flex",
 			flexDirection: "row",
-			// background:"#ff69b488",
 
 			paddingBottom: "30%",
 
