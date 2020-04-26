@@ -16,9 +16,9 @@ server.listen(port, () => {
 let roomInformation = [
 	{
 		id: "1",
+		users: [],
 		password: '',
 		color: '',
-		users: [],
 		history: [
 			{
 				name: "Blob",
@@ -30,7 +30,7 @@ let roomInformation = [
 	{
 		id: "2",
 		users: [],
-		password: '',
+		password: 'lock',
 		color: '',
 		history: [
 			{
@@ -60,6 +60,30 @@ routesWithChildren.forEach(function (rootPath) {
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
 	console.log("made socket connection", socket.id);
+	let lockedRooms = [],
+		openRooms = []
+
+	roomInformation.forEach((room) => {
+		const availableRoom = {
+			id: room.id,
+			users: room.users,
+			password: room.password,
+			color: room.color
+		}
+		if (room.password.length != 0) {
+			lockedRooms.push(availableRoom)
+		} else {
+			openRooms.push(availableRoom)
+		}
+	})
+
+	const allRooms = {
+		open: openRooms,
+		locked: lockedRooms
+	}
+	console.log(allRooms);
+	
+	io.to(socket.id).emit("connection successful", allRooms)
 
 	socket.on("disconnect", () => {
 		console.log(`${socket.id} disconnected`);
@@ -74,7 +98,6 @@ io.on("connection", function (socket) {
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
 				socket.leave(data.prevRoomId, () => {
-					// console.log("adapter: ", socket.adapter.rooms);
 
 					const { users } = roomInformation.find(
 						(r) => r.id === data.prevRoomId
@@ -116,7 +139,7 @@ io.on("connection", function (socket) {
 				io.to(data.roomId).emit("server message", {
 					server_message: `user connected to: ${data.roomId}`,
 				});
-				
+
 				io.to(data.roomId).emit("notice", {
 					name: "",
 					message: user.name + " has joined the room",
@@ -145,15 +168,20 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("create room", (roomValues) => {
-		const newRoom = {
+		const response = {
 			id: `${roomValues.id}-#${[...Array(5)].map(i => (~~(Math.random() * 36)).toString(36)).join('')}`,
 			password: roomValues.password,
 			color: roomValues.color,
 			users: [],
+		}
+		const newRoom = {
+			...response,
 			history: []
 		}
+
 		roomInformation.push(newRoom)
-		io.emit("created new room", roomInformation)
+		
+		io.emit("created new room", response)
 	})
 
 });
