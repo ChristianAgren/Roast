@@ -24,31 +24,26 @@ export default class UserProvider extends React.Component {
 			joinRoom: this.joinRoom,
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
-
+			createNewRoom: this.createNewRoom,
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 
 			firstTime: true,
 		};
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
-
 		this.state.socket.on("user message", (data) =>
 			this.generateChatMessage(data)
 		);
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
-
 		this.state.socket.on("server message", (data) => console.log(data));
-
+		this.state.socket.on("created new room", (data) => console.log(data))
 		// this.state.socket.on("typing", (data) => this.handleTyping(data));
 
 		this.state.socket.on("join successful", (data) => {
-			console.log("d");
-
 			this.setState(
 				{
 					connectedRoom: data.roomId,
-				},
-				() => console.log(this.state.connectedRoom)
+				}
 			);
 		});
 	}
@@ -69,9 +64,6 @@ export default class UserProvider extends React.Component {
 
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
-
-		console.log(server_chatlog);
-
 		this.setState({
 			chatlog: server_chatlog,
 		});
@@ -96,6 +88,14 @@ export default class UserProvider extends React.Component {
 			message: messageValue,
 		});
 	};
+
+	createNewRoom = (roomValues) => {
+		this.state.socket.emit("create room", {
+			id: roomValues.roomId,
+			password: roomValues.roomPassword,
+			color: roomValues.roomColor
+		})
+	}
 
 	// emitTyping = (isTyping) => {
 	// 	this.state.socket.emit("typing", {
