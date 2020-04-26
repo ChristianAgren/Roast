@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme, drawer) =>
 	createStyles({
 		logoContainer: {
 			position: "absolute",
-			top: "2rem",
+			top: "2.5rem",
 			left: "1rem",
 
 

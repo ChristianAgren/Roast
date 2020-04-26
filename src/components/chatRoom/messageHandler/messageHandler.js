@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) =>
 			right: 0,
 			padding: theme.spacing(0),
 		},
+		inputWrapperContainer: {
+			background: "#456699",
+		},
 		inputWrapper: {
 			display: "flex",
 			justifyContent: "center",
@@ -115,7 +118,7 @@ function MessageHandler(props) {
 				className={classes.snackbar}
 			/>
 
-			<Container maxWidth="md" style={{ background: "#e7e7e7" }}>
+			<Container maxWidth="md" className={classes.inputWrapperContainer}>
 				<Container maxWidth="sm" className={classes.inputWrapper}>
 					<FormControl fullWidth>
 						<TextField

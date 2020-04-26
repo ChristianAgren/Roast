@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) =>
 			},
 			"& .MuiInputBase-root": {
 				background: "#99ffc5",
-				color: "#4a4949",
+				color: "#456699",
 				padding: theme.spacing(0.3, 0, 0, 0.8),
 			},
 			"& .MuiSvgIcon-root": {
@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) =>
 				fontSize: "1.6rem",
 			},
 
-			borderBottom: ".2rem solid #b1c0c4",
+			borderBottom: ".2rem solid #5777FF",
 		},
 	})
 );

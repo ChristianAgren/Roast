@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme, drawer) =>
 
 		drawerButton: {
 			width: "6rem",
-			height: "3rem",
+			height: "2.5rem",
 
 			background: "#727070",
 			margin: "auto",
@@ -38,23 +38,26 @@ const useStyles = makeStyles((theme, drawer) =>
 			alignItems: "center",
 
 			borderRadius: "0 0 .5rem .5rem",
+			border: "solid #5777FF 0.1rem ",
+			borderTop: "solid #727070 0.2rem",
 
 			"&:hover": {
 				background: "#727070",
 			},
 			"& > *": {
-				fontSize: "5rem",
-				color:"#ef7825"
+				fontSize: "3rem",
+				color: "#5777FF",
 			},
 		},
 
 		container: {
 			padding: 0,
-			height:".5rem",
+			height: ".5rem",
 			background: "#727070",
+			borderBottom: "solid #668 0.2rem "
 		},
 		collapse: {
-			
+
 			background: "#727070",
 		},
 
@@ -85,7 +88,7 @@ function RoomNavigation(props) {
 			<Container
 				maxWidth="md"
 				className={classes.container}
-				>
+			>
 				<Collapse in={drawer} timeout="auto" unmountOnExit className={classes.collapse}>
 					<List component="div" disablePadding>
 						<AvailableRooms
