@@ -16,6 +16,8 @@ server.listen(port, () => {
 let roomInformation = [
 	{
 		id: "1",
+		password: '',
+		color: '',
 		users: [],
 		history: [
 			{
@@ -28,6 +30,8 @@ let roomInformation = [
 	{
 		id: "2",
 		users: [],
+		password: '',
+		color: '',
 		history: [
 			{
 				name: "Alvin",
@@ -112,7 +116,7 @@ io.on("connection", function (socket) {
 				io.to(data.roomId).emit("server message", {
 					server_message: `user connected to: ${data.roomId}`,
 				});
-
+				
 				io.to(data.roomId).emit("notice", {
 					name: "",
 					message: user.name + " has joined the room",
@@ -122,24 +126,34 @@ io.on("connection", function (socket) {
 		}
 
 	});
-			// socket.on("typing", (typingUser) => {
-			// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
-			// });
-	
-			socket.on("message", (newMessage) => {
-				const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
-	
-				const message = {
-					name: newMessage.name,
-					message: newMessage.message,
-					client: true,
-				};
-	
-				history.push(message);
-	
-				console.log("history: ", history);
-				console.log("room ID: ", newMessage.roomId);
-	
-				io.to(newMessage.roomId).emit("user message", message);
-			});
+	// socket.on("typing", (typingUser) => {
+	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
+	// });
+
+	socket.on("message", (newMessage) => {
+		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
+
+		const message = {
+			name: newMessage.name,
+			message: newMessage.message,
+			client: true,
+		};
+
+		history.push(message);
+
+		io.to(newMessage.roomId).emit("user message", message);
+	});
+
+	socket.on("create room", (roomValues) => {
+		const newRoom = {
+			id: `${roomValues.id}-#${[...Array(5)].map(i => (~~(Math.random() * 36)).toString(36)).join('')}`,
+			password: roomValues.password,
+			color: roomValues.color,
+			users: [],
+			history: []
+		}
+		roomInformation.push(newRoom)
+		io.emit("created new room", roomInformation)
+	})
+
 });
