@@ -93,7 +93,7 @@ io.on("connection", function (socket) {
 
 					io.to(data.prevRoomId).emit("notice", {
 						name: "",
-						message: user + " has left the room",
+						message: user.name + " has left the room",
 					});
 				});
 			}
