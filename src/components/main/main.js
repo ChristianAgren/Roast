@@ -16,12 +16,14 @@ import {
 	TextField,
 	Typography,
 	ListItem,
+	withTheme,
 } from "@material-ui/core";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import LockIcon from "@material-ui/icons/Lock";
 import SaveIcon from "@material-ui/icons/Save";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import Modal from '@material-ui/core/Modal';
 
 
 const useStyles = makeStyles((theme) =>
@@ -88,6 +90,25 @@ const useStyles = makeStyles((theme) =>
 				height: "4rem",
 			},
 		},
+		modalContainer: {
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center"
+		},
+		createNameContainer: {
+			display: "flex",
+			width: "20rem",
+			justifyContent: "center",
+			alignItems: 'space-between',
+			background: '#224',
+			textAlign: 'center'
+			
+		},
+		createNameInput: {
+			color: "white"
+		},
+		
+		
 	})
 );
 
@@ -125,12 +146,21 @@ function Main() {
 		name: '',
 	})
 
-	const handleCreateName = (event, createName) => {
+	const handleClose = () => {
+		setOpen(false);
+	  };
+
+	const [open, setOpen] = React.useState(true);
+
+	const handleCreateName = (event, createName, handleClose) => {
 		event.preventDefault()
+
+		handleClose()
+
 		console.log('in: handleFirstTimeOnSite');
 
 		createName(firstTimeOnSite.name)
-		setFirstTimeOnSite ({
+		setFirstTimeOnSite({
 			firstTimeOnSite: false
 		})
 	}
@@ -172,6 +202,8 @@ function Main() {
 		createNewRoom({ roomId, roomPassword, roomColor });
 	};
 
+	  
+
 	return (
 		<UserContext.Consumer>
 			{/* Om första gången på sidan, spara boolean  'firstTimeOnSite' === true visa modal där du skriver in namn
@@ -180,23 +212,36 @@ function Main() {
 			{(user) => (
 				<Container maxWidth="sm">
 					{firstTimeOnSite &&
-						<FormControl fullWidth>
-							<TextField
-								size="small"
-								id="nameInput"
-								type="text"
-								onChange={(event) => handleNameInputChange(event, "name")}
-							/>
-							<Button
-								label="name"
-								variant="contained"
-								color="primary"
-								onClick={(e) => handleCreateName(e, user.createName)}
-							>
-							Send
-							</Button>
+						<Modal
+							className={classes.modalContainer}
+							open={open}
+							aria-labelledby="create-name-modal"
+							aria-describedby="forces user to create a name to chat"
+						>
+							{<FormControl className={classes.createNameContainer}>
+								<Typography style={{color: "White", padding: "2rem"}}>Please enter your nickname:</Typography>
+								<TextField
+									size="small"
+									id="nameInput"
+									type="input"
+									inputProps={{
+										className: classes.createNameInput}}
+									variant="outlined"
+									className={classes.createNameInput}
+									onChange={(event) => handleNameInputChange(event, "name")}
+								/>
+								<Button
+									label="name"
+									variant="contained"
+									color="primary"
+									onClick={(e) => handleCreateName(e, user.createName, handleClose)}
+								>
+									Send
+								</Button>
 
-						</FormControl>
+							</FormControl>}
+						</Modal>
+
 					}
 
 
@@ -226,8 +271,8 @@ function Main() {
 								{roomInputValues.roomPassword.length !== 0 ? (
 									<LockIcon fontSize="large" />
 								) : (
-									<LockOpenIcon fontSize="large" />
-								)}
+										<LockOpenIcon fontSize="large" />
+									)}
 								<FormControl fullWidth>
 									<Input
 										size="small"
@@ -251,8 +296,8 @@ function Main() {
 													{roomInputValues.showPassword ? (
 														<Visibility />
 													) : (
-														<VisibilityOff />
-													)}
+															<VisibilityOff />
+														)}
 												</IconButton>
 											</InputAdornment>
 										}
@@ -281,12 +326,12 @@ function Main() {
 										style={
 											color === roomInputValues.roomColor
 												? {
-														background: color,
-														border: ".5rem double #4a4949",
-												  }
+													background: color,
+													border: ".5rem double #4a4949",
+												}
 												: {
-														background: color,
-												  }
+													background: color,
+												}
 										}></ListItem>
 								))}
 							</List>
