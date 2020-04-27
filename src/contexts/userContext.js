@@ -40,12 +40,14 @@ export default class UserProvider extends React.Component {
 		this.state.socket.on("connection successful", (data) => this.setAvailableRoomsInState(data))
 		this.state.socket.on("join successful", (data) => this.setRoomInState(data));
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
-		this.state.socket.on("user message", (data) =>
-			this.generateChatMessage(data)
-		);
+		this.state.socket.on("user message", (data) => this.generateChatMessage(data));
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
-		this.state.socket.on("server message", (data) => console.log(data));
-		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data))
+		// this.state.socket.on("server message", (data) => console.log(data));
+		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data));
+		this.state.socket.on("user left room", (data) => this.updateUsersinRoom(data));
+		this.state.socket.on("user joined room", (data) => this.updateUsersinRoom(data));
+
+
 		// this.state.socket.on("typing", (data) => this.handleTyping(data));
 
 	}
@@ -54,8 +56,7 @@ export default class UserProvider extends React.Component {
 		console.log('yaay');
 		this.setState({
 			availableRooms: data
-		}, () => console.log(this.state.availableRooms)
-		)
+		})
 	}
 
 	setRoomInState = (data) => {
@@ -74,10 +75,46 @@ export default class UserProvider extends React.Component {
 		})		
 	}
 
+
+	updateUsersinRoom = (user) => {
+		let roomAnchor = "open"
+		let findRoom = this.state.availableRooms.open.findIndex((room) => room.id === user.room)
+		if (findRoom === -1) {
+			roomAnchor = "locked"
+			findRoom = this.state.availableRooms.locked.findIndex((room) => room.id === user.room)
+		}
+		const copiedRoomsList = [...this.state.availableRooms[roomAnchor]]
+		
+		if(user.join) {
+			this.addUserToRoom({ username: user.username }, copiedRoomsList, findRoom, roomAnchor)
+		} else {
+			this.removeUserFromRoom({ username: user.username }, copiedRoomsList, findRoom, roomAnchor)
+		}
+	}
+
+	addUserToRoom = (user, roomsList, index, anchor) => {
+		
+		roomsList[index].users.push( {name: user.username} )
+		this.setUpdatedUsersInState(roomsList, anchor)
+	}
+
+	removeUserFromRoom = (user, roomsList, index, anchor) => {
+		const userIndex = roomsList[index].users.findIndex((userindex) => userindex.name === user.name)
+		roomsList[index].users.splice(userIndex, 1)
+		this.setUpdatedUsersInState(roomsList, anchor)
+	}
+
+	setUpdatedUsersInState = (roomsList, anchor) => {
+		this.setState({
+			availableRooms: {
+				...this.state.availableRooms,
+				[anchor]: roomsList
+			}
+		}, () => console.log(this.state.availableRooms))
+	}
+
 	joinRoom = (event) => {
 		event.preventDefault();
-
-		// let roomColorRgb = event.target.style.background;
 
 		const name = this.state.name;
 		const roomId = event.target.id;
@@ -155,7 +192,7 @@ export default class UserProvider extends React.Component {
 		let updateArray;
 		let anchor;
 
-		if (room.password.length != 0) {
+		if (room.password.length !== 0) {
 			updateArray = [ ...this.state.availableRooms.locked ]
 			anchor = 'locked'
 		} else {
