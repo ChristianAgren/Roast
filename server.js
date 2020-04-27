@@ -14,41 +14,54 @@ server.listen(port, () => {
 });
 
 let roomInformation = [
-	// {
-	// 	id: "1",
-	// 	users: [],
-	// 	password: '',
-	// 	color: '#ff69b4',
-	// 	history: [
-	// 		{
-	// 			name: "Blob",
-	// 			message: "Hej hej hej hej hje",
-	// 			client: true,
-	// 		},
-	// 	],
-	// },
-	// {
-	// 	id: "2",
-	// 	users: [],
-	// 	password: 'lock',
-	// 	color: '#123388',
-	// 	history: [
-	// 		{
-	// 			name: "Alvin",
-	// 			message: "it do b like that",
-	// 			client: true,
-	// 		},
-	// 	],
-	// },
+	{
+		id: "1",
+		name: "room",
+		users: [],
+		password: '',
+		color: '#ff69b4',
+		history: [
+			{
+				name: "Blob",
+				message: "Hej hej hej hej hje",
+				client: true,
+			},
+		],
+	},
+	{
+		id: "3",
+		name: "room",
+		users: [],
+		password: '',
+		color: '#ff69b4',
+		history: [
+			{
+				name: "Blob",
+				message: "Hej hej hej hej hje",
+				client: true,
+			},
+		],
+	},
+	{
+		id: "asdf",
+		name: "room",
+		users: [],
+		password: 'lock',
+		color: '#123388',
+		history: [
+			{
+				name: "Alvin",
+				message: "it do b like that",
+				client: true,
+			},
+		],
+	},
 ];
 
 const routesWithChildren = ["/"];
 
 routesWithChildren.forEach(function (rootPath) {
 	app.get(rootPath + "*", function (req, res) {
-		// Send or render whatever is appropriate here
-		// You can use req.path to get the path that was requested
-		// Eg: /dashboard/profile/user5
 		res.sendFile(path.join(__dirname, "build", "index.html"));
 	});
 });
@@ -56,13 +69,13 @@ routesWithChildren.forEach(function (rootPath) {
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
 	console.log("made socket connection", socket.id);
+
 	let lockedRooms = [],
 		openRooms = [];
 
 	roomInformation.forEach((room) => {
-		console.log("room :", room);
-
 		const availableRoom = {
+			name: room.name,
 			id: room.id,
 			users: room.users,
 			password: room.password,
@@ -79,67 +92,71 @@ io.on("connection", function (socket) {
 		open: openRooms,
 		locked: lockedRooms,
 	};
-	console.log(allRooms);
 
 	io.to(socket.id).emit("connection successful", allRooms);
 
-	socket.on("disconnect", () => {
+	socket.on("disconnecting", () => {
+		// Manipulate local data
+		const rooms = Object.keys(socket.rooms)
+		let clearRoom 
+		rooms.forEach((room) => {
+			if (room != socket.id) {
+				clearRoom = room
+			}
+		})
+		if (clearRoom) {
+			const { users } = roomInformation.find((room) => room.id === clearRoom)
+			const leaverInfo = users.find((user) => user.id === socket.id)
+			const leaverIndex = users.findIndex((user) => user.id === socket.id)
+			users.splice(leaverIndex, 1)
+
+			//Emit to sockets
+			io.emit("user left room", { username: leaverInfo.name, room: clearRoom, join: false });
+		}
 		console.log(`${socket.id} disconnected`);
 	});
 
 	socket.on("join room", (data) => {
-		console.log(data);
-
-		const user = data.name;
 		
-		// const user = {
-		// 	name: data.name,
-		// 	// isTyping: false,
-		// };
+		const user = {
+			name: data.name,
+			id: socket.id
+		};
 
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
 				socket.leave(data.prevRoomId, () => {
+					// Manipulate local data
 					const { users } = roomInformation.find(
 						(r) => r.id === data.prevRoomId
 					);
-					const leaver = users.findIndex((u) => u.name === data.name);
-
+					const leaver = users.findIndex((u) => u.id === user.id);	
 					if (leaver != -1) {
 						users.splice(leaver, 1);
-						console.log(users);
 					}
 
+					// Update sockets and rooms
 					io.emit("user left room", { username: user.name, room: data.prevRoomId, join: false });
-
 					io.to(data.prevRoomId).emit("notice", {
-						name: "",
 						message: user.name + " has left the room",
 					});
 				});
 			}
 			socket.join(data.roomId, () => {
-				console.log("in join room");
-
+				// Manipulate local data
 				const { users } = roomInformation.find((r) => r.id === data.roomId);
 				users.push(user);
-				console.log(user);
-				
-				console.log(`${socket.id} joined room: ${data.roomId}`);
+				io.to(socket.id).emit("join successful", data);
 
+				//Update all socket's room information
 				io.emit("user joined room", {username: user.name, room: data.roomId, join: true})
-				socket.emit("join successful", data);
 
+				//Send history to socket
 				const { history } = roomInformation.find((h) => h.id === data.roomId);
-
 				io.to(socket.id).emit("chatlog", { server_chatlog: history });
 
-				io.to(data.roomId).emit("server message", {
-					server_message: `user connected to: ${data.roomId}`,
-				});
-
+				//Send message to chatroom
 				io.to(data.roomId).emit("notice", {
-					name: "",
 					message: user.name + " has joined the room",
 					client: false,
 				});
@@ -153,31 +170,11 @@ io.on("connection", function (socket) {
 	socket.on("message", (newMessage) => {
 		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
 		const { color } = roomInformation.find((h) => h.id === newMessage.roomId);
-
+		
 		const message = {
 			name: newMessage.name,
 			message: newMessage.message,
 			color: color,
-			client: true,
-		};
-
-		history.push(message);
-
-		console.log("history: ", history);
-		console.log("room ID: ", newMessage.roomId);
-
-		io.to(newMessage.roomId).emit("user message", message);
-	});
-	// socket.on("typing", (typingUser) => {
-	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
-	// });
-
-	socket.on("message", (newMessage) => {
-		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
-
-		const message = {
-			name: newMessage.name,
-			message: newMessage.message,
 			client: true,
 		};
 
