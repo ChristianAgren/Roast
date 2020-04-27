@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-import { UserContext } from '../../contexts/userContext'
+import { UserContext } from "../../contexts/userContext";
 import {
 	Button,
 	Container,
@@ -17,11 +17,11 @@ import {
 	Typography,
 	ListItem,
 } from "@material-ui/core";
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import LockIcon from '@material-ui/icons/Lock';
-import SaveIcon from '@material-ui/icons/Save';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import LockOpenIcon from "@material-ui/icons/LockOpen";
+import LockIcon from "@material-ui/icons/Lock";
+import SaveIcon from "@material-ui/icons/Save";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 const useStyles = makeStyles((theme) =>
 	createStyles({
@@ -53,29 +53,28 @@ const useStyles = makeStyles((theme) =>
 			"& .MuiSvgIcon-root": {
 				margin: theme.spacing(1, 2, 1, 1),
 			},
-			'& .MuiSvgIcon-root': {
-				margin: theme.spacing(.5),
-				color: 'rgba(0, 0, 0, 0.45)'
+			"& .MuiSvgIcon-root": {
+				margin: theme.spacing(0.5),
+				color: "rgba(0, 0, 0, 0.45)",
 			},
-			'& > .MuiGrid-item': {
-				margin: theme.spacing(.5, 0),
-				display: 'flex',
-				flexDirection: 'column',
+			"& > .MuiGrid-item": {
+				margin: theme.spacing(0.5, 0),
+				display: "flex",
+				flexDirection: "column",
 			},
-			'& .MuiButton-containedPrimary': {
-				backgroundColor: '#0003',
-			}
-
+			"& .MuiButton-containedPrimary": {
+				backgroundColor: "#0003",
+			},
 		},
 		title: {
-			color: '#0005',
+			color: "#0005",
 			margin: theme.spacing(3, 0, 2, 0),
-			textAlign: 'center',
-			textDecoration: 'underline',
-			letterSpacing: '.06rem',
+			textAlign: "center",
+			textDecoration: "underline",
+			letterSpacing: ".06rem",
 			[theme.breakpoints.down("xs")]: {
-				fontSize: '1.6rem'
-			}
+				fontSize: "1.6rem",
+			},
 		},
 		colorWrapper: {
 			display: "flex",
@@ -93,12 +92,6 @@ const useStyles = makeStyles((theme) =>
 
 function Main() {
 	const classes = useStyles();
-	const [roomInputValues, setRoomInputValues] = React.useState({
-		roomId: "",
-		roomPassword: "",
-		roomColor: "",
-		showPassword: false,
-	});
 	const roomColors = [
 		"#ff8866",
 		"#ffdc7a",
@@ -111,24 +104,33 @@ function Main() {
 
 		"#ff5259",
 	];
-
+	const [roomInputValues, setRoomInputValues] = React.useState({
+		roomId: "",
+		roomPassword: "",
+		roomColor: roomColors[0],
+		showPassword: false,
+	});
 
 	const switchColor = (event) => {
-	setRoomInputvalues({
-		roomColor: event.target.id
-	})
+		console.log(event.target.id);
+
+		setRoomInputValues({
+			...roomInputValues,
+			roomColor: event.target.id,
+		});
 	};
 
 	const handleInputChange = (event, anchor) => {
 		setRoomInputValues({
 			...roomInputValues,
-			[anchor]: event.target.value
-		})
-	}
+			[anchor]: event.target.value,
+		});
+	};
 
 	const handleClickShowPassword = () => {
 		setRoomInputValues({
-			...roomInputValues, showPassword: !roomInputValues.showPassword
+			...roomInputValues,
+			showPassword: !roomInputValues.showPassword,
 		});
 	};
 
@@ -142,118 +144,121 @@ function Main() {
 		console.log(`Password: ${roomInputValues.roomPassword}`);
 		console.log(`Color: ${roomInputValues.roomColor}`);
 
-		const { roomId, roomPassword, roomColor } = roomInputValues
+		const { roomId, roomPassword, roomColor } = roomInputValues;
 		console.log(roomId, roomPassword, roomColor);
-		
-		createNewRoom({roomId, roomPassword, roomColor})
-	}
+
+		createNewRoom({ roomId, roomPassword, roomColor });
+	};
 
 	return (
 		<UserContext.Consumer>
-			{(user) =>
+			{(user) => (
 				<Container maxWidth="sm">
 					<Grid container spacing={1} className={classes.mainContainer}>
 						<Grid item xs={12}>
 							<Typography variant="h3" className={classes.title}>
 								ADD NEW ROOM
-					</Typography>
-				</Grid>
-
-				<Grid item xs={12}>
-					<Typography variant="overline">Name *</Typography>
-					<FormControl fullWidth>
-						<TextField
-							size="small"
-							id="room-name"
-							value={roomInputValues.roomID}
-							onChange={(event) => handleInputChange(event, "roomId")}
-						/>
-					</FormControl>
-				</Grid>
-				<Grid item xs={12}>
-					<Typography variant="overline">Password</Typography>
-					<div
-						style={{
-							display: "flex",
-						}}>
-						{roomInputValues.roomPassword.length !== 0 ? (
-							<LockIcon fontSize="large" />
-						) : (
-							<LockOpenIcon fontSize="large" />
-						)}
-						<FormControl fullWidth>
-							<Input
-								size="small"
-								id="room-password"
-								type={roomInputValues.showPassword ? "text" : "password"}
-								style={
-									roomInputValues.roomPassword.length !== 0
-										? { background: "#ff8866" }
-										: null
-								}
-								value={roomInputValues.roomPassword}
-								onChange={(event) => handleInputChange(event, "roomPassword")}
-								endAdornment={
-									<InputAdornment position="end">
-										<IconButton
-											aria-label="toggle password visibility"
-											onClick={handleClickShowPassword}
-											onMouseDown={handleMouseDownPassword}>
-											{roomInputValues.showPassword ? (
-												<Visibility />
-											) : (
-												<VisibilityOff />
-											)}
-										</IconButton>
-									</InputAdornment>
-								}
-							/>
-							<FormHelperText
-								style={
-									roomInputValues.roomPassword.length !== 0
-										? { color: "#ff8866" }
-										: { color: "#99ffc5" }
-								}>
-								{roomInputValues.roomPassword.length !== 0
-									? "Room will be locked"
-									: "Room will be open if left blank"}
-							</FormHelperText>
-						</FormControl>
-					</div>
-				</Grid>
-				<Grid item xs={12}>
-					<Typography variant="overline">Color</Typography>
-					<List className={classes.colorWrapper}>
-						{roomColors.map((color) => (
-							<ListItem
-								button
-								onClick={(e) => switchColor(e)}
-								id={color}
-								style={
-									color === chosenColor
-										? {
-												background: color,
-												border: ".5rem double #4a4949",
-										  }
-										: {
-												background: color,
-										  }
-								}></ListItem>
-						))}
-					</List>
-				</Grid>
-				<Grid item xs={12}>
-					<Button
-						variant="contained"
-						color="primary"
-						size="large"
-						startIcon={<SaveIcon />}
-						onClick={() => handleCreateRoomClick()}>
-						Create
-					</Button>
-				</Grid>
-			</Grid>
-		</Container>
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="overline">Name *</Typography>
+							<FormControl fullWidth>
+								<TextField
+									size="small"
+									id="room-name"
+									value={roomInputValues.roomID}
+									onChange={(event) => handleInputChange(event, "roomId")}
+								/>
+							</FormControl>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="overline">Password</Typography>
+							<div
+								style={{
+									display: "flex",
+								}}>
+								{roomInputValues.roomPassword.length !== 0 ? (
+									<LockIcon fontSize="large" />
+								) : (
+									<LockOpenIcon fontSize="large" />
+								)}
+								<FormControl fullWidth>
+									<Input
+										size="small"
+										id="room-password"
+										type={roomInputValues.showPassword ? "text" : "password"}
+										style={
+											roomInputValues.roomPassword.length !== 0
+												? { background: "#ff8866" }
+												: null
+										}
+										value={roomInputValues.roomPassword}
+										onChange={(event) =>
+											handleInputChange(event, "roomPassword")
+										}
+										endAdornment={
+											<InputAdornment position="end">
+												<IconButton
+													aria-label="toggle password visibility"
+													onClick={handleClickShowPassword}
+													onMouseDown={handleMouseDownPassword}>
+													{roomInputValues.showPassword ? (
+														<Visibility />
+													) : (
+														<VisibilityOff />
+													)}
+												</IconButton>
+											</InputAdornment>
+										}
+									/>
+									<FormHelperText
+										style={
+											roomInputValues.roomPassword.length !== 0
+												? { color: "#ff8866" }
+												: { color: "#99ffc5" }
+										}>
+										{roomInputValues.roomPassword.length !== 0
+											? "Room will be locked"
+											: "Room will be open if left blank"}
+									</FormHelperText>
+								</FormControl>
+							</div>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="overline">Color</Typography>
+							<List className={classes.colorWrapper}>
+								{roomColors.map((color) => (
+									<ListItem
+										button
+										onClick={(e) => switchColor(e)}
+										id={color}
+										style={
+											color === roomInputValues.roomColor
+												? {
+														background: color,
+														border: ".5rem double #4a4949",
+												  }
+												: {
+														background: color,
+												  }
+										}></ListItem>
+								))}
+							</List>
+						</Grid>
+						<Grid item xs={12}>
+							<Button
+								variant="contained"
+								color="primary"
+								size="large"
+								startIcon={<SaveIcon />}
+								onClick={() => handleCreateRoomClick(user.createNewRoom)}>
+								Create
+							</Button>
+						</Grid>
+					</Grid>
+				</Container>
+			)}
+		</UserContext.Consumer>
 	);
 }
 

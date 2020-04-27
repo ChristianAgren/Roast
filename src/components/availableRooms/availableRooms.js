@@ -112,10 +112,10 @@ function AvailableRooms(props) {
 				<Container className={classes.mainContainer}>
 					<Typography variant="overline">Open rooms</Typography>
 					<div className={classes.hideRoomOverFlow}>
+						{console.log(user)}
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
-								{
-									user.availableRooms.open.map((room) =>
+								{user.availableRooms.open.map((room) => (
 									<ListItem
 										button
 										id={room.id}
@@ -125,7 +125,10 @@ function AvailableRooms(props) {
 										className={classes.room}>
 										<div className={classes.cutout}></div>
 
-										<Typography>{room.name}</Typography>
+										<Typography>
+											{room.name}
+											<em style={{ color: "#0008" }}>{room.id}</em>
+										</Typography>
 										<Typography className={classes.activeUsers}>
 											{room.users.length} : active users
 										</Typography>
@@ -133,6 +136,7 @@ function AvailableRooms(props) {
 										<Typography
 											className={classes.users}
 											style={{ color: room.color }}>
+											{console.log(room.users)}
 											{room.users.length > 5
 												? room.users
 														.slice(0, 5)
@@ -152,8 +156,7 @@ function AvailableRooms(props) {
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
-								{
-									user.availableRooms.locked.map((room) =>
+								{user.availableRooms.locked.map((room) => (
 									<ListItem
 										button
 										onClick={(e) => onJoinClick(e, user.joinRoom)}
@@ -165,7 +168,7 @@ function AvailableRooms(props) {
 											<LockIcon style={{ color: room.color }} />
 										</div>
 
-										<Typography>{room.name}</Typography>
+										<Typography>{(room.name, room.id)}</Typography>
 										<Typography className={classes.activeUsers}>
 											{room.users.length} : active users
 										</Typography>
