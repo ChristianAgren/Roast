@@ -35,12 +35,13 @@ export default class UserProvider extends React.Component {
 		this.state.socket.on("connection successful", (data) => this.setAvailableRoomsInState(data))
 		this.state.socket.on("join successful", (data) => this.setRoomInState(data));
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
-		this.state.socket.on("user message", (data) =>
-			this.generateChatMessage(data)
-		);
+		this.state.socket.on("user message", (data) => this.generateChatMessage(data));
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
 		this.state.socket.on("server message", (data) => console.log(data));
-		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data))
+		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data));
+		this.state.socket.on("user left room", (data) => this.updateUsersinRoom(data));
+		this.state.socket.on("user joined room", (data) => this.updateUsersinRoom(data));
+
 		// this.state.socket.on("typing", (data) => this.handleTyping(data));
 
 	}
@@ -49,8 +50,7 @@ export default class UserProvider extends React.Component {
 		console.log('yaay');
 		this.setState({
 			availableRooms: data
-		}, () => console.log(this.state.availableRooms)
-		)
+		})
 	}
 
 	setRoomInState = (data) => {
@@ -59,8 +59,31 @@ export default class UserProvider extends React.Component {
 		});
 	}
 
+	updateUsersinRoom = (user) => {
+
+		if(user.join) {
+			this.addUserToRoom({ username: user.username, room: user.room })
+		} else {
+			this.removeUserFromRoom({ username: user.username, room: user.room })
+		}
+	}
+
+	addUserToRoom = (user) => {
+
+	}
+
+	removeUserFromRoom = (user) => {
+		console.log(shouldUpdate, user);
+		let shouldUpdate = this.state.availableRooms.open.findIndex((room) => room.id === user.room)
+		if (shouldUpdate === -1) {
+			shouldUpdate = this.state.availableRooms.locked.findIndex((room) => room.id === user.room)
+		}
+	}
+
 	joinRoom = (event) => {
 		event.preventDefault();
+		console.log(event.target.id);
+		
 
 		const name = this.state.name;
 		const roomId = event.target.id;
@@ -112,7 +135,7 @@ export default class UserProvider extends React.Component {
 		let updateArray;
 		let anchor;
 
-		if (room.password.length != 0) {
+		if (room.password.length !== 0) {
 			updateArray = [ ...this.state.availableRooms.locked ]
 			anchor = 'locked'
 		} else {
