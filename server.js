@@ -8,7 +8,6 @@ const io = socket(server);
 const port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, "build")));
 
-// THIS IS LISTEN DON'T GO IN FFS
 server.listen(port, () => {
 	console.log(`Listening to requests on http://localhost:${port}`);
 });
@@ -55,6 +54,7 @@ routesWithChildren.forEach(function (rootPath) {
 
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
+
 	console.log("made socket connection", socket.id);
 	let lockedRooms = [],
 		openRooms = [];
@@ -88,7 +88,7 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("join room", (data) => {
-		console.log(data);
+		console.log("rad 91",data);
 
 		const user = data.name;
 		
@@ -104,6 +104,18 @@ io.on("connection", function (socket) {
 						(r) => r.id === data.prevRoomId
 					);
 					const leaver = users.findIndex((u) => u.name === data.name);
+
+					// rooms måste skicka users så vi kan ta bort rummet om det är tomt
+					// Här kallar vi på removeRoom i userContext som uppdaterar rooms listan som ska mappas ut
+					// Om rooms.users är tom sätt splice:a ut rummet ur roomslistan.
+					// Om users är en tom lista, ta bort rummet
+					
+					// const roomToRemove = rooms.findIndex((r) => r.roomId === data.prevRoomId)
+
+					// if (users === []) {
+					// 	removeRoom(roomToRemove)
+					// }
+					
 
 					if (leaver != -1) {
 						users.splice(leaver, 1);
@@ -128,6 +140,7 @@ io.on("connection", function (socket) {
 				const { users } = roomInformation.find((r) => r.id === data.roomId);
 				users.push(user);
 				console.log(users);
+				console.log(user)
 
 				console.log(`${socket.id} joined room: ${data.roomId}`);
 
@@ -141,9 +154,9 @@ io.on("connection", function (socket) {
 					server_message: `user connected to: ${data.roomId}`,
 				});
 
-				io.to(data.roomId).emit("notice", {
+				io.to(data.roomId).emit("notice", {			
 					name: "",
-					message: user.name + " has joined the room",
+					message: user + " has joined the room",
 					client: false,
 				});
 			});
