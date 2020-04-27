@@ -14,6 +14,7 @@ export const UserContext = React.createContext({
 	socket: user.socket,
 });
 
+
 export default class UserProvider extends React.Component {
 	constructor(props) {
 		super(props);
@@ -22,34 +23,39 @@ export default class UserProvider extends React.Component {
 			socket: user.socket,
 			connectedRoom: "",
 			joinRoom: this.joinRoom,
+			availableRooms: {},
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
-
+			createNewRoom: this.createNewRoom,
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 
 			firstTime: true,
 		};
+		this.state.socket.on("connection successful", (data) => this.setAvailableRoomsInState(data))
+		this.state.socket.on("join successful", (data) => this.setRoomInState(data));
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
-
 		this.state.socket.on("user message", (data) =>
 			this.generateChatMessage(data)
 		);
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
-
 		this.state.socket.on("server message", (data) => console.log(data));
-
+		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data))
 		// this.state.socket.on("typing", (data) => this.handleTyping(data));
 
-		this.state.socket.on("join successful", (data) => {
-			console.log("d");
+	}
 
-			this.setState(
-				{
-					connectedRoom: data.roomId,
-				},
-				() => console.log(this.state.connectedRoom)
-			);
+	setAvailableRoomsInState = (data) => {
+		console.log('yaay');
+		this.setState({
+			availableRooms: data
+		}, () => console.log(this.state.availableRooms)
+		)
+	}
+
+	setRoomInState = (data) => {
+		this.setState({
+			connectedRoom: data.roomId,
 		});
 	}
 
@@ -69,9 +75,6 @@ export default class UserProvider extends React.Component {
 
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
-
-		console.log(server_chatlog);
-
 		this.setState({
 			chatlog: server_chatlog,
 		});
@@ -96,6 +99,35 @@ export default class UserProvider extends React.Component {
 			message: messageValue,
 		});
 	};
+
+	createNewRoom = (roomValues) => {
+		this.state.socket.emit("create room", {
+			id: roomValues.roomId,
+			password: roomValues.roomPassword,
+			color: roomValues.roomColor
+		})
+	}
+
+	updateAvailableRooms = (room) => {
+		let updateArray;
+		let anchor;
+
+		if (room.password.length != 0) {
+			updateArray = [ ...this.state.availableRooms.locked ]
+			anchor = 'locked'
+		} else {
+			updateArray = [ ...this.state.availableRooms.open ]
+			anchor = "open"
+		}
+
+		updateArray.push(room)
+		this.setState({
+			availableRooms: {
+				...this.state.availableRooms,
+				[anchor]: updateArray
+			}
+		}, () => console.log(this.state.availableRooms))
+	}
 
 	// emitTyping = (isTyping) => {
 	// 	this.state.socket.emit("typing", {
