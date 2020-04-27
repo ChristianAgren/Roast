@@ -124,7 +124,7 @@ function MessageHandler(props) {
 							variant="outlined"
 							value={messageValue}
 							size="small"
-							autocomplete="off"
+							autoComplete="off"
 						
 							onChange={(event) => onInputChange(event, props)}
 						/>
