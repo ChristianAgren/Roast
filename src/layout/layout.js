@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme, drawer) =>
 			top: "2rem",
 			left: "1rem",
 
-
 			width: "8rem",
 			height: "2rem",
 
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme, drawer) =>
 		logo: {
 			position: "absolute",
 			bottom: ".2rem",
-			left:".4rem",
+			left: ".4rem",
 
 			width: "calc(100% - .8rem)",
 			imageRendering: "pixelated",
@@ -49,7 +48,7 @@ function Layout() {
 					style={{
 						position: "relative",
 						background: "#4a4949",
-						paddingTop: "3rem",
+						padding: "3rem 0",
 
 						height: "100vh",
 

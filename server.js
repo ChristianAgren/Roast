@@ -63,6 +63,7 @@ io.on("connection", function (socket) {
 		console.log("room :", room);
 
 		const availableRoom = {
+			name: room.name,
 			id: room.id,
 			users: room.users,
 			password: room.password,
@@ -91,11 +92,6 @@ io.on("connection", function (socket) {
 		console.log(data);
 
 		const user = data.name;
-		
-		// const user = {
-		// 	name: data.name,
-		// 	// isTyping: false,
-		// };
 
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
@@ -142,16 +138,18 @@ io.on("connection", function (socket) {
 				});
 
 				io.to(data.roomId).emit("notice", {
-					name: "",
-					message: user.name + " has joined the room",
+					name: "user",
+					message: user + " has joined the room",
 					client: false,
 				});
 			});
 		}
+		socket.on("typing", (typingUser) => {
+			console.log(typingUser);
+
+			socket.broadcast.to(data.roomId).emit("typing", typingUser);
+		});
 	});
-	// socket.on("typing", (typingUser) => {
-	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
-	// });
 
 	socket.on("message", (newMessage) => {
 		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
@@ -174,20 +172,6 @@ io.on("connection", function (socket) {
 	// socket.on("typing", (typingUser) => {
 	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
 	// });
-
-	socket.on("message", (newMessage) => {
-		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
-
-		const message = {
-			name: newMessage.name,
-			message: newMessage.message,
-			client: true,
-		};
-
-		history.push(message);
-
-		io.to(newMessage.roomId).emit("user message", message);
-	});
 
 	socket.on("create room", (roomValues) => {
 		const response = {

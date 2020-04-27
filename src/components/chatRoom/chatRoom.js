@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 	yourMsg: {
 		marginLeft: "auto",
 		flexDirection: "row-reverse",
-		filter: " hue-rotate(-30deg)",
+		filter: " hue-rotate(20deg)",
 
 		"& .MuiListItemText-multiline": {
 			textAlign: "right",
@@ -79,6 +79,9 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(0.5),
 		textAlign: "center",
 		borderRadius: theme.shape.borderRadius,
+		"& p": {
+			color: "#fff4",
+		},
 	},
 }));
 

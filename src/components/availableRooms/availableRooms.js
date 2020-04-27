@@ -112,7 +112,6 @@ function AvailableRooms(props) {
 				<Container className={classes.mainContainer}>
 					<Typography variant="overline">Open rooms</Typography>
 					<div className={classes.hideRoomOverFlow}>
-						{console.log(user)}
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
 								{user.availableRooms.open.map((room) => (
@@ -133,19 +132,18 @@ function AvailableRooms(props) {
 											{room.users.length} : active users
 										</Typography>
 
-										<Typography
-											className={classes.users}
-											style={{ color: room.color }}>
-											{console.log(room.users)}
-											{room.users.length > 5
-												? room.users
-														.slice(0, 5)
-														.toString()
-														.split(",")
-														.join(", ")
-														.concat(" ...")
-												: room.users.toString().split(",").join(", ")}
-										</Typography>
+										<ListItem className={classes.users}>
+											<Typography style={{ color: room.color }}>
+												{room.users.length > 3
+													? room.users
+															.slice(0, 3)
+															.toString()
+															.split(",")
+															.join(", ")
+															.concat(" ...")
+													: room.users.toString().split(",").join(", ")}
+											</Typography>
+										</ListItem>
 									</ListItem>
 								))}
 							</List>
@@ -168,23 +166,26 @@ function AvailableRooms(props) {
 											<LockIcon style={{ color: room.color }} />
 										</div>
 
-										<Typography>{(room.name, room.id)}</Typography>
+										<Typography>
+											{room.name}
+											<em style={{ color: "#0008" }}>{room.id}</em>
+										</Typography>
 										<Typography className={classes.activeUsers}>
 											{room.users.length} : active users
 										</Typography>
 
-										<Typography
-											className={classes.users}
-											style={{ color: room.color }}>
-											{room.users.length > 5
-												? room.users
-														.slice(0, 5)
-														.toString()
-														.split(",")
-														.join(", ")
-														.concat(" ...")
-												: room.users.toString().split(",").join(", ")}
-										</Typography>
+										<ListItem className={classes.users}>
+											<Typography style={{ color: room.color }}>
+												{room.users.length > 3
+													? room.users
+															.slice(0, 3)
+															.toString()
+															.split(",")
+															.join(", ")
+															.concat(" ...")
+													: room.users.toString().split(",").join(", ")}
+											</Typography>
+										</ListItem>
 									</ListItem>
 								))}
 							</List>

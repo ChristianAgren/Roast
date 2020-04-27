@@ -14,10 +14,10 @@ export const UserContext = React.createContext({
 	socket: user.socket,
 });
 
-
 export default class UserProvider extends React.Component {
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			name: user.name,
 			socket: user.socket,
@@ -27,45 +27,54 @@ export default class UserProvider extends React.Component {
 			joinRoom: this.joinRoom,
 			availableRooms: {},
 			chatlog: [],
+
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
+
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 
 			firstTime: true,
 		};
-		this.state.socket.on("connection successful", (data) => this.setAvailableRoomsInState(data))
-		this.state.socket.on("join successful", (data) => this.setRoomInState(data));
+
+		this.state.socket.on("connection successful", (data) =>
+			this.setAvailableRoomsInState(data)
+		);
+		this.state.socket.on("join successful", (data) =>
+			this.setRoomInState(data)
+		);
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
 		this.state.socket.on("user message", (data) =>
 			this.generateChatMessage(data)
 		);
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
 		this.state.socket.on("server message", (data) => console.log(data));
-		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data))
-		// this.state.socket.on("typing", (data) => this.handleTyping(data));
-
+		this.state.socket.on("created new room", (data) =>
+			this.updateAvailableRooms(data)
+		);
+		this.state.socket.on("typing", (data) => this.handleTyping(data));
 	}
 
 	setAvailableRoomsInState = (data) => {
-		console.log('yaay');
-		this.setState({
-			availableRooms: data
-		}, () => console.log(this.state.availableRooms)
-		)
-	}
+		console.log("yaay");
+		this.setState(
+			{
+				availableRooms: data,
+			},
+			() => console.log(this.state.availableRooms)
+		);
+	};
 
 	setRoomInState = (data) => {
 		this.setState({
 			connectedRoom: data.roomId,
 			connectedRoomColor: data.roomColor,
+			usersTyping: [],
 		});
-	}
+	};
 
 	joinRoom = (event) => {
 		event.preventDefault();
-
-		// let roomColorRgb = event.target.style.background;
 
 		const name = this.state.name;
 		const roomId = event.target.id;
@@ -85,15 +94,6 @@ export default class UserProvider extends React.Component {
 			roomColor,
 		});
 	};
-
-	// convert rgb to hex
-	// componentToHex = (c) => {
-	// 	var hex = c.toString(16);
-	// 	return hex.length == 1 ? "0" + hex : hex;
-	// };
-	// rgb(r, g, b) {
-	// 	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-	// }
 
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
@@ -126,50 +126,76 @@ export default class UserProvider extends React.Component {
 		this.state.socket.emit("create room", {
 			id: roomValues.roomId,
 			password: roomValues.roomPassword,
-			color: roomValues.roomColor
-		})
-	}
+			color: roomValues.roomColor,
+		});
+	};
 
 	updateAvailableRooms = (room) => {
 		let updateArray;
 		let anchor;
 
 		if (room.password.length != 0) {
-			updateArray = [ ...this.state.availableRooms.locked ]
-			anchor = 'locked'
+			updateArray = [...this.state.availableRooms.locked];
+			anchor = "locked";
 		} else {
-			updateArray = [ ...this.state.availableRooms.open ]
-			anchor = "open"
+			updateArray = [...this.state.availableRooms.open];
+			anchor = "open";
 		}
 
-		updateArray.push(room)
-		this.setState({
-			availableRooms: {
-				...this.state.availableRooms,
-				[anchor]: updateArray
-			}
-		}, () => console.log(this.state.availableRooms))
-	}
+		updateArray.push(room);
+		this.setState(
+			{
+				availableRooms: {
+					...this.state.availableRooms,
+					[anchor]: updateArray,
+				},
+			},
+			() => console.log(this.state.availableRooms)
+		);
+	};
 
-	// emitTyping = (isTyping) => {
-	// 	this.state.socket.emit("typing", {
-	// 		name: this.state.name,
-	// 		isTyping,
-	// 	});
-	// };
+	emitTyping = (isTyping) => {
+		this.state.socket.emit("typing", {
+			name: this.state.name,
+			isTyping,
+		});
+	};
 
 	handleTyping = (typingUser) => {
-		// const found = this.state.usersTyping.find((user) => data. === user);
-		// if (!found) {
-		// 	if (data.isTyping) {
-		// 		this.setState(
-		// 			{
-		// 				usersTyping: [...this.state.usersTyping, data],
-		// 			},
-		// 			() => console.log(this.state.usersTyping)
-		// 		);
-		// 	}
-		// }
+		console.log("typing user :", typingUser);
+		console.log("users typing :", this.state.usersTyping);
+
+		const found = this.state.usersTyping.find(
+			(typer) => typer.name === typingUser.name
+		);
+
+		if (!found) {
+			console.log(0, typingUser.isTyping);
+
+			if (typingUser.isTyping) {
+				console.log(1);
+				this.setState(
+					{
+						usersTyping: [...this.state.usersTyping, typingUser],
+					},
+					() => console.log("added :", this.state.usersTyping)
+				);
+			}
+		} else {
+			if (typingUser.isTyping === false) {
+				console.log(2);
+				let typers = [...this.state.usersTyping];
+				let index = typers.findIndex((typer) => typer.name === typingUser.name);
+
+				typers.splice(index, 1);
+				this.setState(
+					{
+						usersTyping: typers,
+					},
+					() => console.log("removed :", this.state.usersTyping)
+				);
+			}
+		}
 	};
 
 	scrollToBottom = (prevContainerHeight) => {
