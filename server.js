@@ -17,8 +17,8 @@ let roomInformation = [
 		id: "1",
 		name: "room",
 		users: [],
-		password: '',
-		color: '#ff69b4',
+		password: "",
+		color: "#ff69b4",
 		history: [
 			{
 				name: "Blob",
@@ -31,8 +31,8 @@ let roomInformation = [
 		id: "3",
 		name: "room",
 		users: [],
-		password: '',
-		color: '#ff69b4',
+		password: "",
+		color: "#ff69b4",
 		history: [
 			{
 				name: "Blob",
@@ -45,8 +45,8 @@ let roomInformation = [
 		id: "asdf",
 		name: "room",
 		users: [],
-		password: 'lock',
-		color: '#123388',
+		password: "lock",
+		color: "#123388",
 		history: [
 			{
 				name: "Alvin",
@@ -67,7 +67,6 @@ routesWithChildren.forEach(function (rootPath) {
 
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
-
 	console.log("made socket connection", socket.id);
 
 	let lockedRooms = [],
@@ -97,30 +96,33 @@ io.on("connection", function (socket) {
 
 	socket.on("disconnecting", () => {
 		// Manipulate local data
-		const rooms = Object.keys(socket.rooms)
-		let clearRoom 
+		const rooms = Object.keys(socket.rooms);
+		let clearRoom;
 		rooms.forEach((room) => {
 			if (room != socket.id) {
-				clearRoom = room
+				clearRoom = room;
 			}
-		})
+		});
 		if (clearRoom) {
-			const { users } = roomInformation.find((room) => room.id === clearRoom)
-			const leaverInfo = users.find((user) => user.id === socket.id)
-			const leaverIndex = users.findIndex((user) => user.id === socket.id)
-			users.splice(leaverIndex, 1)
+			const { users } = roomInformation.find((room) => room.id === clearRoom);
+			const leaverInfo = users.find((user) => user.id === socket.id);
+			const leaverIndex = users.findIndex((user) => user.id === socket.id);
+			users.splice(leaverIndex, 1);
 
 			//Emit to sockets
-			io.emit("user left room", { username: leaverInfo.name, room: clearRoom, join: false });
+			io.emit("user left room", {
+				username: leaverInfo.name,
+				room: clearRoom,
+				join: false,
+			});
 		}
 		console.log(`${socket.id} disconnected`);
 	});
 
 	socket.on("join room", (data) => {
-		
 		const user = {
 			name: data.name,
-			id: socket.id
+			id: socket.id,
 		};
 
 		if (data.roomId != data.prevRoomId) {
@@ -130,26 +132,29 @@ io.on("connection", function (socket) {
 					const { users } = roomInformation.find(
 						(r) => r.id === data.prevRoomId
 					);
-					const leaver = users.findIndex((u) => u.id === user.id);	
+					const leaver = users.findIndex((u) => u.id === user.id);
 
 					// rooms måste skicka users så vi kan ta bort rummet om det är tomt
 					// Här kallar vi på removeRoom i userContext som uppdaterar rooms listan som ska mappas ut
 					// Om rooms.users är tom sätt splice:a ut rummet ur roomslistan.
 					// Om users är en tom lista, ta bort rummet
-					
+
 					// const roomToRemove = rooms.findIndex((r) => r.roomId === data.prevRoomId)
 
 					// if (users === []) {
 					// 	removeRoom(roomToRemove)
 					// }
-					
 
 					if (leaver != -1) {
 						users.splice(leaver, 1);
 					}
 
 					// Update sockets and rooms
-					io.emit("user left room", { username: user.name, room: data.prevRoomId, join: false });
+					io.emit("user left room", {
+						username: user.name,
+						room: data.prevRoomId,
+						join: false,
+					});
 					io.to(data.prevRoomId).emit("notice", {
 						message: user.name + " has left the room",
 					});
@@ -162,7 +167,11 @@ io.on("connection", function (socket) {
 				io.to(socket.id).emit("join successful", data);
 
 				//Update all socket's room information
-				io.emit("user joined room", {username: user.name, room: data.roomId, join: true})
+				io.emit("user joined room", {
+					username: user.name,
+					room: data.roomId,
+					join: true,
+				});
 
 				//Send history to socket
 				const { history } = roomInformation.find((h) => h.id === data.roomId);
@@ -176,14 +185,19 @@ io.on("connection", function (socket) {
 			});
 		}
 	});
-	// socket.on("typing", (typingUser) => {
-	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
-	// });
+
+	socket.on("typing", (typingUser) => {
+		console.log("axaxa", typingUser);
+
+		socket.broadcast
+			.to(typingUser.roomId)
+			.emit("typing", { name: typingUser.name, isTyping: typingUser.isTyping });
+	});
 
 	socket.on("message", (newMessage) => {
 		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
 		const { color } = roomInformation.find((h) => h.id === newMessage.roomId);
-		
+
 		const message = {
 			name: newMessage.name,
 			message: newMessage.message,
