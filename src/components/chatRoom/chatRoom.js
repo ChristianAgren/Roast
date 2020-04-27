@@ -18,37 +18,66 @@ const useStyles = makeStyles((theme) => ({
 		position: "relative",
 
 		height: "100%",
+		width: "100%",
 		overflow: "hidden",
 		maxHeight: "calc(100% - 5rem)",
 
 		"& .MuiGrid-container": {
 			display: "block",
 		},
+		"& .MuiListItemAvatar-root": {
+			margin: ".5rem",
+
+			minWidth: "0",
+		},
+		"& .MuiListItem-gutters": {
+			padding: "0 !important",
+		},
 	},
 
-    removeScrollbar: {
-        width:"100%",
-        height: "100%",
+	removeScrollbar: {
+		width: "100%",
+		height: "100%",
 
-
-        overflowX:"hidden"
-    },
+		overflowX: "hidden",
+	},
 
 	chatWrapper: {
 		overflowY: "scroll",
 
-        height: "100%",
-        width:"calc(100% + 34px)",
-        paddingRight:"34px"
+		height: "100%",
+		width: "calc(100% + 34px)",
+		paddingRight: "34px",
+
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "space-between",
 	},
 
-	clientMsg: {
-		background: theme.palette.background.paper,
-		padding: theme.spacing(1),
-		borderRadius: theme.shape.borderRadius,
+	msg: {
+		width: "75%",
+
+		"& > *": {
+			display: "flex",
+			alignItems: "end",
+			borderRadius: "1.8rem",
+		},
 	},
+
+	clientMsg: {},
+	yourMsg: {
+		marginLeft: "auto",
+		flexDirection: "row-reverse",
+		filter: " hue-rotate(-30deg)",
+
+		"& .MuiListItemText-multiline": {
+			textAlign: "right",
+		},
+	},
+
 	serverMsg: {
-		padding: theme.spacing(0),
+		padding: theme.spacing(0.5),
+		textAlign: "center",
 		borderRadius: theme.shape.borderRadius,
 	},
 }));
@@ -64,54 +93,60 @@ function ChatRoom() {
 		<UserContext.Consumer>
 			{(user) => (
 				<div className={classes.chatroomWrapper}>
-
-                    <div className={classes.removeScrollbar}>
-
-
-					<Grid container className={classes.chatWrapper} id="chat">
-						{user.chatlog.length > 0 ? (
-							user.chatlog.map((msg, index) =>
-								msg.client ? (
-									<Grid item xs={12} key={`${msg.name}:${index}`}>
-										<List dense>
-											<ListItem>
-												<ListItemAvatar>
-													<Avatar>{generateShortHand(msg.name)}</Avatar>
-												</ListItemAvatar>
-												<ListItemText
-													className={classes.clientMsg}
-													primary={msg.name}
-													secondary={msg.message}
-												/>
-											</ListItem>
-										</List>
-									</Grid>
-								) : (
-									<Grid item xs={12} key={`${msg.name}:${index}`}>
-										<List dense>
-											<ListItem>
-												<ListItemText
-													className={classes.serverMsg}
-													secondary={msg.message}
-													// secondary={
-													// 	<Typography variant="overline">
-													// 		{msg.message}
-													// 	</Typography>
-													// }
-												/>
-											</ListItem>
-										</List>
-									</Grid>
+					<div className={classes.removeScrollbar}>
+						<Grid container className={classes.chatWrapper} id="chat">
+							{user.chatlog.length > 0 ? (
+								user.chatlog.map((msg, index) =>
+									msg.client ? (
+										<Grid
+											item
+											xs={12}
+											key={`${msg.name}:${index}`}
+											style={
+												msg.name === user.name
+													? { display: "flex", justifyContent: "flex-end" }
+													: null
+											}>
+											<List dense className={classes.msg}>
+												<ListItem
+													style={{ background: `${user.connectedRoomColor}` }}
+													className={
+														msg.name === user.name
+															? classes.yourMsg
+															: classes.clientMsg
+													}>
+													<ListItemAvatar>
+														<Avatar style={{ background: "#4a4949" }}>
+															{generateShortHand(msg.name)}
+														</Avatar>
+													</ListItemAvatar>
+													<ListItemText
+														primary={msg.name}
+														secondary={msg.message}
+													/>
+												</ListItem>
+											</List>
+										</Grid>
+									) : (
+										<Grid item xs={12} key={`${msg.name}:${index}`}>
+											<List dense>
+												<ListItem>
+													<ListItemText
+														className={classes.serverMsg}
+														secondary={msg.message}
+													/>
+												</ListItem>
+											</List>
+										</Grid>
+									)
 								)
-							)
-						) : (
-							<Typography variant="h6">
-								Be the first to send a message!
-							</Typography>
-						)}
-					</Grid>
-
-                    </div>
+							) : (
+								<Typography variant="overline">
+									Be the first to send a message!
+								</Typography>
+							)}
+						</Grid>
+					</div>
 
 					<MessageHandler user={user} />
 				</div>

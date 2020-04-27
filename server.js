@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const socket = require("socket.io");
-const server = require('http').createServer(app)
+const server = require("http").createServer(app);
 const io = socket(server);
 const port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, "build")));
@@ -14,35 +14,33 @@ server.listen(port, () => {
 });
 
 let roomInformation = [
-	{
-		id: "1",
-		users: [],
-		password: '',
-		color: '',
-		history: [
-			{
-				name: "Blob",
-				message: "Hej hej hej hej hje",
-				client: true,
-			},
-		],
-	},
-	{
-		id: "2",
-		users: [],
-		password: 'lock',
-		color: '',
-		history: [
-			{
-				name: "Alvin",
-				message: "it do b like that",
-				client: true,
-			},
-		],
-	},
+	// {
+	// 	id: "1",
+	// 	users: [],
+	// 	password: '',
+	// 	color: '#ff69b4',
+	// 	history: [
+	// 		{
+	// 			name: "Blob",
+	// 			message: "Hej hej hej hej hje",
+	// 			client: true,
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	id: "2",
+	// 	users: [],
+	// 	password: 'lock',
+	// 	color: '#123388',
+	// 	history: [
+	// 		{
+	// 			name: "Alvin",
+	// 			message: "it do b like that",
+	// 			client: true,
+	// 		},
+	// 	],
+	// },
 ];
-
-
 
 const routesWithChildren = ["/"];
 
@@ -55,50 +53,53 @@ routesWithChildren.forEach(function (rootPath) {
 	});
 });
 
-
-
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
 	console.log("made socket connection", socket.id);
 	let lockedRooms = [],
-		openRooms = []
+		openRooms = [];
 
 	roomInformation.forEach((room) => {
+		console.log("room :", room);
+
 		const availableRoom = {
 			id: room.id,
 			users: room.users,
 			password: room.password,
-			color: room.color
-		}
+			color: room.color,
+		};
 		if (room.password.length != 0) {
-			lockedRooms.push(availableRoom)
+			lockedRooms.push(availableRoom);
 		} else {
-			openRooms.push(availableRoom)
+			openRooms.push(availableRoom);
 		}
-	})
+	});
 
 	const allRooms = {
 		open: openRooms,
-		locked: lockedRooms
-	}
+		locked: lockedRooms,
+	};
 	console.log(allRooms);
-	
-	io.to(socket.id).emit("connection successful", allRooms)
+
+	io.to(socket.id).emit("connection successful", allRooms);
 
 	socket.on("disconnect", () => {
 		console.log(`${socket.id} disconnected`);
 	});
 
 	socket.on("join room", (data) => {
-		const user = {
-			name: data.name,
-			isTyping: false,
-		};
+		console.log(data);
+
+		const user = data.name;
+		
+		// const user = {
+		// 	name: data.name,
+		// 	// isTyping: false,
+		// };
 
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
 				socket.leave(data.prevRoomId, () => {
-
 					const { users } = roomInformation.find(
 						(r) => r.id === data.prevRoomId
 					);
@@ -147,7 +148,28 @@ io.on("connection", function (socket) {
 				});
 			});
 		}
+	});
+	// socket.on("typing", (typingUser) => {
+	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
+	// });
 
+	socket.on("message", (newMessage) => {
+		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
+		const { color } = roomInformation.find((h) => h.id === newMessage.roomId);
+
+		const message = {
+			name: newMessage.name,
+			message: newMessage.message,
+			color: color,
+			client: true,
+		};
+
+		history.push(message);
+
+		console.log("history: ", history);
+		console.log("room ID: ", newMessage.roomId);
+
+		io.to(newMessage.roomId).emit("user message", message);
 	});
 	// socket.on("typing", (typingUser) => {
 	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
@@ -169,19 +191,21 @@ io.on("connection", function (socket) {
 
 	socket.on("create room", (roomValues) => {
 		const response = {
-			id: `${roomValues.id}-#${[...Array(5)].map(i => (~~(Math.random() * 36)).toString(36)).join('')}`,
+			name: roomValues.id,
+			id: `#${[...Array(3)]
+				.map((i) => (~~(Math.random() * 36)).toString(36))
+				.join("")}`,
 			password: roomValues.password,
 			color: roomValues.color,
 			users: [],
-		}
+		};
 		const newRoom = {
 			...response,
-			history: []
-		}
+			history: [],
+		};
 
-		roomInformation.push(newRoom)
-		
-		io.emit("created new room", response)
-	})
+		roomInformation.push(newRoom);
 
+		io.emit("created new room", response);
+	});
 });

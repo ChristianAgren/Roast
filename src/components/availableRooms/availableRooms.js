@@ -16,47 +16,83 @@ import {
 	makeStyles,
 	createStyles,
 } from "@material-ui/core";
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import LockIcon from '@material-ui/icons/Lock';
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import LockIcon from "@material-ui/icons/Lock";
 
 const useStyles = makeStyles((theme) =>
 	createStyles({
 		mainContainer: {
-			padding: theme.spacing(1.5, 0, 1.5, 0),
-			display: 'flex',
-			flexDirection: 'column',
+			padding: theme.spacing(1.5, 0),
+			display: "flex",
+			flexDirection: "column",
 			// flexWrap: 'nowrap'
-			alignItems: 'center',
+			alignItems: "center",
 			// justifyContent: 'center'
 		},
 		hideRoomOverFlow: {
-			width: '100%',
-			overflowX: 'hidden',
-			overflowY: 'auto'
+			width: "100%",
+			overflowX: "hidden",
+			overflowY: "auto",
 		},
 		roomsContainer: {
-			display: 'flex',
-			flexDirection: 'column',
-			maxHeight: '35vh',
-			flexWrap: 'nowrap',
-			justifyContent: 'flex-start',
-			'& > .MuiGrid-item': {
-				padding: 0,
-				margin: theme.spacing(1, 0, 1, 3)
-			},
-			'& > .MuiGrid-item:last-child': {
-				padding: theme.spacing(0, 2.2, 0, 0)
-			},
-			'& .MuiButton-contained': {
-				backgroundColor: theme.palette.background.paper,
-				width: '3rem',
-				height: '3.5rem'
-			}
+			display: "flex",
+			flexDirection: "column",
+			maxHeight: "35vh",
+			flexWrap: "nowrap",
+			justifyContent: "flex-start",
+			padding: theme.spacing(1),
 		},
 		openIcon: {
-			color: 'green',
-			margin: theme.spacing(1, 2.5, 1, 1)
-		}
+			color: "green",
+			margin: theme.spacing(1, 2.5, 1, 1),
+		},
+
+		room: {
+			position: "relative",
+
+			margin: theme.spacing(1, 0, 4, 0),
+			padding: theme.spacing(0.5, 0.5),
+			borderRadius: "50rem",
+
+			display: "flex",
+
+			"& > *": {
+				pointerEvents: "none",
+			},
+		},
+
+		cutout: {
+			width: "1.5rem",
+			height: "1.5rem",
+
+			background: "#727070 !important",
+			borderRadius: "10rem",
+
+			marginRight: theme.spacing(2),
+
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+
+			"& > *": {
+				fontSize: "100%",
+			},
+		},
+		activeUsers: {
+			marginLeft: "auto",
+			marginRight: "2rem",
+		},
+		users: {
+			position: "absolute",
+			top: theme.spacing(4),
+			left: theme.spacing(2),
+
+			fontStyle: "italic",
+
+			[theme.breakpoints.down(300)]: {
+				display: "none",
+			},
+		},
 	})
 );
 
@@ -76,41 +112,81 @@ function AvailableRooms(props) {
 				<Container className={classes.mainContainer}>
 					<Typography variant="overline">Open rooms</Typography>
 					<div className={classes.hideRoomOverFlow}>
+						{console.log(user)}
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
-								{
-									user.availableRooms.open.map((room) =>
-										<ListItem button key={`${room.id}`}>
-											<FiberManualRecordIcon fontSize="small" className={classes.openIcon}/>
-											<ListItemText
-												primary={room.id}
-												secondary="olika användare etc"
-											/>
-										</ListItem>,
-									)
-								}
+								{user.availableRooms.open.map((room) => (
+									<ListItem
+										button
+										id={room.id}
+										onClick={(e) => onJoinClick(e, user.joinRoom)}
+										key={`${room.id}:${room.name}`}
+										style={{ background: room.color }}
+										className={classes.room}>
+										<div className={classes.cutout}></div>
+
+										<Typography>
+											{room.name}
+											<em style={{ color: "#0008" }}>{room.id}</em>
+										</Typography>
+										<Typography className={classes.activeUsers}>
+											{room.users.length} : active users
+										</Typography>
+
+										<Typography
+											className={classes.users}
+											style={{ color: room.color }}>
+											{console.log(room.users)}
+											{room.users.length > 5
+												? room.users
+														.slice(0, 5)
+														.toString()
+														.split(",")
+														.join(", ")
+														.concat(" ...")
+												: room.users.toString().split(",").join(", ")}
+										</Typography>
+									</ListItem>
+								))}
 							</List>
 						</Grid>
 					</div>
+
 					<Typography variant="overline">Locked rooms</Typography>
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
-								{
-									user.availableRooms.locked.map((room) =>
-										<ListItem button key={`${room.id}`}>
-											<ListItemAvatar>
-												<Avatar>
-													<LockIcon />
-												</Avatar>
-											</ListItemAvatar>
-											<ListItemText
-												primary={room.id}
-												secondary="olika användare etc"
-											/>
-										</ListItem>,
-									)
-								}
+								{user.availableRooms.locked.map((room) => (
+									<ListItem
+										button
+										onClick={(e) => onJoinClick(e, user.joinRoom)}
+										id={room.id}
+										key={`${room.id}:${room.name}`}
+										style={{ background: room.color }}
+										className={classes.room}>
+										<div className={classes.cutout}>
+											<LockIcon style={{ color: room.color }} />
+										</div>
+
+										<Typography>{(room.name, room.id)}</Typography>
+										<Typography className={classes.activeUsers}>
+											{room.users.length} : active users
+										</Typography>
+
+										<Typography
+											className={classes.users}
+											style={{ color: room.color }}>
+											{room.users.length > 5
+												? room.users
+														.slice(0, 5)
+														.toString()
+														.split(",")
+														.join(", ")
+														.concat(" ...")
+												: room.users.toString().split(",").join(", ")}
+										</Typography>
+									</ListItem>
+								))}
 							</List>
 						</Grid>
 					</div>

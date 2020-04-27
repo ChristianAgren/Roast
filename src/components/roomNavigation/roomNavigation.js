@@ -44,17 +44,16 @@ const useStyles = makeStyles((theme, drawer) =>
 			},
 			"& > *": {
 				fontSize: "5rem",
-				color:"#ef7825"
+				color: "#ff8866",
 			},
 		},
 
 		container: {
 			padding: 0,
-			height:".5rem",
+			height: ".5rem",
 			background: "#727070",
 		},
 		collapse: {
-			
 			background: "#727070",
 		},
 
@@ -82,11 +81,12 @@ function RoomNavigation(props) {
 
 	return (
 		<div className={classes.wrapper}>
-			<Container
-				maxWidth="md"
-				className={classes.container}
-				>
-				<Collapse in={drawer} timeout="auto" unmountOnExit className={classes.collapse}>
+			<Container maxWidth="md" className={classes.container}>
+				<Collapse
+					in={drawer}
+					timeout="auto"
+					unmountOnExit
+					className={classes.collapse}>
 					<List component="div" disablePadding>
 						<AvailableRooms
 							changeView={props.changeView}
