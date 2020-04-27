@@ -229,6 +229,7 @@ function Main() {
 							<List className={classes.colorWrapper}>
 								{roomColors.map((color) => (
 									<ListItem
+										key={color}
 										button
 										onClick={(e) => switchColor(e)}
 										id={color}
