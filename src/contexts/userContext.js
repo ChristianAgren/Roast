@@ -21,7 +21,9 @@ export default class UserProvider extends React.Component {
 		this.state = {
 			name: user.name,
 			socket: user.socket,
+
 			connectedRoom: "",
+			connectedRoomColor: "",
 			joinRoom: this.joinRoom,
 			availableRooms: {},
 			chatlog: [],
@@ -56,6 +58,7 @@ export default class UserProvider extends React.Component {
 	setRoomInState = (data) => {
 		this.setState({
 			connectedRoom: data.roomId,
+			connectedRoomColor: data.roomColor,
 		});
 	}
 
@@ -85,16 +88,35 @@ export default class UserProvider extends React.Component {
 		console.log(event.target.id);
 		
 
+		// let roomColorRgb = event.target.style.background;
+
 		const name = this.state.name;
 		const roomId = event.target.id;
 		const prevRoomId = this.state.connectedRoom;
 
+		const roomColor = event.target.style.background;
+
 		this.setState({
 			firstTime: true,
 		});
+
 		// emit
-		this.state.socket.emit("join room", { name, roomId, prevRoomId });
+		this.state.socket.emit("join room", {
+			name,
+			roomId,
+			prevRoomId,
+			roomColor,
+		});
 	};
+
+	// convert rgb to hex
+	// componentToHex = (c) => {
+	// 	var hex = c.toString(16);
+	// 	return hex.length == 1 ? "0" + hex : hex;
+	// };
+	// rgb(r, g, b) {
+	// 	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+	// }
 
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
@@ -158,6 +180,7 @@ export default class UserProvider extends React.Component {
 	// 		isTyping,
 	// 	});
 	// };
+
 	handleTyping = (typingUser) => {
 		// const found = this.state.usersTyping.find((user) => data. === user);
 		// if (!found) {
