@@ -22,7 +22,6 @@ import LockIcon from "@material-ui/icons/Lock";
 import SaveIcon from "@material-ui/icons/Save";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import { UserContext } from "../../contexts/userContext";
 
 
 const useStyles = makeStyles((theme) =>
