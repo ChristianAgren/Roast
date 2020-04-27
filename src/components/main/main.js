@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-
+import { UserContext } from '../../contexts/userContext'
 import {
 	Button,
 	Container,
@@ -17,11 +17,11 @@ import {
 	Typography,
 	ListItem,
 } from "@material-ui/core";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import LockIcon from "@material-ui/icons/Lock";
-import SaveIcon from "@material-ui/icons/Save";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockIcon from '@material-ui/icons/Lock';
+import SaveIcon from '@material-ui/icons/Save';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 const useStyles = makeStyles((theme) =>
 	createStyles({
@@ -53,29 +53,29 @@ const useStyles = makeStyles((theme) =>
 			"& .MuiSvgIcon-root": {
 				margin: theme.spacing(1, 2, 1, 1),
 			},
-			"& > .MuiGrid-item": {
-				margin: theme.spacing(0.5, 0),
-				display: "flex",
-				flexDirection: "column",
+			'& .MuiSvgIcon-root': {
+				margin: theme.spacing(.5),
+				color: 'rgba(0, 0, 0, 0.45)'
 			},
-			"& .MuiButton-containedPrimary": {
-				backgroundColor: "#0003",
+			'& > .MuiGrid-item': {
+				margin: theme.spacing(.5, 0),
+				display: 'flex',
+				flexDirection: 'column',
 			},
+			'& .MuiButton-containedPrimary': {
+				backgroundColor: '#0003',
+			}
+
 		},
 		title: {
+			color: '#0005',
 			margin: theme.spacing(3, 0, 2, 0),
-
-			color: "#b1c0c4",
-			fontFamily: ' "Quantico", sans-serif',
-			fontWeight: "bold",
-
-			textAlign: "center",
-			letterSpacing: ".06rem",
+			textAlign: 'center',
+			textDecoration: 'underline',
+			letterSpacing: '.06rem',
 			[theme.breakpoints.down("xs")]: {
-				fontSize: "1.6rem",
-			},
-
-			borderBottom: ".2rem solid #b1c0c4",
+				fontSize: '1.6rem'
+			}
 		},
 		colorWrapper: {
 			display: "flex",
@@ -112,23 +112,23 @@ function Main() {
 		"#ff5259",
 	];
 
-	const [chosenColor, setChosenColor] = React.useState();
 
 	const switchColor = (event) => {
-		setChosenColor(event.target.id);
+	setRoomInputvalues({
+		roomColor: event.target.id
+	})
 	};
 
 	const handleInputChange = (event, anchor) => {
 		setRoomInputValues({
 			...roomInputValues,
-			[anchor]: event.target.value,
-		});
-	};
+			[anchor]: event.target.value
+		})
+	}
 
 	const handleClickShowPassword = () => {
 		setRoomInputValues({
-			...roomInputValues,
-			showPassword: !roomInputValues.showPassword,
+			...roomInputValues, showPassword: !roomInputValues.showPassword
 		});
 	};
 
@@ -136,19 +136,26 @@ function Main() {
 		event.preventDefault();
 	};
 
-	const handleCreateRoomClick = () => {
+	const handleCreateRoomClick = (createNewRoom) => {
 		console.log(`Will create room with following:`);
 		console.log(`Name: ${roomInputValues.roomId}`);
 		console.log(`Password: ${roomInputValues.roomPassword}`);
-		console.log(`Color: ${chosenColor}`);
-	};
+		console.log(`Color: ${roomInputValues.roomColor}`);
+
+		const { roomId, roomPassword, roomColor } = roomInputValues
+		console.log(roomId, roomPassword, roomColor);
+		
+		createNewRoom({roomId, roomPassword, roomColor})
+	}
 
 	return (
-		<Container maxWidth="sm">
-			<Grid container spacing={1} className={classes.mainContainer}>
-				<Grid item xs={12}>
-					<Typography variant="h3" className={classes.title}>
-						ADD NEW ROOM
+		<UserContext.Consumer>
+			{(user) =>
+				<Container maxWidth="sm">
+					<Grid container spacing={1} className={classes.mainContainer}>
+						<Grid item xs={12}>
+							<Typography variant="h3" className={classes.title}>
+								ADD NEW ROOM
 					</Typography>
 				</Grid>
 

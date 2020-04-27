@@ -4,7 +4,7 @@ import React from "react";
 
 import { UserContext } from "../../contexts/userContext";
 import {
-	Button,
+	// Button,
 	Container,
 	Grid,
 	List,
@@ -99,57 +99,6 @@ const useStyles = makeStyles((theme) =>
 function AvailableRooms(props) {
 	const classes = useStyles();
 
-	const rooms = {
-		open: [
-			{
-				id: 1,
-				name: "Room 1",
-				password: "",
-				users: ["BLOB", "dang3rz0ne"],
-				color: "#ff8866",
-			},
-			{
-				id: 2,
-				name: "Room 2",
-				password: "",
-				users: [
-					"BLOB",
-					"dang3rz0ne",
-					"Wrampa",
-					"jebbo",
-					"FlOW1r",
-					"Skotzsha",
-					"ivan",
-					"celticFan89",
-				],
-				color: "#56bff4",
-			},
-		],
-		locked: [
-			{
-				id: 3,
-				name: "locked 1",
-				password: "a",
-				users: ["BLOB", "dang3rz0ne", "Wrampa"],
-				color: "#56bff4",
-			},
-			{
-				id: 3123,
-				name: "locked 2",
-				password: "a",
-				users: ["BLOB", "dang3rz0ne", "Wrampa"],
-				color: "#56bff4",
-			},
-			{
-				id: 323,
-				name: "locked 3",
-				password: "a",
-				users: ["BLOB", "dang3rz0ne", "Wrampa"],
-				color: "#56bff4",
-			},
-		],
-	};
-
 	const onJoinClick = (event, joinRoom) => {
 		joinRoom(event);
 
@@ -162,11 +111,11 @@ function AvailableRooms(props) {
 			{(user) => (
 				<Container className={classes.mainContainer}>
 					<Typography variant="overline">Open rooms</Typography>
-
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
-								{rooms.open.map((room) => (
+								{
+									user.availableRooms.open.map((room) =>
 									<ListItem
 										button
 										id={room.id}
@@ -203,7 +152,8 @@ function AvailableRooms(props) {
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
-								{rooms.locked.map((room) => (
+								{
+									user.availableRooms.locked.map((room) =>
 									<ListItem
 										button
 										onClick={(e) => onJoinClick(e, user.joinRoom)}
