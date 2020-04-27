@@ -20,21 +20,44 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme, drawer) =>
 	createStyles({
 		root: {
 			flexGrow: 1,
 		},
 
-		drawer: {
-			// height: "3rem",
+		drawerButton: {
+			width: "6rem",
+			height: "3rem",
+
+			background: "#727070",
+			margin: "auto",
 
 			display: "flex",
-			alignItems: "center",
 			justifyContent: "center",
+			alignItems: "center",
 
-			"& > *": {},
+			borderRadius: "0 0 .5rem .5rem",
+
+			"&:hover": {
+				background: "#727070",
+			},
+			"& > *": {
+				fontSize: "5rem",
+				color:"#ef7825"
+			},
 		},
+
+		container: {
+			padding: 0,
+			height:".5rem",
+			background: "#727070",
+		},
+		collapse: {
+			
+			background: "#727070",
+		},
+
 		wrapper: {
 			position: "fixed",
 			top: "0",
@@ -42,28 +65,28 @@ const useStyles = makeStyles((theme) =>
 			right: "0",
 			zIndex: 1,
 
-
-			// background: "#e7e7e7",
+			display: "flex",
+			justifyContent: "center",
 		},
 	})
 );
 
 function RoomNavigation(props) {
-	const classes = useStyles();
-
 	const [drawer, setDrawer] = React.useState(false);
 
+	const classes = useStyles();
+
 	const toggleDrawer = () => {
-		setDrawer(!drawer);		
+		setDrawer(!drawer);
 	};
 
 	return (
 		<div className={classes.wrapper}>
 			<Container
 				maxWidth="md"
-				style={{ background: "#e7e7e7", padding: 0, }}
-			>
-				<Collapse in={drawer} timeout="auto" unmountOnExit>
+				className={classes.container}
+				>
+				<Collapse in={drawer} timeout="auto" unmountOnExit className={classes.collapse}>
 					<List component="div" disablePadding>
 						<AvailableRooms
 							changeView={props.changeView}
@@ -71,7 +94,11 @@ function RoomNavigation(props) {
 						/>
 					</List>
 				</Collapse>
-				<ListItem button onClick={toggleDrawer} className={classes.drawer}>
+
+				<ListItem
+					button
+					onClick={toggleDrawer}
+					className={classes.drawerButton}>
 					{drawer ? <ExpandLessIcon /> : <ExpandMoreIcon />}
 				</ListItem>
 			</Container>
