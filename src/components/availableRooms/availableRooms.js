@@ -65,7 +65,6 @@ function AvailableRooms(props) {
 
 	const onJoinClick = (event, joinRoom) => {
 		joinRoom(event);
-
 		props.changeView(event.target.id);
 		props.toggleDrawer();
 	};
@@ -80,13 +79,20 @@ function AvailableRooms(props) {
 							<List dense>
 								{
 									user.availableRooms.open.map((room) =>
-										<ListItem button key={`${room.id}`}>
-											<FiberManualRecordIcon fontSize="small" className={classes.openIcon}/>
+										<ListItem 
+											button 
+											key={`${room.id}`}
+											id={room.id}
+											onClick={(event) => onJoinClick(event, user.joinRoom)}
+											>
+											<FiberManualRecordIcon 
+												fontSize="small" 
+												className={classes.openIcon}/>
 											<ListItemText
 												primary={room.id}
 												secondary="olika användare etc"
 											/>
-										</ListItem>,
+										</ListItem>
 									)
 								}
 							</List>
