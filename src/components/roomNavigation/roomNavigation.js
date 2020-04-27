@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme, drawer) =>
 			width: "6rem",
 			height: "2.5rem",
 
-			background: "#a7a9b3",
+			background: "#727070",
 			margin: "auto",
 
 			display: "flex",
@@ -38,11 +38,9 @@ const useStyles = makeStyles((theme, drawer) =>
 			alignItems: "center",
 
 			borderRadius: "0 0 .5rem .5rem",
-			border: "solid #a7a9b3 0.1rem ",
-			borderTop: "solid #a7a9b3 0.2rem",
 
 			"&:hover": {
-				background: "#a7a9b3",
+				background: "#727070",
 			},
 			"& > *": {
 				fontSize: "5rem",
