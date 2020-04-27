@@ -5,12 +5,13 @@ import io from "socket.io-client";
 const userSocket = io();
 
 const user = {
-	name: "bobo" + Math.floor(Math.random() * 100),
+	// name: "bobo" + Math.floor(Math.random() * 100),
+	name: '',
 	socket: userSocket,
 };
 
 export const UserContext = React.createContext({
-	name: user.name,
+	name: '',
 	socket: user.socket,
 });
 
@@ -19,17 +20,18 @@ export default class UserProvider extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-
-			name: user.name,
+			name: '',
 			socket: user.socket,
 
 			connectedRoom: "",
 			connectedRoomColor: "",
 			joinRoom: this.joinRoom,
+			createName: this.createName,
 			availableRooms: {},
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
+			//rooms: [], //rooms array för att uppdatera state på rooms när rummet är tomt
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 
@@ -62,6 +64,15 @@ export default class UserProvider extends React.Component {
 			connectedRoom: data.roomId,
 			connectedRoomColor: data.roomColor,
 		});
+		
+	}
+
+	// Kör funktion när knapp trycks ner, ta bort tidigare localstorage uppdaterar name i localstorage som uppdaterar state till det i input
+	createName = (inputName) => {
+		const newUser = inputName
+		this.setState ({
+			name: newUser,
+		})		
 	}
 
 
@@ -131,6 +142,14 @@ export default class UserProvider extends React.Component {
 	// };
 	// rgb(r, g, b) {
 	// 	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+	// Tar bort rummet utan användare i
+
+	// removeRoom = (roomToRemove) => {
+	// 	const newRoomList = this.state.rooms.splice(roomToRemove, 1)
+
+	// 	this.setState({
+	// 		rooms: newRoomList
+	// 	})
 	// }
 
 	generateChatLog = (serverChat) => {
@@ -138,6 +157,7 @@ export default class UserProvider extends React.Component {
 		this.setState({
 			chatlog: server_chatlog,
 		});
+		
 	};
 
 	generateChatMessage = (chatMessage) => {

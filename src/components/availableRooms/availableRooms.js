@@ -156,13 +156,6 @@ function AvailableRooms(props) {
 															)
 															: generateFiveUsers(room.users)
 														}
-														{/* ? room.users
-																.slice(0, 5)
-																.toString()
-																.split(",")
-																.join(", ")
-																.concat(" ...")
-															: room.users.name.toString().split(",").join(", ")} */}
 													</Typography>
 													: null
 												}
@@ -211,13 +204,6 @@ function AvailableRooms(props) {
 												)
 												: generateFiveUsers(room.users)
 											}
-												// ? room.users
-												// 	.slice(0, 5)
-												// 	.toString()
-												// 	.split(",")
-												// 	.join(", ")
-												// 	.concat(" ...")
-												// : room.users.toString().split(",").join(", ")}
 										</Typography>
 									</ListItem>
 								))}
