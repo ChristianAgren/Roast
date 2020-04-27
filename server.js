@@ -88,7 +88,7 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("join room", (data) => {
-		console.log(data);
+		console.log("rad 91",data);
 
 		const user = data.name;
 		
@@ -140,6 +140,7 @@ io.on("connection", function (socket) {
 				const { users } = roomInformation.find((r) => r.id === data.roomId);
 				users.push(user);
 				console.log(users);
+				console.log(user)
 
 				console.log(`${socket.id} joined room: ${data.roomId}`);
 
@@ -153,9 +154,9 @@ io.on("connection", function (socket) {
 					server_message: `user connected to: ${data.roomId}`,
 				});
 
-				io.to(data.roomId).emit("notice", {
+				io.to(data.roomId).emit("notice", {			
 					name: "",
-					message: user.name + " has joined the room",
+					message: user + " has joined the room",
 					client: false,
 				});
 			});

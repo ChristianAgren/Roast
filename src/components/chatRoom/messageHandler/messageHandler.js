@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) =>
 			padding: theme.spacing(0),
 		},
 		inputWrapperContainer: {
-			background: "#456699",
+			background: "#727070",
 		},
 		inputWrapper: {
 			display: "flex",
