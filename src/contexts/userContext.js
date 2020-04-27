@@ -6,12 +6,12 @@ const userSocket = io();
 
 const user = {
 	// name: "bobo" + Math.floor(Math.random() * 100),
-	name: '',
+	name: "",
 	socket: userSocket,
 };
 
 export const UserContext = React.createContext({
-	name: '',
+	name: "",
 	socket: user.socket,
 });
 
@@ -20,7 +20,7 @@ export default class UserProvider extends React.Component {
 		super(props);
 
 		this.state = {
-			name: '',
+			name: "",
 			socket: user.socket,
 
 			connectedRoom: "",
@@ -46,24 +46,30 @@ export default class UserProvider extends React.Component {
 			this.setRoomInState(data)
 		);
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
-		this.state.socket.on("user message", (data) => this.generateChatMessage(data));
+		this.state.socket.on("user message", (data) =>
+			this.generateChatMessage(data)
+		);
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
 		// this.state.socket.on("server message", (data) => console.log(data));
-		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data));
-		this.state.socket.on("user left room", (data) => this.updateUsersinRoom(data));
-		this.state.socket.on("user joined room", (data) => this.updateUsersinRoom(data));
-
+		this.state.socket.on("created new room", (data) =>
+			this.updateAvailableRooms(data)
+		);
+		this.state.socket.on("user left room", (data) =>
+			this.updateUsersinRoom(data)
+		);
+		this.state.socket.on("user joined room", (data) =>
+			this.updateUsersinRoom(data)
+		);
 
 		this.state.socket.on("typing", (data) => this.handleTyping(data));
-
 	}
 
 	setAvailableRoomsInState = (data) => {
-		console.log('yaay');
+		console.log("yaay");
 		this.setState({
-			availableRooms: data
-		})
-	}
+			availableRooms: data,
+		});
+	};
 
 	setRoomInState = (data) => {
 		this.setState({
@@ -71,54 +77,70 @@ export default class UserProvider extends React.Component {
 			connectedRoomColor: data.roomColor,
 			usersTyping: [],
 		});
-		
-	}
+	};
 
 	// Kör funktion när knapp trycks ner, ta bort tidigare localstorage uppdaterar name i localstorage som uppdaterar state till det i input
 	createName = (inputName) => {
-		const newUser = inputName
-		this.setState ({
+		const newUser = inputName;
+		this.setState({
 			name: newUser,
-		})		
-	}
-
+		});
+	};
 
 	updateUsersinRoom = (user) => {
-		let roomAnchor = "open"
-		let findRoom = this.state.availableRooms.open.findIndex((room) => room.id === user.room)
+		let roomAnchor = "open";
+		let findRoom = this.state.availableRooms.open.findIndex(
+			(room) => room.id === user.room
+		);
 		if (findRoom === -1) {
-			roomAnchor = "locked"
-			findRoom = this.state.availableRooms.locked.findIndex((room) => room.id === user.room)
+			roomAnchor = "locked";
+			findRoom = this.state.availableRooms.locked.findIndex(
+				(room) => room.id === user.room
+			);
 		}
-		const copiedRoomsList = [...this.state.availableRooms[roomAnchor]]
-		
-		if(user.join) {
-			this.addUserToRoom({ username: user.username }, copiedRoomsList, findRoom, roomAnchor)
+		const copiedRoomsList = [...this.state.availableRooms[roomAnchor]];
+
+		if (user.join) {
+			this.addUserToRoom(
+				{ username: user.username },
+				copiedRoomsList,
+				findRoom,
+				roomAnchor
+			);
 		} else {
-			this.removeUserFromRoom({ username: user.username }, copiedRoomsList, findRoom, roomAnchor)
+			this.removeUserFromRoom(
+				{ username: user.username },
+				copiedRoomsList,
+				findRoom,
+				roomAnchor
+			);
 		}
-	}
+	};
 
 	addUserToRoom = (user, roomsList, index, anchor) => {
-		
-		roomsList[index].users.push( {name: user.username} )
-		this.setUpdatedUsersInState(roomsList, anchor)
-	}
+		roomsList[index].users.push({ name: user.username });
+		this.setUpdatedUsersInState(roomsList, anchor);
+	};
 
 	removeUserFromRoom = (user, roomsList, index, anchor) => {
-		const userIndex = roomsList[index].users.findIndex((userindex) => userindex.name === user.name)
-		roomsList[index].users.splice(userIndex, 1)
-		this.setUpdatedUsersInState(roomsList, anchor)
-	}
+		const userIndex = roomsList[index].users.findIndex(
+			(userindex) => userindex.name === user.name
+		);
+		roomsList[index].users.splice(userIndex, 1);
+		this.setUpdatedUsersInState(roomsList, anchor);
+	};
 
 	setUpdatedUsersInState = (roomsList, anchor) => {
-		this.setState({
-			availableRooms: {
-				...this.state.availableRooms,
-				[anchor]: roomsList
-			}
-		}, () => console.log(this.state.availableRooms))
-	}
+		this.setState(
+			{
+				availableRooms: {
+					...this.state.availableRooms,
+					[anchor]: roomsList,
+				},
+			},
+			() => console.log(this.state.availableRooms)
+		);
+	};
 
 	joinRoom = (event) => {
 		event.preventDefault();
@@ -156,7 +178,6 @@ export default class UserProvider extends React.Component {
 		this.setState({
 			chatlog: server_chatlog,
 		});
-		
 	};
 
 	generateChatMessage = (chatMessage) => {
@@ -215,42 +236,32 @@ export default class UserProvider extends React.Component {
 		this.state.socket.emit("typing", {
 			name: this.state.name,
 			isTyping,
+			roomId: this.state.connectedRoom,
 		});
 	};
 
 	handleTyping = (typingUser) => {
-		console.log("typing user :", typingUser);
-		console.log("users typing :", this.state.usersTyping);
+		console.log(typingUser);
 
 		const found = this.state.usersTyping.find(
 			(typer) => typer.name === typingUser.name
 		);
 
 		if (!found) {
-			console.log(0, typingUser.isTyping);
-
 			if (typingUser.isTyping) {
-				console.log(1);
-				this.setState(
-					{
-						usersTyping: [...this.state.usersTyping, typingUser],
-					},
-					() => console.log("added :", this.state.usersTyping)
-				);
+				this.setState({
+					usersTyping: [...this.state.usersTyping, typingUser],
+				});
 			}
 		} else {
 			if (typingUser.isTyping === false) {
-				console.log(2);
 				let typers = [...this.state.usersTyping];
 				let index = typers.findIndex((typer) => typer.name === typingUser.name);
 
 				typers.splice(index, 1);
-				this.setState(
-					{
-						usersTyping: typers,
-					},
-					() => console.log("removed :", this.state.usersTyping)
-				);
+				this.setState({
+					usersTyping: typers,
+				});
 			}
 		}
 	};

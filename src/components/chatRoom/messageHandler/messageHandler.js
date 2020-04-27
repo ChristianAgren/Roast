@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) =>
 			position: "absolute",
 			top: "-1.5rem",
 			left: 0,
-			right:0,
+			right: 0,
 
 			padding: "0 1rem",
 
@@ -77,9 +77,8 @@ const useStyles = makeStyles((theme) =>
 );
 
 function MessageHandler(props) {
-	const classes = useStyles();
 
-	// console.log("props", props.user.usersTyping);
+	const classes = useStyles();
 
 	const [messageValue, setMessageValue] = React.useState("");
 
@@ -96,6 +95,7 @@ function MessageHandler(props) {
 
 		createNewMessage(messageValue);
 		setMessageValue("");
+		props.user.emitTyping(false);
 	};
 
 	const [state, setState] = React.useState({
@@ -170,7 +170,6 @@ function MessageHandler(props) {
 							value={messageValue}
 							size="small"
 							autoComplete="off"
-						
 							onChange={(event) => onInputChange(event, props)}
 						/>
 					</FormControl>

@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 	msg: {
 		width: "75%",
+		paddingLeft: " 1rem",
 
 		"& > *": {
 			display: "flex",
