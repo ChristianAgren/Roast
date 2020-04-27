@@ -30,7 +30,7 @@ let roomInformation = [
 	{
 		id: "2",
 		users: [],
-		password: 'lock',
+		password: '',
 		color: '',
 		history: [
 			{
@@ -81,8 +81,7 @@ io.on("connection", function (socket) {
 		open: openRooms,
 		locked: lockedRooms
 	}
-	console.log(allRooms);
-	
+
 	io.to(socket.id).emit("connection successful", allRooms)
 
 	socket.on("disconnect", () => {
@@ -92,13 +91,14 @@ io.on("connection", function (socket) {
 	socket.on("join room", (data) => {
 		const user = {
 			name: data.name,
-			isTyping: false,
+			// isTyping: false,
 		};
 
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
 				socket.leave(data.prevRoomId, () => {
 
+					console.log("in leave room");
 					const { users } = roomInformation.find(
 						(r) => r.id === data.prevRoomId
 					);
@@ -109,10 +109,7 @@ io.on("connection", function (socket) {
 						console.log(users);
 					}
 
-					console.log(`${user.name} left room: ${data.prevRoomId}`);
-					io.to(data.prevRoomId).emit("server message", {
-						server_message: `user left: ${data.prevRoomId}`,
-					});
+					io.emit("user left room", { username: user.name, room: data.prevRoomId, join: false });
 
 					io.to(data.prevRoomId).emit("notice", {
 						name: "",
@@ -120,16 +117,16 @@ io.on("connection", function (socket) {
 					});
 				});
 			}
-
 			socket.join(data.roomId, () => {
-				// console.log("adapter: ", socket.adapter.rooms);
+				console.log("in join room");
 
 				const { users } = roomInformation.find((r) => r.id === data.roomId);
 				users.push(user);
-				console.log(users);
-
+				console.log(user);
+				
 				console.log(`${socket.id} joined room: ${data.roomId}`);
 
+				io.emit("user joined room", {username: user.name, room: data.roomId, join: true})
 				socket.emit("join successful", data);
 
 				const { history } = roomInformation.find((h) => h.id === data.roomId);
@@ -180,7 +177,7 @@ io.on("connection", function (socket) {
 		}
 
 		roomInformation.push(newRoom)
-		
+
 		io.emit("created new room", response)
 	})
 
