@@ -91,6 +91,7 @@ io.on("connection", function (socket) {
 		console.log(data);
 
 		const user = data.name;
+		
 		// const user = {
 		// 	name: data.name,
 		// 	// isTyping: false,
