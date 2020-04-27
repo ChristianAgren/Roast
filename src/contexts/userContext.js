@@ -15,43 +15,53 @@ export const UserContext = React.createContext({
 	socket: user.socket,
 });
 
+
 export default class UserProvider extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			name: '',
 			socket: user.socket,
+
 			connectedRoom: "",
+			connectedRoomColor: "",
 			joinRoom: this.joinRoom,
 			createName: this.createName,
+			availableRooms: {},
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
+			createNewRoom: this.createNewRoom,
 			//rooms: [], //rooms array för att uppdatera state på rooms när rummet är tomt
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 
 			firstTime: true,
 		};
+		this.state.socket.on("connection successful", (data) => this.setAvailableRoomsInState(data))
+		this.state.socket.on("join successful", (data) => this.setRoomInState(data));
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
-
 		this.state.socket.on("user message", (data) =>
 			this.generateChatMessage(data)
 		);
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
-
 		this.state.socket.on("server message", (data) => console.log(data));
-
+		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data))
 		// this.state.socket.on("typing", (data) => this.handleTyping(data));
 
-		this.state.socket.on("join successful", (data) => {
-			console.log("d");
+	}
 
-			this.setState(
-				{
-					connectedRoom: data.roomId,
-				},
-				() => console.log(this.state.connectedRoom)
-			);
+	setAvailableRoomsInState = (data) => {
+		console.log('yaay');
+		this.setState({
+			availableRooms: data
+		}, () => console.log(this.state.availableRooms)
+		)
+	}
+
+	setRoomInState = (data) => {
+		this.setState({
+			connectedRoom: data.roomId,
+			connectedRoomColor: data.roomColor,
 		});
 		
 	}
@@ -67,17 +77,34 @@ export default class UserProvider extends React.Component {
 	joinRoom = (event) => {
 		event.preventDefault();
 
+		// let roomColorRgb = event.target.style.background;
+
 		const name = this.state.name;
 		const roomId = event.target.id;
 		const prevRoomId = this.state.connectedRoom;
 
+		const roomColor = event.target.style.background;
+
 		this.setState({
 			firstTime: true,
 		});
+
 		// emit
-		this.state.socket.emit("join room", { name, roomId, prevRoomId });
+		this.state.socket.emit("join room", {
+			name,
+			roomId,
+			prevRoomId,
+			roomColor,
+		});
 	};
 
+	// convert rgb to hex
+	// componentToHex = (c) => {
+	// 	var hex = c.toString(16);
+	// 	return hex.length == 1 ? "0" + hex : hex;
+	// };
+	// rgb(r, g, b) {
+	// 	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 	// Tar bort rummet utan användare i
 
 	// removeRoom = (roomToRemove) => {
@@ -90,9 +117,6 @@ export default class UserProvider extends React.Component {
 
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
-
-		console.log(server_chatlog);
-
 		this.setState({
 			chatlog: server_chatlog,
 		});
@@ -119,12 +143,42 @@ export default class UserProvider extends React.Component {
 		});
 	};
 
+	createNewRoom = (roomValues) => {
+		this.state.socket.emit("create room", {
+			id: roomValues.roomId,
+			password: roomValues.roomPassword,
+			color: roomValues.roomColor
+		})
+	}
+
+	updateAvailableRooms = (room) => {
+		let updateArray;
+		let anchor;
+
+		if (room.password.length != 0) {
+			updateArray = [ ...this.state.availableRooms.locked ]
+			anchor = 'locked'
+		} else {
+			updateArray = [ ...this.state.availableRooms.open ]
+			anchor = "open"
+		}
+
+		updateArray.push(room)
+		this.setState({
+			availableRooms: {
+				...this.state.availableRooms,
+				[anchor]: updateArray
+			}
+		}, () => console.log(this.state.availableRooms))
+	}
+
 	// emitTyping = (isTyping) => {
 	// 	this.state.socket.emit("typing", {
 	// 		name: this.state.name,
 	// 		isTyping,
 	// 	});
 	// };
+
 	handleTyping = (typingUser) => {
 		// const found = this.state.usersTyping.find((user) => data. === user);
 		// if (!found) {

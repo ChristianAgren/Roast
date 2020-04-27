@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-
+import { UserContext } from "../../contexts/userContext";
 import {
 	Button,
 	Container,
@@ -8,13 +8,14 @@ import {
 	FormControl,
 	FormHelperText,
 	Grid,
+	List,
 	IconButton,
 	Input,
 	InputAdornment,
 	makeStyles,
 	TextField,
 	Typography,
-	Modal,
+	ListItem,
 } from "@material-ui/core";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import LockIcon from "@material-ui/icons/Lock";
@@ -37,26 +38,26 @@ const useStyles = makeStyles((theme) =>
 		mainContainer: {
 			display: "flex",
 			flexDirection: "row",
-
-			paddingBottom: "30%",
+			color: "#b1c0c4",
 
 			"& .MuiTypography-overline": {
 				fontFamily: ' "Quantico", sans-serif',
 				fontSize: "1.2rem",
-				color: "#3da069",
 
 				lineHeight: "1.2rem",
 				letterSpacing: ".1rem",
 				padding: theme.spacing(0.8, 0),
 			},
 			"& .MuiInputBase-root": {
-				background: "#99ffc5",
-				color: "#456699",
+				background: "#b1c0c4",
 				padding: theme.spacing(0.3, 0, 0, 0.8),
 			},
 			"& .MuiSvgIcon-root": {
 				margin: theme.spacing(1, 2, 1, 1),
-				color: "#b1c0c4",
+			},
+			"& .MuiSvgIcon-root": {
+				margin: theme.spacing(0.5),
+				color: "rgba(0, 0, 0, 0.45)",
 			},
 			"& > .MuiGrid-item": {
 				margin: theme.spacing(0.5, 0),
@@ -68,32 +69,58 @@ const useStyles = makeStyles((theme) =>
 			},
 		},
 		title: {
+			color: "#0005",
 			margin: theme.spacing(3, 0, 2, 0),
-
-			color: "#b1c0c4",
-			fontFamily: ' "Quantico", sans-serif',
-			fontWeight: "bold",
-
 			textAlign: "center",
+			textDecoration: "underline",
 			letterSpacing: ".06rem",
 			[theme.breakpoints.down("xs")]: {
 				fontSize: "1.6rem",
 			},
+		},
+		colorWrapper: {
+			display: "flex",
+			justifyContent: "center",
+			flexWrap: "wrap",
 
-			borderBottom: ".2rem solid #5777FF",
+			"& > *": {
+				margin: ".5rem",
+				width: "4rem",
+				height: "4rem",
+			},
 		},
 	})
 );
 
 function Main() {
 	const classes = useStyles();
+	const roomColors = [
+		"#ff8866",
+		"#ffdc7a",
+
+		"#56bff4",
+		"#7a8bff",
+
+		"#7affce",
+		"#eb65bd",
+
+		"#ff5259",
+	];
 	const [roomInputValues, setRoomInputValues] = React.useState({
 		roomId: "",
 		roomPassword: "",
-		roomColor: "",
+		roomColor: roomColors[0],
 		showPassword: false,
 	});
 
+	const switchColor = (event) => {
+		console.log(event.target.id);
+
+		setRoomInputValues({
+			...roomInputValues,
+			roomColor: event.target.id,
+		});
+	};
 	const [firstTimeOnSite, setFirstTimeOnSite] = React.useState({
 		firstTime: true,
 		name: '',
@@ -134,11 +161,16 @@ function Main() {
 		})
 	}
 
-	const handleCreateRoomClick = () => {
+	const handleCreateRoomClick = (createNewRoom) => {
 		console.log(`Will create room with following:`);
 		console.log(`Name: ${roomInputValues.roomId}`);
 		console.log(`Password: ${roomInputValues.roomPassword}`);
 		console.log(`Color: ${roomInputValues.roomColor}`);
+
+		const { roomId, roomPassword, roomColor } = roomInputValues;
+		console.log(roomId, roomPassword, roomColor);
+
+		createNewRoom({ roomId, roomPassword, roomColor });
 	};
 
 	return (
@@ -173,9 +205,8 @@ function Main() {
 						<Grid item xs={12}>
 							<Typography variant="h3" className={classes.title}>
 								ADD NEW ROOM
-					</Typography>
+							</Typography>
 						</Grid>
-
 						<Grid item xs={12}>
 							<Typography variant="overline">Name *</Typography>
 							<FormControl fullWidth>
@@ -194,10 +225,10 @@ function Main() {
 									display: "flex",
 								}}>
 								{roomInputValues.roomPassword.length !== 0 ? (
-									<LockIcon fontSize="large" style={{ color: "#ef7825" }} />
+									<LockIcon fontSize="large" />
 								) : (
-										<LockOpenIcon fontSize="large" style={{ color: "#3da069" }} />
-									)}
+									<LockOpenIcon fontSize="large" />
+								)}
 								<FormControl fullWidth>
 									<Input
 										size="small"
@@ -205,11 +236,13 @@ function Main() {
 										type={roomInputValues.showPassword ? "text" : "password"}
 										style={
 											roomInputValues.roomPassword.length !== 0
-												? { background: "#ef7825" }
-												: { background: "#99ffc5" }
+												? { background: "#ff8866" }
+												: null
 										}
 										value={roomInputValues.roomPassword}
-										onChange={(event) => handleInputChange(event, "roomPassword")}
+										onChange={(event) =>
+											handleInputChange(event, "roomPassword")
+										}
 										endAdornment={
 											<InputAdornment position="end">
 												<IconButton
@@ -219,8 +252,8 @@ function Main() {
 													{roomInputValues.showPassword ? (
 														<Visibility />
 													) : (
-															<VisibilityOff />
-														)}
+														<VisibilityOff />
+													)}
 												</IconButton>
 											</InputAdornment>
 										}
@@ -228,7 +261,7 @@ function Main() {
 									<FormHelperText
 										style={
 											roomInputValues.roomPassword.length !== 0
-												? { color: "#ef7825" }
+												? { color: "#ff8866" }
 												: { color: "#99ffc5" }
 										}>
 										{roomInputValues.roomPassword.length !== 0
@@ -240,15 +273,24 @@ function Main() {
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant="overline">Color</Typography>
-
-							<FormControl fullWidth>
-								<TextField
-									size="small"
-									id="room-color"
-									value={roomInputValues.roomColor}
-									onChange={(event) => handleInputChange(event, "roomColor")}
-								/>
-							</FormControl>
+							<List className={classes.colorWrapper}>
+								{roomColors.map((color) => (
+									<ListItem
+										button
+										onClick={(e) => switchColor(e)}
+										id={color}
+										style={
+											color === roomInputValues.roomColor
+												? {
+														background: color,
+														border: ".5rem double #4a4949",
+												  }
+												: {
+														background: color,
+												  }
+										}></ListItem>
+								))}
+							</List>
 						</Grid>
 						<Grid item xs={12}>
 							<Button
@@ -256,15 +298,14 @@ function Main() {
 								color="primary"
 								size="large"
 								startIcon={<SaveIcon />}
-								onClick={() => handleCreateRoomClick()}>
+								onClick={() => handleCreateRoomClick(user.createNewRoom)}>
 								Create
-					</Button>
+							</Button>
 						</Grid>
 					</Grid>
 				</Container>
 			)}
 		</UserContext.Consumer>
-
 	);
 }
 
