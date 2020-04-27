@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme, drawer) =>
 			width: "8rem",
 			height: "2rem",
 
-			background: "#ef7825",
+			background: "#ff8866",
 			borderRadius: ".5rem",
 		},
 		logo: {
@@ -54,7 +54,6 @@ function Layout() {
 						height: "100vh",
 
 						display: "flex",
-						// justifyContent: "center",
 						alignItems: "center",
 					}}>
 					<RoomNavigation changeView={handleChangeView} />

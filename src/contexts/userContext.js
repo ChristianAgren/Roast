@@ -20,8 +20,11 @@ export default class UserProvider extends React.Component {
 		this.state = {
 			name: user.name,
 			socket: user.socket,
+
 			connectedRoom: "",
+			connectedRoomColor: "",
 			joinRoom: this.joinRoom,
+
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
 
@@ -42,11 +45,12 @@ export default class UserProvider extends React.Component {
 		// this.state.socket.on("typing", (data) => this.handleTyping(data));
 
 		this.state.socket.on("join successful", (data) => {
-			console.log("d");
+			console.log("data", data);
 
 			this.setState(
 				{
 					connectedRoom: data.roomId,
+					connectedRoomColor: data.roomColor,
 				},
 				() => console.log(this.state.connectedRoom)
 			);
@@ -56,16 +60,35 @@ export default class UserProvider extends React.Component {
 	joinRoom = (event) => {
 		event.preventDefault();
 
+		// let roomColorRgb = event.target.style.background;
+
 		const name = this.state.name;
 		const roomId = event.target.id;
 		const prevRoomId = this.state.connectedRoom;
 
+		const roomColor = event.target.style.background;
+
 		this.setState({
 			firstTime: true,
 		});
+
 		// emit
-		this.state.socket.emit("join room", { name, roomId, prevRoomId });
+		this.state.socket.emit("join room", {
+			name,
+			roomId,
+			prevRoomId,
+			roomColor,
+		});
 	};
+
+	// convert rgb to hex
+	// componentToHex = (c) => {
+	// 	var hex = c.toString(16);
+	// 	return hex.length == 1 ? "0" + hex : hex;
+	// };
+	// rgb(r, g, b) {
+	// 	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+	// }
 
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
@@ -103,6 +126,7 @@ export default class UserProvider extends React.Component {
 	// 		isTyping,
 	// 	});
 	// };
+
 	handleTyping = (typingUser) => {
 		// const found = this.state.usersTyping.find((user) => data. === user);
 		// if (!found) {

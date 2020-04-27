@@ -67,7 +67,7 @@ function MessageHandler(props) {
 	const [messageValue, setMessageValue] = React.useState("");
 
 	const onInputChange = (event, props) => {
-		let isTyping = event.target.value.length > 0 
+		let isTyping = event.target.value.length > 0;
 
 		setMessageValue(event.target.value);
 
@@ -124,6 +124,8 @@ function MessageHandler(props) {
 							variant="outlined"
 							value={messageValue}
 							size="small"
+							autocomplete="off"
+						
 							onChange={(event) => onInputChange(event, props)}
 						/>
 					</FormControl>

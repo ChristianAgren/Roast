@@ -55,6 +55,10 @@ const useStyles = makeStyles((theme) =>
 			borderRadius: "50rem",
 
 			display: "flex",
+
+			"& > *": {
+				pointerEvents: "none",
+			},
 		},
 
 		cutout: {
@@ -108,8 +112,17 @@ function AvailableRooms(props) {
 				id: 2,
 				name: "Room 2",
 				password: "",
-				users: ["BLOB", "dang3rz0ne", "Wrampa", "jebbo", "FlOW1r", "Skotzsha", "ivan", "celticFan89"],
-				color: "#ff8866",
+				users: [
+					"BLOB",
+					"dang3rz0ne",
+					"Wrampa",
+					"jebbo",
+					"FlOW1r",
+					"Skotzsha",
+					"ivan",
+					"celticFan89",
+				],
+				color: "#56bff4",
 			},
 		],
 		locked: [

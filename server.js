@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const socket = require("socket.io");
-const server = require('http').createServer(app)
+const server = require("http").createServer(app);
 const io = socket(server);
 const port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, "build")));
@@ -17,6 +17,7 @@ let roomInformation = [
 	{
 		id: "1",
 		users: [],
+		name: "",
 		history: [
 			{
 				name: "Blob",
@@ -38,8 +39,6 @@ let roomInformation = [
 	},
 ];
 
-
-
 const routesWithChildren = ["/"];
 
 routesWithChildren.forEach(function (rootPath) {
@@ -51,8 +50,6 @@ routesWithChildren.forEach(function (rootPath) {
 	});
 });
 
-
-
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
 	console.log("made socket connection", socket.id);
@@ -62,6 +59,10 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("join room", (data) => {
+
+		console.log(data);
+		
+
 		const user = {
 			name: data.name,
 			isTyping: false,
@@ -120,26 +121,27 @@ io.on("connection", function (socket) {
 				});
 			});
 		}
-
 	});
-			// socket.on("typing", (typingUser) => {
-			// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
-			// });
-	
-			socket.on("message", (newMessage) => {
-				const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
-	
-				const message = {
-					name: newMessage.name,
-					message: newMessage.message,
-					client: true,
-				};
-	
-				history.push(message);
-	
-				console.log("history: ", history);
-				console.log("room ID: ", newMessage.roomId);
-	
-				io.to(newMessage.roomId).emit("user message", message);
-			});
+	// socket.on("typing", (typingUser) => {
+	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
+	// });
+
+	socket.on("message", (newMessage) => {
+		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
+		const { color } = roomInformation.find((h) => h.id === newMessage.roomId);
+
+		const message = {
+			name: newMessage.name,
+			message: newMessage.message,
+			color: color,
+			client: true,
+		};
+
+		history.push(message);
+
+		console.log("history: ", history);
+		console.log("room ID: ", newMessage.roomId);
+
+		io.to(newMessage.roomId).emit("user message", message);
+	});
 });

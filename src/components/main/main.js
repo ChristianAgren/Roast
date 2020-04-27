@@ -8,12 +8,14 @@ import {
 	FormControl,
 	FormHelperText,
 	Grid,
+	List,
 	IconButton,
 	Input,
 	InputAdornment,
 	makeStyles,
 	TextField,
 	Typography,
+	ListItem,
 } from "@material-ui/core";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import LockIcon from "@material-ui/icons/Lock";
@@ -34,27 +36,22 @@ const useStyles = makeStyles((theme) =>
 		mainContainer: {
 			display: "flex",
 			flexDirection: "row",
-			// background:"#ff69b488",
-
-			paddingBottom: "30%",
+			color: "#b1c0c4",
 
 			"& .MuiTypography-overline": {
 				fontFamily: ' "Quantico", sans-serif',
 				fontSize: "1.2rem",
-				color: "#3da069",
 
 				lineHeight: "1.2rem",
 				letterSpacing: ".1rem",
 				padding: theme.spacing(0.8, 0),
 			},
 			"& .MuiInputBase-root": {
-				background: "#99ffc5",
-				color: "#4a4949",
+				background: "#b1c0c4",
 				padding: theme.spacing(0.3, 0, 0, 0.8),
 			},
 			"& .MuiSvgIcon-root": {
 				margin: theme.spacing(1, 2, 1, 1),
-				color: "#b1c0c4",
 			},
 			"& > .MuiGrid-item": {
 				margin: theme.spacing(0.5, 0),
@@ -80,6 +77,17 @@ const useStyles = makeStyles((theme) =>
 
 			borderBottom: ".2rem solid #b1c0c4",
 		},
+		colorWrapper: {
+			display: "flex",
+			justifyContent: "center",
+			flexWrap: "wrap",
+
+			"& > *": {
+				margin: ".5rem",
+				width: "4rem",
+				height: "4rem",
+			},
+		},
 	})
 );
 
@@ -91,6 +99,24 @@ function Main() {
 		roomColor: "",
 		showPassword: false,
 	});
+	const roomColors = [
+		"#ff8866",
+		"#ffdc7a",
+
+		"#56bff4",
+		"#7a8bff",
+
+		"#7affce",
+		"#eb65bd",
+
+		"#ff5259",
+	];
+
+	const [chosenColor, setChosenColor] = React.useState();
+
+	const switchColor = (event) => {
+		setChosenColor(event.target.id);
+	};
 
 	const handleInputChange = (event, anchor) => {
 		setRoomInputValues({
@@ -114,7 +140,7 @@ function Main() {
 		console.log(`Will create room with following:`);
 		console.log(`Name: ${roomInputValues.roomId}`);
 		console.log(`Password: ${roomInputValues.roomPassword}`);
-		console.log(`Color: ${roomInputValues.roomColor}`);
+		console.log(`Color: ${chosenColor}`);
 	};
 
 	return (
@@ -144,9 +170,9 @@ function Main() {
 							display: "flex",
 						}}>
 						{roomInputValues.roomPassword.length !== 0 ? (
-							<LockIcon fontSize="large" style={{ color: "#ef7825" }} />
+							<LockIcon fontSize="large" />
 						) : (
-							<LockOpenIcon fontSize="large" style={{ color: "#3da069" }} />
+							<LockOpenIcon fontSize="large" />
 						)}
 						<FormControl fullWidth>
 							<Input
@@ -155,8 +181,8 @@ function Main() {
 								type={roomInputValues.showPassword ? "text" : "password"}
 								style={
 									roomInputValues.roomPassword.length !== 0
-										? { background: "#ef7825" }
-										: { background: "#99ffc5" }
+										? { background: "#ff8866" }
+										: null
 								}
 								value={roomInputValues.roomPassword}
 								onChange={(event) => handleInputChange(event, "roomPassword")}
@@ -178,7 +204,7 @@ function Main() {
 							<FormHelperText
 								style={
 									roomInputValues.roomPassword.length !== 0
-										? { color: "#ef7825" }
+										? { color: "#ff8866" }
 										: { color: "#99ffc5" }
 								}>
 								{roomInputValues.roomPassword.length !== 0
@@ -190,15 +216,24 @@ function Main() {
 				</Grid>
 				<Grid item xs={12}>
 					<Typography variant="overline">Color</Typography>
-
-					<FormControl fullWidth>
-						<TextField
-							size="small"
-							id="room-color"
-							value={roomInputValues.roomColor}
-							onChange={(event) => handleInputChange(event, "roomColor")}
-						/>
-					</FormControl>
+					<List className={classes.colorWrapper}>
+						{roomColors.map((color) => (
+							<ListItem
+								button
+								onClick={(e) => switchColor(e)}
+								id={color}
+								style={
+									color === chosenColor
+										? {
+												background: color,
+												border: ".5rem double #4a4949",
+										  }
+										: {
+												background: color,
+										  }
+								}></ListItem>
+						))}
+					</List>
 				</Grid>
 				<Grid item xs={12}>
 					<Button
