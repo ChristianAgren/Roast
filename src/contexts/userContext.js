@@ -5,12 +5,13 @@ import io from "socket.io-client";
 const userSocket = io();
 
 const user = {
-	name: "bobo" + Math.floor(Math.random() * 100),
+	// name: "bobo" + Math.floor(Math.random() * 100),
+	name: '',
 	socket: userSocket,
 };
 
 export const UserContext = React.createContext({
-	name: user.name,
+	name: '',
 	socket: user.socket,
 });
 
@@ -19,18 +20,19 @@ export default class UserProvider extends React.Component {
 		super(props);
 
 		this.state = {
-			name: user.name,
+			name: '',
 			socket: user.socket,
 
 			connectedRoom: "",
 			connectedRoomColor: "",
 			joinRoom: this.joinRoom,
+			createName: this.createName,
 			availableRooms: {},
 			chatlog: [],
 
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
-
+			//rooms: [], //rooms array för att uppdatera state på rooms när rummet är tomt
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 
@@ -44,26 +46,24 @@ export default class UserProvider extends React.Component {
 			this.setRoomInState(data)
 		);
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
-		this.state.socket.on("user message", (data) =>
-			this.generateChatMessage(data)
-		);
+		this.state.socket.on("user message", (data) => this.generateChatMessage(data));
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
-		this.state.socket.on("server message", (data) => console.log(data));
-		this.state.socket.on("created new room", (data) =>
-			this.updateAvailableRooms(data)
-		);
+		// this.state.socket.on("server message", (data) => console.log(data));
+		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data));
+		this.state.socket.on("user left room", (data) => this.updateUsersinRoom(data));
+		this.state.socket.on("user joined room", (data) => this.updateUsersinRoom(data));
+
+
 		this.state.socket.on("typing", (data) => this.handleTyping(data));
+
 	}
 
 	setAvailableRoomsInState = (data) => {
-		console.log("yaay");
-		this.setState(
-			{
-				availableRooms: data,
-			},
-			() => console.log(this.state.availableRooms)
-		);
-	};
+		console.log('yaay');
+		this.setState({
+			availableRooms: data
+		})
+	}
 
 	setRoomInState = (data) => {
 		this.setState({
@@ -71,7 +71,54 @@ export default class UserProvider extends React.Component {
 			connectedRoomColor: data.roomColor,
 			usersTyping: [],
 		});
-	};
+		
+	}
+
+	// Kör funktion när knapp trycks ner, ta bort tidigare localstorage uppdaterar name i localstorage som uppdaterar state till det i input
+	createName = (inputName) => {
+		const newUser = inputName
+		this.setState ({
+			name: newUser,
+		})		
+	}
+
+
+	updateUsersinRoom = (user) => {
+		let roomAnchor = "open"
+		let findRoom = this.state.availableRooms.open.findIndex((room) => room.id === user.room)
+		if (findRoom === -1) {
+			roomAnchor = "locked"
+			findRoom = this.state.availableRooms.locked.findIndex((room) => room.id === user.room)
+		}
+		const copiedRoomsList = [...this.state.availableRooms[roomAnchor]]
+		
+		if(user.join) {
+			this.addUserToRoom({ username: user.username }, copiedRoomsList, findRoom, roomAnchor)
+		} else {
+			this.removeUserFromRoom({ username: user.username }, copiedRoomsList, findRoom, roomAnchor)
+		}
+	}
+
+	addUserToRoom = (user, roomsList, index, anchor) => {
+		
+		roomsList[index].users.push( {name: user.username} )
+		this.setUpdatedUsersInState(roomsList, anchor)
+	}
+
+	removeUserFromRoom = (user, roomsList, index, anchor) => {
+		const userIndex = roomsList[index].users.findIndex((userindex) => userindex.name === user.name)
+		roomsList[index].users.splice(userIndex, 1)
+		this.setUpdatedUsersInState(roomsList, anchor)
+	}
+
+	setUpdatedUsersInState = (roomsList, anchor) => {
+		this.setState({
+			availableRooms: {
+				...this.state.availableRooms,
+				[anchor]: roomsList
+			}
+		}, () => console.log(this.state.availableRooms))
+	}
 
 	joinRoom = (event) => {
 		event.preventDefault();
@@ -95,11 +142,21 @@ export default class UserProvider extends React.Component {
 		});
 	};
 
+	// removeRoom = (roomToRemove) => {
+	// 	const newRoomList = this.state.rooms.splice(roomToRemove, 1)
+	// }
+
+	// Tar bort rummet utan användare i
+
+	// 	this.setState({
+	// 		rooms: newRoomList
+	// 	})
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
 		this.setState({
 			chatlog: server_chatlog,
 		});
+		
 	};
 
 	generateChatMessage = (chatMessage) => {

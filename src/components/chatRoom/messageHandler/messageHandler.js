@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) =>
 			right: 0,
 			padding: theme.spacing(0),
 		},
+		inputWrapperContainer: {
+			background: "#727070",
+		},
 		inputWrapper: {
 			display: "flex",
 			justifyContent: "center",
@@ -166,7 +169,8 @@ function MessageHandler(props) {
 							variant="outlined"
 							value={messageValue}
 							size="small"
-							autocomplete="off"
+							autoComplete="off"
+						
 							onChange={(event) => onInputChange(event, props)}
 						/>
 					</FormControl>

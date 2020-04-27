@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme, drawer) =>
 	createStyles({
 		logoContainer: {
 			position: "absolute",
-			top: "2rem",
+			top: "2.5rem",
 			left: "1rem",
 
 			width: "8rem",
@@ -47,13 +47,14 @@ function Layout() {
 					maxWidth="md"
 					style={{
 						position: "relative",
-						background: "#4a4949",
+						background: "#3e404c",
 						padding: "3rem 0",
 
 						height: "100vh",
 
 						display: "flex",
 						alignItems: "center",
+						
 					}}>
 					<RoomNavigation changeView={handleChangeView} />
 

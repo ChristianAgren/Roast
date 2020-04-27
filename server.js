@@ -8,60 +8,72 @@ const io = socket(server);
 const port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, "build")));
 
-// THIS IS LISTEN DON'T GO IN FFS
 server.listen(port, () => {
 	console.log(`Listening to requests on http://localhost:${port}`);
 });
 
 let roomInformation = [
-	// {
-	// 	id: "1",
-	// 	users: [],
-	// 	password: '',
-	// 	color: '#ff69b4',
-	// 	history: [
-	// 		{
-	// 			name: "Blob",
-	// 			message: "Hej hej hej hej hje",
-	// 			client: true,
-	// 		},
-	// 	],
-	// },
-	// {
-	// 	id: "2",
-	// 	users: [],
-	// 	password: 'lock',
-	// 	color: '#123388',
-	// 	history: [
-	// 		{
-	// 			name: "Alvin",
-	// 			message: "it do b like that",
-	// 			client: true,
-	// 		},
-	// 	],
-	// },
+	{
+		id: "1",
+		name: "room",
+		users: [],
+		password: '',
+		color: '#ff69b4',
+		history: [
+			{
+				name: "Blob",
+				message: "Hej hej hej hej hje",
+				client: true,
+			},
+		],
+	},
+	{
+		id: "3",
+		name: "room",
+		users: [],
+		password: '',
+		color: '#ff69b4',
+		history: [
+			{
+				name: "Blob",
+				message: "Hej hej hej hej hje",
+				client: true,
+			},
+		],
+	},
+	{
+		id: "asdf",
+		name: "room",
+		users: [],
+		password: 'lock',
+		color: '#123388',
+		history: [
+			{
+				name: "Alvin",
+				message: "it do b like that",
+				client: true,
+			},
+		],
+	},
 ];
 
 const routesWithChildren = ["/"];
 
 routesWithChildren.forEach(function (rootPath) {
 	app.get(rootPath + "*", function (req, res) {
-		// Send or render whatever is appropriate here
-		// You can use req.path to get the path that was requested
-		// Eg: /dashboard/profile/user5
 		res.sendFile(path.join(__dirname, "build", "index.html"));
 	});
 });
 
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
+
 	console.log("made socket connection", socket.id);
+
 	let lockedRooms = [],
 		openRooms = [];
 
 	roomInformation.forEach((room) => {
-		console.log("room :", room);
-
 		const availableRoom = {
 			name: room.name,
 			id: room.id,
@@ -80,66 +92,85 @@ io.on("connection", function (socket) {
 		open: openRooms,
 		locked: lockedRooms,
 	};
-	console.log(allRooms);
 
 	io.to(socket.id).emit("connection successful", allRooms);
 
-	socket.on("disconnect", () => {
+	socket.on("disconnecting", () => {
+		// Manipulate local data
+		const rooms = Object.keys(socket.rooms)
+		let clearRoom 
+		rooms.forEach((room) => {
+			if (room != socket.id) {
+				clearRoom = room
+			}
+		})
+		if (clearRoom) {
+			const { users } = roomInformation.find((room) => room.id === clearRoom)
+			const leaverInfo = users.find((user) => user.id === socket.id)
+			const leaverIndex = users.findIndex((user) => user.id === socket.id)
+			users.splice(leaverIndex, 1)
+
+			//Emit to sockets
+			io.emit("user left room", { username: leaverInfo.name, room: clearRoom, join: false });
+		}
 		console.log(`${socket.id} disconnected`);
 	});
 
 	socket.on("join room", (data) => {
-		console.log(data);
-
-		const user = data.name;
+		
+		const user = {
+			name: data.name,
+			id: socket.id
+		};
 
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
 				socket.leave(data.prevRoomId, () => {
+					// Manipulate local data
 					const { users } = roomInformation.find(
 						(r) => r.id === data.prevRoomId
 					);
-					const leaver = users.findIndex((u) => u.name === data.name);
+					const leaver = users.findIndex((u) => u.id === user.id);	
+
+					// rooms måste skicka users så vi kan ta bort rummet om det är tomt
+					// Här kallar vi på removeRoom i userContext som uppdaterar rooms listan som ska mappas ut
+					// Om rooms.users är tom sätt splice:a ut rummet ur roomslistan.
+					// Om users är en tom lista, ta bort rummet
+					
+					// const roomToRemove = rooms.findIndex((r) => r.roomId === data.prevRoomId)
+
+					// if (users === []) {
+					// 	removeRoom(roomToRemove)
+					// }
+					
 
 					if (leaver != -1) {
 						users.splice(leaver, 1);
-						console.log(users);
 					}
 
-					console.log(`${user.name} left room: ${data.prevRoomId}`);
-					io.to(data.prevRoomId).emit("server message", {
-						server_message: `user left: ${data.prevRoomId}`,
-					});
-
+					// Update sockets and rooms
+					io.emit("user left room", { username: user.name, room: data.prevRoomId, join: false });
 					io.to(data.prevRoomId).emit("notice", {
-						name: "",
 						message: user.name + " has left the room",
 					});
 				});
 			}
-
 			socket.join(data.roomId, () => {
-				// console.log("adapter: ", socket.adapter.rooms);
-
+				// Manipulate local data
 				const { users } = roomInformation.find((r) => r.id === data.roomId);
 				users.push(user);
-				console.log(users);
+				io.to(socket.id).emit("join successful", data);
 
-				console.log(`${socket.id} joined room: ${data.roomId}`);
+				//Update all socket's room information
+				io.emit("user joined room", {username: user.name, room: data.roomId, join: true})
 
-				socket.emit("join successful", data);
-
+				//Send history to socket
 				const { history } = roomInformation.find((h) => h.id === data.roomId);
-
 				io.to(socket.id).emit("chatlog", { server_chatlog: history });
 
-				io.to(data.roomId).emit("server message", {
-					server_message: `user connected to: ${data.roomId}`,
-				});
-
+				//Send message to chatroom
 				io.to(data.roomId).emit("notice", {
-					name: "user",
-					message: user + " has joined the room",
+					message: user.name + " has joined the room",
 					client: false,
 				});
 			});
@@ -154,7 +185,7 @@ io.on("connection", function (socket) {
 	socket.on("message", (newMessage) => {
 		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
 		const { color } = roomInformation.find((h) => h.id === newMessage.roomId);
-
+		
 		const message = {
 			name: newMessage.name,
 			message: newMessage.message,
@@ -164,14 +195,8 @@ io.on("connection", function (socket) {
 
 		history.push(message);
 
-		console.log("history: ", history);
-		console.log("room ID: ", newMessage.roomId);
-
 		io.to(newMessage.roomId).emit("user message", message);
 	});
-	// socket.on("typing", (typingUser) => {
-	// 	socket.broadcast.to(data.roomId).emit("typing", typingUser);
-	// });
 
 	socket.on("create room", (roomValues) => {
 		const response = {

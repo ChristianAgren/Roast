@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme, drawer) =>
 
 		drawerButton: {
 			width: "6rem",
-			height: "3rem",
+			height: "2.5rem",
 
 			background: "#727070",
 			margin: "auto",

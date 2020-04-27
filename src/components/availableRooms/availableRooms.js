@@ -101,10 +101,20 @@ function AvailableRooms(props) {
 
 	const onJoinClick = (event, joinRoom) => {
 		joinRoom(event);
-
 		props.changeView(event.target.id);
 		props.toggleDrawer();
 	};
+
+	const generateFiveUsers = (users) => {
+		const newList = users.slice(0, 5)
+		return (
+			newList.map((user, index) => 
+				newList.length - 1 != index
+				? `${user.name}, `
+				: `and more... `
+			)
+		)
+	}
 
 	return (
 		<UserContext.Consumer>
@@ -128,22 +138,30 @@ function AvailableRooms(props) {
 											{room.name}
 											<em style={{ color: "#0008" }}>{room.id}</em>
 										</Typography>
-										<Typography className={classes.activeUsers}>
-											{room.users.length} : active users
-										</Typography>
+										{(room.users) ?
+											<>
+												<Typography className={classes.activeUsers}>
+													{room.users.length} : active users
+												</Typography>
+												{(room.users.length != 0) ?
+													<Typography
+														className={classes.users}
+														style={{ color: room.color }}>
+														{room.users.length < 5 ?
+															room.users.map((user, index) => 
+																room.users.length - 1 === index
+																	? `${user.name} `
+																	: `${user.name}, `
+															)
+															: generateFiveUsers(room.users)
+														}
+													</Typography>
+													: null
+												}
+											</>
+											: null
+										}
 
-										<ListItem className={classes.users}>
-											<Typography style={{ color: room.color }}>
-												{room.users.length > 3
-													? room.users
-															.slice(0, 3)
-															.toString()
-															.split(",")
-															.join(", ")
-															.concat(" ...")
-													: room.users.toString().split(",").join(", ")}
-											</Typography>
-										</ListItem>
 									</ListItem>
 								))}
 							</List>
@@ -174,18 +192,18 @@ function AvailableRooms(props) {
 											{room.users.length} : active users
 										</Typography>
 
-										<ListItem className={classes.users}>
-											<Typography style={{ color: room.color }}>
-												{room.users.length > 3
-													? room.users
-															.slice(0, 3)
-															.toString()
-															.split(",")
-															.join(", ")
-															.concat(" ...")
-													: room.users.toString().split(",").join(", ")}
-											</Typography>
-										</ListItem>
+										<Typography
+											className={classes.users}
+											style={{ color: room.color }}>
+											{room.users.length < 5 ?
+												room.users.map((user, index) => 
+													room.users.length - 1 === index
+														? `${user.name} `
+														: `${user.name}, `
+												)
+												: generateFiveUsers(room.users)
+											}
+										</Typography>
 									</ListItem>
 								))}
 							</List>
