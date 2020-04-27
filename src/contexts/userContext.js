@@ -5,12 +5,13 @@ import io from "socket.io-client";
 const userSocket = io();
 
 const user = {
-	name: "bobo" + Math.floor(Math.random() * 100),
+	// name: "bobo" + Math.floor(Math.random() * 100),
+	name: '',
 	socket: userSocket,
 };
 
 export const UserContext = React.createContext({
-	name: user.name,
+	name: '',
 	socket: user.socket,
 });
 
@@ -18,10 +19,11 @@ export default class UserProvider extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			name: user.name,
+			name: '',
 			socket: user.socket,
 			connectedRoom: "",
 			joinRoom: this.joinRoom,
+			createName: this.createName,
 			chatlog: [],
 			createNewMessage: this.createNewMessage,
 			//rooms: [], //rooms array för att uppdatera state på rooms när rummet är tomt
@@ -51,6 +53,15 @@ export default class UserProvider extends React.Component {
 				() => console.log(this.state.connectedRoom)
 			);
 		});
+		
+	}
+
+	// Kör funktion när knapp trycks ner, ta bort tidigare localstorage uppdaterar name i localstorage som uppdaterar state till det i input
+	createName = (inputName) => {
+		const newUser = inputName
+		this.setState ({
+			name: newUser,
+		})		
 	}
 
 	joinRoom = (event) => {
@@ -85,6 +96,7 @@ export default class UserProvider extends React.Component {
 		this.setState({
 			chatlog: server_chatlog,
 		});
+		
 	};
 
 	generateChatMessage = (chatMessage) => {

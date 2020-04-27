@@ -48,7 +48,7 @@ function Layout() {
 					maxWidth="md"
 					style={{
 						position: "relative",
-						background: "#4a4949",
+						background: "#3e404c",
 						paddingTop: "3rem",
 
 						height: "100vh",
@@ -56,6 +56,7 @@ function Layout() {
 						display: "flex",
 						// justifyContent: "center",
 						alignItems: "center",
+						
 					}}>
 					<RoomNavigation changeView={handleChangeView} />
 

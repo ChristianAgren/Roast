@@ -54,6 +54,7 @@ routesWithChildren.forEach(function (rootPath) {
 
 // Connection, servern måste vara igång för att front-end ska fungera, front end görs på 3000
 io.on("connection", function (socket) {
+
 	console.log("made socket connection", socket.id);
 
 	socket.on("disconnect", () => {

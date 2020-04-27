@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) =>
 			// flexWrap: 'nowrap'
 			alignItems: "center",
 			// justifyContent: 'center'
+			background: "#a7a9b3"
 		},
 		hideRoomOverFlow: {
 			width: "100%",
