@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import useStyles from "./chatRoomStyles";
 import {
@@ -38,7 +39,7 @@ function ChatRoom() {
 													: null
 											}>
 											<List dense className={classes.msg}>
-												<ListItem
+												<List dense
 													style={{ background: `${user.connectedRoomColor}` }}
 													className={
 														msg.name === user.name
@@ -63,7 +64,7 @@ function ChatRoom() {
 															</Typography>
 														)}
 													</ListItem>
-												</ListItem>
+												</List>
 											</List>
 										</Grid>
 									) : (

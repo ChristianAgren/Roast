@@ -65,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
 	clientMsg: {
 		"& img": {
 			marginRight: "-1rem",
-			border: "1px solid red",
 		},
 	},
 	yourMsg: {

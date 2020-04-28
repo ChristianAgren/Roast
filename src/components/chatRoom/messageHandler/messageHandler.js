@@ -75,7 +75,6 @@ function MessageHandler(props) {
 	return (
 		<div className={classes.inputMessage}>
 			<Container
-				class="messageHandler"
 				maxWidth="md"
 				style={{ position: "relative", background: "#e7e7e7" }}>
 				{props.user.usersTyping.length > 0 ? (

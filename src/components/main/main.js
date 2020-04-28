@@ -1,9 +1,8 @@
 // @ts-nocheck
 import React from "react";
-import useStyles from "./mainStyles"
+import useStyles from "./mainStyles";
 
 import { UserContext } from "../../contexts/userContext";
-import useStyles from "./mainStyles"
 import {
 	Button,
 	Container,
@@ -56,11 +55,9 @@ function Main(props) {
 			roomColor: event.target.id,
 		});
 	};
-	const [firstTime, setFirstTime] = React.useState(true)
+	const [firstTime, setFirstTime] = React.useState(true);
 
-	const [name, setName] = React.useState('')
-
-
+	const [name, setName] = React.useState("");
 
 	const handleClose = () => {
 		setOpen(false);
@@ -70,22 +67,18 @@ function Main(props) {
 
 	const handleNameInputChange = (event) => {
 		event.preventDefault();
-		setName(
-			event.target.value
-		)
-
-	}
+		setName(event.target.value);
+	};
 
 	const handleCreateName = (event, createName, handleClose, name) => {
-		event.preventDefault()
-		createName(name)
-		handleClose()
+		event.preventDefault();
+		createName(name);
+		handleClose();
 
 		setFirstTime({
 			firstTime: false,
-		})
-	}
-
+		});
+	};
 
 	const handleInputChange = (event, anchor) => {
 		setRoomInputValues({
@@ -105,11 +98,10 @@ function Main(props) {
 		event.preventDefault();
 	};
 
-
 	const handleCreateRoomClick = (createNewRoom) => {
 		const { roomId, roomPassword, roomColor } = roomInputValues;
 		createNewRoom({ roomId, roomPassword, roomColor });
-		props.changeView(true)
+		props.changeView(true);
 	};
 
 	const handleSwitchColor = (event, switchColor) => {
@@ -123,51 +115,47 @@ function Main(props) {
 			för att stänga när man skrivit in namn. disableEscapeKeyDown kan behövas för att tvinga att skriva namn. onRendered för att modalen ska sättas till true när man kommer in på sidan första gången*/}
 			{(user) => (
 				<Container maxWidth="sm">
-					{firstTime &&
+					{firstTime && (
 						<Modal
 							className={classes.modalContainer}
 							open={open}
 							aria-labelledby="create-name-modal"
-							aria-describedby="forces user to create a name to chat"
-						>
-							{<FormControl 
-								className={classes.createNameContainer}
-							>
-								<Typography style={{color: "White", padding: "2rem"}}>Please enter your nickname:</Typography>
-								<TextField
-									size="small"
-									id="nameInput"
-									type="input"
-									focused={true}
-									placeholder="Enter your nickname..."
-									inputProps={{
-										className: classes.createNameInput
-									}}
-									variant="outlined"
-									className={classes.createNameInput}
-									onChange={(event) => handleNameInputChange(event, "name")}
-								/>
-								{name !== undefined && name.length > 2
-									?
-									<Button
-										label="name"
-										variant="contained"
-										color="primary"
-										onClick={(e) => handleCreateName(e, user.createName, handleClose, name)}
-									>
-										Submit
-									</Button>
-									:
-									<Button
-										disabled
-										variant="contained"
-										color="primary"
-
-									>
-										Submit
-							 		</Button>
-								}
-							</FormControl>}
+							aria-describedby="forces user to create a name to chat">
+							{
+								<FormControl className={classes.createNameContainer}>
+									<Typography style={{ color: "White", padding: "2rem" }}>
+										Please enter your nickname:
+									</Typography>
+									<TextField
+										size="small"
+										id="nameInput"
+										type="input"
+										focused={true}
+										placeholder="Enter your nickname..."
+										inputProps={{
+											className: classes.createNameInput,
+										}}
+										variant="outlined"
+										className={classes.createNameInput}
+										onChange={(event) => handleNameInputChange(event, "name")}
+									/>
+									{name !== undefined && name.length > 2 ? (
+										<Button
+											label="name"
+											variant="contained"
+											color="primary"
+											onClick={(e) =>
+												handleCreateName(e, user.createName, handleClose, name)
+											}>
+											Submit
+										</Button>
+									) : (
+										<Button disabled variant="contained" color="primary">
+											Submit
+										</Button>
+									)}
+								</FormControl>
+							}
 						</Modal>
 					)}
 

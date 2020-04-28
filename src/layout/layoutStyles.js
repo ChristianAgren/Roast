@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { makeStyles, createStyles } from "@material-ui/core";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme) =>
 	createStyles({
 		container: {
 			position: "relative",
