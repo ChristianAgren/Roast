@@ -51,13 +51,13 @@ export default class UserProvider extends React.Component {
 			this.generateChatMessage(data)
 		);
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
-		// this.state.socket.on("server message", (data) => console.log(data));
+
 		this.state.socket.on("created new room", (data) =>
 			this.updateAvailableRooms(data)
 		);
 
 		this.state.socket.on("room has been created", (data) => this.joinCreatedRoom(data));
-		
+
 		this.state.socket.on("user left room", (data) =>
 			this.updateUsersinRoom(data)
 		);
@@ -166,9 +166,6 @@ export default class UserProvider extends React.Component {
 
 	setUpdatedUsersInState = (roomsList, anchor) => {
 		const indexEmptyRoom = roomsList.findIndex((r) => r.users === [])
-		// const emptyRoom = roomsList.find((r) => r.users === [])
-		console.log(indexEmptyRoom);
-
 
 		if (roomsList.users === '') {
 			roomsList.splice(indexEmptyRoom, 1)
@@ -179,22 +176,18 @@ export default class UserProvider extends React.Component {
 				...this.state.availableRooms,
 				[anchor]: roomsList
 			}
-		}, () => console.log(this.state.availableRooms))
+		})
 	}
 
-	joinRoom = (event, createdRoomId) => {
+	joinRoom = (event, otherVerification) => {
 		let roomId = ''
-		let roomColor = ''
-
 		const name = this.state.name;
-		
-		if(createdRoomId) {
-			roomId = createdRoomId.id
-			roomColor = createdRoomId.color
+
+		if (otherVerification) {
+			roomId = otherVerification.id
 		} else {
 			event.preventDefault();
 			roomId = event.target.id;
-			roomColor = event.target.style.background;
 		}
 
 		const prevRoomId = this.state.connectedRoom;
@@ -208,7 +201,7 @@ export default class UserProvider extends React.Component {
 			name,
 			roomId,
 			prevRoomId,
-			roomColor,
+			// roomColor,
 		});
 	};
 
@@ -266,8 +259,7 @@ export default class UserProvider extends React.Component {
 					...this.state.availableRooms,
 					[anchor]: updateArray,
 				},
-			},
-			() => console.log(this.state.availableRooms)
+			}
 		);
 	};
 
