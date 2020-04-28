@@ -5,7 +5,6 @@ import io from "socket.io-client";
 const userSocket = io("http://localhost:8080");
 
 const user = {
-	// name: "bobo" + Math.floor(Math.random() * 100),
 	name: "",
 	socket: userSocket,
 };
@@ -32,7 +31,6 @@ export default class UserProvider extends React.Component {
 
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
-			//rooms: [], //rooms array för att uppdatera state på rooms när rummet är tomt
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 

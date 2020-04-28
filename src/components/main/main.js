@@ -1,10 +1,10 @@
 // @ts-nocheck
 import React from "react";
 import { UserContext } from "../../contexts/userContext";
+import useStyles from "./mainStyles"
 import {
 	Button,
 	Container,
-	createStyles,
 	FormControl,
 	FormHelperText,
 	Grid,
@@ -12,7 +12,6 @@ import {
 	IconButton,
 	Input,
 	InputAdornment,
-	makeStyles,
 	TextField,
 	Typography,
 	ListItem,
@@ -23,89 +22,6 @@ import SaveIcon from "@material-ui/icons/Save";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Modal from '@material-ui/core/Modal';
-
-
-const useStyles = makeStyles((theme) =>
-	createStyles({
-		root: {
-			flexGrow: 1,
-		},
-		paper: {
-			padding: theme.spacing(2),
-			textAlign: "center",
-			color: theme.palette.text.secondary,
-		},
-		mainContainer: {
-			display: "flex",
-			flexDirection: "row",
-			color: "#b1c0c4",
-
-			"& .MuiTypography-overline": {
-				fontFamily: ' "Quantico", sans-serif',
-				fontSize: "1.2rem",
-
-				lineHeight: "1.2rem",
-				letterSpacing: ".1rem",
-				padding: theme.spacing(0.8, 0),
-			},
-			"& .MuiInputBase-root": {
-				background: "#b1c0c4",
-				padding: theme.spacing(0.3, 0, 0, 0.8),
-			},
-			"& .MuiSvgIcon-root": {
-				margin: theme.spacing(1),
-			},
-			"& > .MuiGrid-item": {
-				margin: theme.spacing(0.5, 0),
-				display: "flex",
-				flexDirection: "column",
-			},
-			"& .MuiButton-containedPrimary": {
-				backgroundColor: "#0003",
-			},
-		},
-		title: {
-			color: "#0005",
-			margin: theme.spacing(3, 0, 2, 0),
-			textAlign: "center",
-			textDecoration: "underline",
-			letterSpacing: ".06rem",
-			[theme.breakpoints.down("xs")]: {
-				fontSize: "1.6rem",
-			},
-		},
-		colorWrapper: {
-			display: "flex",
-			justifyContent: "center",
-			flexWrap: "wrap",
-
-			"& > *": {
-				margin: ".5rem",
-				width: "4rem",
-				height: "4rem",
-			},
-		},
-		modalContainer: {
-			display: "flex",
-			justifyContent: "center",
-			alignItems: "center"
-		},
-		createNameContainer: {
-			display: "flex",
-			width: "20rem",
-			justifyContent: "center",
-			alignItems: 'space-between',
-			background: '#224',
-			textAlign: 'center'
-			
-		},
-		createNameInput: {
-			color: "white"
-		},
-		
-		
-	})
-);
 
 function Main(props) {
 	const classes = useStyles();
@@ -186,8 +102,6 @@ function Main(props) {
 		props.changeView(true)
 	};
 
-	  
-
 	return (
 		<UserContext.Consumer>
 			{/* Om första gången på sidan, spara boolean  'firstTimeOnSite' === true visa modal där du skriver in namn
@@ -202,12 +116,15 @@ function Main(props) {
 							aria-labelledby="create-name-modal"
 							aria-describedby="forces user to create a name to chat"
 						>
-							{<FormControl className={classes.createNameContainer}>
+							{<FormControl 
+								className={classes.createNameContainer}
+							>
 								<Typography style={{color: "White", padding: "2rem"}}>Please enter your nickname:</Typography>
 								<TextField
 									size="small"
 									id="nameInput"
 									type="input"
+									focused={true}
 									inputProps={{
 										className: classes.createNameInput}}
 									variant="outlined"
