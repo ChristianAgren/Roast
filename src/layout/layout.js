@@ -1,10 +1,12 @@
 // @ts-nocheck
 import React from "react";
-import { Container, makeStyles, createStyles } from "@material-ui/core";
+import useStyles from './layoutStyles'
+import {
+	Container,
+} from "@material-ui/core";
 import Main from "../components/main/main";
 import ChatRoom from "../components/chatRoom/chatRoom";
 import RoomNavigation from "../components/roomNavigation/roomNavigation";
-import { UserContext } from "../contexts/userContext";
 import logo from "./ROAST_logo.png";
 
 const useStyles = makeStyles((theme, drawer) =>
@@ -49,31 +51,27 @@ function Layout() {
 	};
 
 	return (
-		<UserContext.Consumer>
-			{(user) => (
-				<Container
-					maxWidth="md"
-					style={{
-						position: "relative",
-						background: "#3e404c",
-						padding: "3rem 0",
+		<Container
+			maxWidth="md"
+			style={{
+				position: "relative",
+				background: "#3e404c",
+				padding: "3rem 0",
 
-						height: "100vh",
+				height: "100vh",
 
-						display: "flex",
-						alignItems: "center",
-						
-					}}>
-					<RoomNavigation changeView={handleChangeView} />
+				display: "flex",
+				alignItems: "center",
 
-					<div className={classes.logoContainer}>
-						<img src={logo} className={classes.logo} />
-					</div>
+			}}>
+			<RoomNavigation changeView={handleChangeView} />
 
-					{changeView ? <ChatRoom /> : <Main changeView={handleChangeView}/>}
-				</Container>
-			)}
-		</UserContext.Consumer>
+			<div className={classes.logoContainer}>
+				<img src={logo} alt="roast_logotype" className={classes.logo} />
+			</div>
+
+			{changeView ? <ChatRoom /> : <Main changeView={handleChangeView} />}
+		</Container>
 	);
 }
 

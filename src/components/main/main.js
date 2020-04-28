@@ -1,10 +1,10 @@
 // @ts-nocheck
 import React from "react";
 import { UserContext } from "../../contexts/userContext";
+import useStyles from "./mainStyles"
 import {
 	Button,
 	Container,
-	createStyles,
 	FormControl,
 	FormHelperText,
 	Grid,
@@ -12,11 +12,9 @@ import {
 	IconButton,
 	Input,
 	InputAdornment,
-	makeStyles,
 	TextField,
 	Typography,
 	ListItem,
-	withTheme,
 } from "@material-ui/core";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import LockIcon from "@material-ui/icons/Lock";
@@ -203,19 +201,10 @@ function Main(props) {
 
 
 	const handleCreateRoomClick = (createNewRoom) => {
-		console.log(`Will create room with following:`);
-		console.log(`Name: ${roomInputValues.roomId}`);
-		console.log(`Password: ${roomInputValues.roomPassword}`);
-		console.log(`Color: ${roomInputValues.roomColor}`);
-
 		const { roomId, roomPassword, roomColor } = roomInputValues;
-		console.log(roomId, roomPassword, roomColor);
-
 		createNewRoom({ roomId, roomPassword, roomColor });
 		props.changeView(true)
 	};
-
-
 
 	return (
 		<UserContext.Consumer>
@@ -231,12 +220,15 @@ function Main(props) {
 							aria-labelledby="create-name-modal"
 							aria-describedby="forces user to create a name to chat"
 						>
-							{<FormControl className={classes.createNameContainer}>
-								<Typography style={{ color: "White", padding: "2rem" }}>Please enter your nickname:</Typography>
+							{<FormControl 
+								className={classes.createNameContainer}
+							>
+								<Typography style={{color: "White", padding: "2rem"}}>Please enter your nickname:</Typography>
 								<TextField
 									size="small"
 									id="nameInput"
 									type="input"
+									focused={true}
 									placeholder="Enter your nickname..."
 									inputProps={{
 										className: classes.createNameInput
