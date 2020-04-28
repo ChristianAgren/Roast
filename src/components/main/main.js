@@ -158,8 +158,11 @@ function Main(props) {
 		handleClose()
 
 		console.log('in: handleFirstTimeOnSite');
-
-		createName(firstTimeOnSite.name)
+		if(firstTimeOnSite.name === '') {
+			createName('Guest')
+		} else {
+			createName(firstTimeOnSite.name)
+		}
 		setFirstTimeOnSite({
 			firstTimeOnSite: false
 		})
@@ -225,6 +228,7 @@ function Main(props) {
 									size="small"
 									id="nameInput"
 									type="input"
+									placeholder="Join as 'Guest'..."
 									inputProps={{
 										className: classes.createNameInput}}
 									variant="outlined"
