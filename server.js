@@ -8,10 +8,6 @@ const io = socket(server);
 const port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, "build")));
 
-server.listen(port, () => {
-	console.log(`Listening to requests on http://localhost:${port}`);
-});
-
 let roomInformation = [
 	{
 		id: "1",
@@ -97,7 +93,6 @@ io.on("connection", function (socket) {
 	socket.on("disconnecting", () => {
 		// Manipulate local data
 		const rooms = Object.keys(socket.rooms)
-		console.log("rooms",rooms)
 		let clearRoom 
 		rooms.forEach((room) => {
 			if (room != socket.id) {
@@ -192,8 +187,6 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("typing", (typingUser) => {
-		console.log("axaxa", typingUser);
-
 		socket.broadcast
 			.to(typingUser.roomId)
 			.emit("typing", { name: typingUser.name, isTyping: typingUser.isTyping });
@@ -234,4 +227,8 @@ io.on("connection", function (socket) {
 
 		io.emit("created new room", response);
 	});
+});
+
+server.listen(port, () => {
+	console.log(`Listening to requests on http://localhost:${port}`);
 });
