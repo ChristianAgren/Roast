@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import useStyles from './availableRoomsStyles'
 import { UserContext } from "../../contexts/userContext";
@@ -97,8 +98,8 @@ function AvailableRooms(props) {
 	return (
 		<UserContext.Consumer>
 			{(user) => (
-				<>
-					<Container className={classes.mainContainer}>
+				<>	
+					<Container className={classes.mainContainer} maxWidth="sm">
 						<Typography variant="overline">Open rooms</Typography>
 						<div className={classes.hideRoomOverFlow}>
 							<Grid container className={classes.roomsContainer}>
@@ -230,6 +231,7 @@ function AvailableRooms(props) {
 						</FormControl>}
 					</Modal>
 				</>
+
 			)}
 		</UserContext.Consumer>
 	);

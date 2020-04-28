@@ -1,11 +1,10 @@
 // @ts-nocheck
 import React from "react";
-import useStyles from './layoutStyles'
-import {
-	Container,
-} from "@material-ui/core";
+import useStyles from "./layoutStyles";
+import { Container } from "@material-ui/core";
 import Main from "../components/main/main";
 import ChatRoom from "../components/chatRoom/chatRoom";
+
 import RoomNavigation from "../components/roomNavigation/roomNavigation";
 import logo from "./ROAST_logo.png";
 
@@ -13,32 +12,31 @@ function Layout() {
 	const classes = useStyles();
 
 	const [changeView, setChangeView] = React.useState(false);
+	const [changeColor, setChangeColor] = React.useState();
 
 	const handleChangeView = (enteredRoom) => {
 		setChangeView(enteredRoom);
 	};
 
+	const getColorFromChild = (color) => {
+		setChangeColor(color);
+	};
+
 	return (
-		<Container
-			maxWidth="md"
-			style={{
-				position: "relative",
-				background: "#3e404c",
-				padding: "3rem 0",
-
-				height: "100vh",
-
-				display: "flex",
-				alignItems: "center",
-
-			}}>
+		<Container maxWidth="md" className={classes.container}>
 			<RoomNavigation changeView={handleChangeView} />
 
-			<div className={classes.logoContainer}>
-				<img src={logo} alt="roast_logotype" className={classes.logo} />
+			<div
+				className={classes.logoContainer}
+				style={{ background: changeColor }}>
+				<img src={logo} className={classes.logo} />
 			</div>
 
-			{changeView ? <ChatRoom /> : <Main changeView={handleChangeView} />}
+			{changeView ? (
+				<ChatRoom />
+			) : (
+				<Main getColor={getColorFromChild} changeView={handleChangeView} />
+			)}
 		</Container>
 	);
 }

@@ -7,16 +7,16 @@ const useStyles = makeStyles((theme) => ({
 		position: "relative",
 
 		height: "100%",
-		width: "100%",
-		overflow: "hidden",
 		maxHeight: "calc(100% - 5rem)",
+		width: "100%",
+
+		overflow: "hidden",
 
 		"& .MuiGrid-container": {
 			display: "block",
 		},
 		"& .MuiListItemAvatar-root": {
 			margin: ".5rem",
-
 			minWidth: "0",
 		},
 		"& .MuiListItem-gutters": {
@@ -44,27 +44,35 @@ const useStyles = makeStyles((theme) => ({
 	},
 
 	msg: {
+		width: "fit-content",
 		maxWidth: "75%",
-		paddingLeft: " 1rem",
+
+		padding: ".2rem 1rem",
 
 		"& > *": {
 			display: "flex",
 			alignItems: "end",
 			borderRadius: "1.8rem",
 		},
+		"& .MuiListItem-root": {
+			margin: ".5rem",
+		},
+		"& .MuiListItem-root h6": {
+			marginTop: "-.5rem",
+		},
 	},
 
-	clientMsg: {},
+	clientMsg: {
+		"& img": {
+			marginRight: "-1rem",
+		},
+	},
 	yourMsg: {
-		
 		flexDirection: "row-reverse",
 		filter: " hue-rotate(20deg)",
-		overflow: "hidden",
 
-
-		"& .MuiListItemText-multiline": {
+		"& .MuiListItem-root > *": {
 			textAlign: "left",
-			marginLeft: theme.spacing(2),
 		},
 	},
 
@@ -76,6 +84,23 @@ const useStyles = makeStyles((theme) => ({
 			color: "#fff4",
 		},
 	},
+	chatTextWrapper: {
+		width: "100%",
+		padding: "0 1rem",
+
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "left",
+		alignItems: "end",
+
+		"&  > *": {
+			width: "100%",
+		},
+
+		"& img": {
+			borderRadius: "1.5rem",
+		},
+	},
 }));
 
-export default useStyles
+export default useStyles;
