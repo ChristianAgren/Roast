@@ -1,16 +1,16 @@
 // @ts-nocheck
+
 const express = require("express");
 const path = require("path");
+
 const app = express();
 const socket = require("socket.io");
 const server = require("http").createServer(app);
+
 const io = socket(server);
 const port = process.env.PORT || 8080;
-app.use(express.static(path.join(__dirname, "build")));
 
-server.listen(port, () => {
-	console.log(`Listening to requests on http://localhost:${port}`);
-});
+app.use(express.static(path.join(__dirname, "build")));
 
 let roomInformation = [
 	{
@@ -237,4 +237,8 @@ io.on("connection", function (socket) {
 			client: false,
 		});
 	});
+});
+
+server.listen(port, () => {
+	console.log(`Listening to requests on http://localhost:${port}`);
 });

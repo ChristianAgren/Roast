@@ -2,10 +2,9 @@
 import React from "react";
 import io from "socket.io-client";
 
-const userSocket = io();
+const userSocket = io("http://localhost:8080");
 
 const user = {
-	// name: "bobo" + Math.floor(Math.random() * 100),
 	name: "",
 	socket: userSocket,
 };
@@ -49,6 +48,7 @@ export default class UserProvider extends React.Component {
 			this.setRoomInState(data)
 		);
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
+
 		this.state.socket.on("user message", (data) =>
 			this.generateChatMessage(data)
 		);
@@ -57,14 +57,49 @@ export default class UserProvider extends React.Component {
 		this.state.socket.on("created new room", (data) =>
 			this.updateAvailableRooms(data)
 		);
+
+		this.state.socket.on("room has been created", (data) => this.joinCreatedRoom(data));
+
 		this.state.socket.on("user left room", (data) =>
 			this.updateUsersinRoom(data)
 		);
 		this.state.socket.on("user joined room", (data) =>
 			this.updateUsersinRoom(data)
 		);
+		this.state.socket.on("remove room", (data) => this.removeRoom(data));
 
 		this.state.socket.on("typing", (data) => this.handleTyping(data));
+	}
+
+	joinCreatedRoom = (data) => {
+		this.joinRoom('server', data)
+	}
+
+	removeRoom = (data) => {
+		const { clearRoom } = data
+
+		let roomAnchor = "open";
+		let findRoom = this.state.availableRooms.open.findIndex(
+			(room) => room.id === clearRoom
+		);
+		if (findRoom === -1) {
+			roomAnchor = "locked";
+			findRoom = this.state.availableRooms.locked.findIndex(
+				(room) => room.id === clearRoom
+			);
+		}
+
+
+		if (findRoom !== -1) {
+			const copiedRoomsList = [...this.state.availableRooms[roomAnchor]];
+			copiedRoomsList.splice(findRoom, 1)
+			this.setState({
+				availableRooms: {
+					...this.state.availableRooms,
+					[roomAnchor]: copiedRoomsList,
+				}
+			})
+		}
 	}
 
 	setAvailableRoomsInState = (data) => {
@@ -125,33 +160,39 @@ export default class UserProvider extends React.Component {
 	};
 
 	removeUserFromRoom = (user, roomsList, index, anchor) => {
-		const userIndex = roomsList[index].users.findIndex(
-			(userindex) => userindex.name === user.name
-		);
-		roomsList[index].users.splice(userIndex, 1);
-		this.setUpdatedUsersInState(roomsList, anchor);
-	};
+		const userIndex = roomsList[index].users.findIndex((userindex) => userindex.name === user.name)
+		roomsList[index].users.splice(userIndex, 1)
+
+		this.setUpdatedUsersInState(roomsList, anchor)
+	}
 
 	setUpdatedUsersInState = (roomsList, anchor) => {
-		this.setState(
-			{
-				availableRooms: {
-					...this.state.availableRooms,
-					[anchor]: roomsList,
-				},
-			},
-			() => console.log(this.state.availableRooms)
-		);
-	};
+		const indexEmptyRoom = roomsList.findIndex((r) => r.users === [])
 
-	joinRoom = (event) => {
-		event.preventDefault();
+		if (roomsList.users === '') {
+			roomsList.splice(indexEmptyRoom, 1)
+		}
 
+		this.setState({
+			availableRooms: {
+				...this.state.availableRooms,
+				[anchor]: roomsList
+			}
+		})
+	}
+
+	joinRoom = (event, otherVerification) => {
+		let roomId = ''
 		const name = this.state.name;
-		const roomId = event.target.id;
-		const prevRoomId = this.state.connectedRoom;
 
-		const roomColor = event.target.style.background;
+		if (otherVerification) {
+			roomId = otherVerification.id
+		} else {
+			event.preventDefault();
+			roomId = event.target.id;
+		}
+
+		const prevRoomId = this.state.connectedRoom;
 
 		this.setState({
 			firstTime: true,
@@ -162,7 +203,7 @@ export default class UserProvider extends React.Component {
 			name,
 			roomId,
 			prevRoomId,
-			roomColor,
+			// roomColor,
 		});
 	};
 
@@ -175,15 +216,6 @@ export default class UserProvider extends React.Component {
 		this.state.socket.emit("messageError", errorMessage);
 	};
 
-	// removeRoom = (roomToRemove) => {
-	// 	const newRoomList = this.state.rooms.splice(roomToRemove, 1)
-	// }
-
-	// Tar bort rummet utan användare i
-
-	// 	this.setState({
-	// 		rooms: newRoomList
-	// 	})
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
 		this.setState({
@@ -223,7 +255,7 @@ export default class UserProvider extends React.Component {
 		let updateArray;
 		let anchor;
 
-		if (room.password.length != 0) {
+		if (room.password.length !== 0) {
 			updateArray = [...this.state.availableRooms.locked];
 			anchor = "locked";
 		} else {
@@ -238,8 +270,7 @@ export default class UserProvider extends React.Component {
 					...this.state.availableRooms,
 					[anchor]: updateArray,
 				},
-			},
-			() => console.log(this.state.availableRooms)
+			}
 		);
 	};
 
@@ -252,8 +283,6 @@ export default class UserProvider extends React.Component {
 	};
 
 	handleTyping = (typingUser) => {
-		console.log(typingUser);
-
 		const found = this.state.usersTyping.find(
 			(typer) => typer.name === typingUser.name
 		);
