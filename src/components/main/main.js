@@ -1,10 +1,11 @@
 // @ts-nocheck
 import React from "react";
+import useStyles from "./mainStyles"
+
 import { UserContext } from "../../contexts/userContext";
 import {
 	Button,
 	Container,
-	createStyles,
 	FormControl,
 	FormHelperText,
 	Grid,
@@ -12,11 +13,9 @@ import {
 	IconButton,
 	Input,
 	InputAdornment,
-	makeStyles,
 	TextField,
 	Typography,
 	ListItem,
-	withTheme,
 } from "@material-ui/core";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import LockIcon from "@material-ui/icons/Lock";
@@ -24,89 +23,6 @@ import SaveIcon from "@material-ui/icons/Save";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Modal from "@material-ui/core/Modal";
-
-const useStyles = makeStyles((theme) =>
-	createStyles({
-		root: {
-			flexGrow: 1,
-		},
-		paper: {
-			padding: theme.spacing(2),
-			textAlign: "center",
-			color: theme.palette.text.secondary,
-		},
-		mainContainer: {
-			display: "flex",
-			flexDirection: "row",
-			color: "#b1c0c4",
-
-			"& .MuiTypography-overline": {
-				fontFamily: ' "Quantico", sans-serif',
-				fontSize: "1.2rem",
-
-				lineHeight: "1.2rem",
-				letterSpacing: ".1rem",
-				padding: theme.spacing(0.8, 0),
-			},
-			"& .MuiInputBase-root": {
-				background: "#b1c0c4",
-				padding: theme.spacing(0.3, 0, 0, 0.8),
-			},
-			"& .MuiSvgIcon-root": {
-				margin: theme.spacing(1, 2, 1, 1),
-			},
-			"& .MuiSvgIcon-root": {
-				margin: theme.spacing(0.5),
-				color: "rgba(0, 0, 0, 0.45)",
-			},
-			"& > .MuiGrid-item": {
-				margin: theme.spacing(0.5, 0),
-				display: "flex",
-				flexDirection: "column",
-			},
-			"& .MuiButton-containedPrimary": {
-				backgroundColor: "#0003",
-			},
-		},
-		title: {
-			color: "#0005",
-			margin: theme.spacing(3, 0, 2, 0),
-			textAlign: "center",
-			textDecoration: "underline",
-			letterSpacing: ".06rem",
-			[theme.breakpoints.down("xs")]: {
-				fontSize: "1.6rem",
-			},
-		},
-		colorWrapper: {
-			display: "flex",
-			justifyContent: "center",
-			flexWrap: "wrap",
-
-			"& > *": {
-				margin: ".5rem",
-				width: "4rem",
-				height: "4rem",
-			},
-		},
-		modalContainer: {
-			display: "flex",
-			justifyContent: "center",
-			alignItems: "center",
-		},
-		createNameContainer: {
-			display: "flex",
-			width: "20rem",
-			justifyContent: "center",
-			alignItems: "space-between",
-			background: "#224",
-			textAlign: "center",
-		},
-		createNameInput: {
-			color: "white",
-		},
-	})
-);
 
 function Main(props) {
 	const classes = useStyles();
@@ -134,7 +50,6 @@ function Main(props) {
 
 	props.getColor(roomInputValues.roomColor);
 	const switchColor = (event) => {
-		console.log(event.target.id);
 
 		setRoomInputValues({
 			...roomInputValues,
@@ -156,8 +71,6 @@ function Main(props) {
 		event.preventDefault();
 
 		handleClose();
-
-		console.log("in: handleFirstTimeOnSite");
 
 		createName(firstTimeOnSite.name);
 		setFirstTimeOnSite({
@@ -191,13 +104,8 @@ function Main(props) {
 	};
 
 	const handleCreateRoomClick = (createNewRoom) => {
-		console.log(`Will create room with following:`);
-		console.log(`Name: ${roomInputValues.roomId}`);
-		console.log(`Password: ${roomInputValues.roomPassword}`);
-		console.log(`Color: ${roomInputValues.roomColor}`);
 
 		const { roomId, roomPassword, roomColor } = roomInputValues;
-		console.log(roomId, roomPassword, roomColor);
 
 		createNewRoom({ roomId, roomPassword, roomColor });
 	};

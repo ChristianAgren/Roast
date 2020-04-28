@@ -1,74 +1,12 @@
 // @ts-nocheck
 import React from "react";
+import useStyles from "./roomNavigationStyles";
+
 import AvailableRooms from "../availableRooms/availableRooms";
 
-import {
-	Container,
-	// Grid,
-	// Paper,
-	makeStyles,
-	createStyles,
-	// Typography,
-	// IconButton,
-	// Button,
-	// SwipeableDrawer,
-	Collapse,
-	List,
-	ListItem,
-	// ListItemText,
-} from "@material-ui/core";
+import { Container, Collapse, List, ListItem } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-
-const useStyles = makeStyles((theme, drawer) =>
-	createStyles({
-		root: {
-			flexGrow: 1,
-		},
-
-		drawerButton: {
-			width: "6rem",
-			height: "2.5rem",
-
-			background: "#727070",
-			margin: "auto",
-
-			display: "flex",
-			justifyContent: "center",
-			alignItems: "center",
-
-			borderRadius: "0 0 .5rem .5rem",
-
-			"&:hover": {
-				background: "#727070",
-			},
-			"& > *": {
-				fontSize: "5rem",
-				color: "#ff8866",
-			},
-		},
-
-		container: {
-			padding: 0,
-			height: ".5rem",
-			background: "#727070",
-		},
-		collapse: {
-			background: "#727070",
-		},
-
-		wrapper: {
-			position: "fixed",
-			top: "0",
-			left: "0",
-			right: "0",
-			zIndex: 1,
-
-			display: "flex",
-			justifyContent: "center",
-		},
-	})
-);
 
 function RoomNavigation(props) {
 	const [drawer, setDrawer] = React.useState(false);

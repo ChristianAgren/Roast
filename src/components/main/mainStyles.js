@@ -1,7 +1,4 @@
-import {
-	createStyles,
-	makeStyles,
-} from "@material-ui/core";
+import { createStyles, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) =>
 	createStyles({
@@ -31,7 +28,7 @@ const useStyles = makeStyles((theme) =>
 				padding: theme.spacing(0.3, 0, 0, 0.8),
 			},
 			"& .MuiSvgIcon-root": {
-				margin: theme.spacing(1),
+				margin: theme.spacing(1, 2, 1, 1),
 			},
 			"& > .MuiGrid-item": {
 				margin: theme.spacing(0.5, 0),
@@ -66,23 +63,20 @@ const useStyles = makeStyles((theme) =>
 		modalContainer: {
 			display: "flex",
 			justifyContent: "center",
-			alignItems: "center"
+			alignItems: "center",
 		},
 		createNameContainer: {
 			display: "flex",
 			width: "20rem",
 			justifyContent: "center",
-			background: '#224',
-			textAlign: 'center',
-			outline: 'none',
-			
+			alignItems: "space-between",
+			background: "#224",
+			textAlign: "center",
 		},
 		createNameInput: {
-			color: "white"
+			color: "white",
 		},
-		
-		
 	})
 );
 
-export default useStyles
+export default useStyles;
