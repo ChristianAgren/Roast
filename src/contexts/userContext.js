@@ -46,11 +46,26 @@ export default class UserProvider extends React.Component {
 		this.state.socket.on("created new room", (data) => this.updateAvailableRooms(data));
 		this.state.socket.on("user left room", (data) => this.updateUsersinRoom(data));
 		this.state.socket.on("user joined room", (data) => this.updateUsersinRoom(data));
+		// this.state.socket.on("remove room", (data) => this.removeRoom(data));
 
 
 		// this.state.socket.on("typing", (data) => this.handleTyping(data));
 
 	}
+	
+	// removeRoom = (data) => {
+	// 	console.log(this.state.availableRooms);
+		
+	// 	// if (data.open.password === '')
+	// 	// 	data.allRooms.allRooms.open.splice(data.roomIndex, 1)
+	// 	// else {
+	// 	// 	data.allRooms.allRooms.locked.splice(data.roomIndex, 1)
+	// 	// }
+
+	// 	this.setState({
+	// 		availableRooms: data.allRooms
+	// 	})	
+	// }
 
 	setAvailableRoomsInState = (data) => {
 		console.log('yaay');
@@ -101,10 +116,20 @@ export default class UserProvider extends React.Component {
 	removeUserFromRoom = (user, roomsList, index, anchor) => {
 		const userIndex = roomsList[index].users.findIndex((userindex) => userindex.name === user.name)
 		roomsList[index].users.splice(userIndex, 1)
+		
 		this.setUpdatedUsersInState(roomsList, anchor)
 	}
 
 	setUpdatedUsersInState = (roomsList, anchor) => {
+		const indexEmptyRoom = roomsList.findIndex((r) => r.users === [])
+		// const emptyRoom = roomsList.find((r) => r.users === [])
+		console.log(indexEmptyRoom);
+		
+
+		if(roomsList.users === ''){
+			roomsList.splice(indexEmptyRoom, 1)
+		}
+		
 		this.setState({
 			availableRooms: {
 				...this.state.availableRooms,
@@ -144,13 +169,7 @@ export default class UserProvider extends React.Component {
 	// 	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 	// Tar bort rummet utan användare i
 
-	// removeRoom = (roomToRemove) => {
-	// 	const newRoomList = this.state.rooms.splice(roomToRemove, 1)
-
-	// 	this.setState({
-	// 		rooms: newRoomList
-	// 	})
-	// }
+	
 
 	generateChatLog = (serverChat) => {
 		const { server_chatlog } = serverChat;
@@ -191,6 +210,7 @@ export default class UserProvider extends React.Component {
 	updateAvailableRooms = (room) => {
 		let updateArray;
 		let anchor;
+		console.log(room)
 
 		if (room.password.length !== 0) {
 			updateArray = [ ...this.state.availableRooms.locked ]

@@ -98,12 +98,15 @@ io.on("connection", function (socket) {
 	socket.on("disconnecting", () => {
 		// Manipulate local data
 		const rooms = Object.keys(socket.rooms)
+		console.log("rooms",rooms)
 		let clearRoom 
 		rooms.forEach((room) => {
 			if (room != socket.id) {
 				clearRoom = room
 			}
 		})
+		console.log("rad 108 clearroom",clearRoom);
+		
 		if (clearRoom) {
 			const { users } = roomInformation.find((room) => room.id === clearRoom)
 			const leaverInfo = users.find((user) => user.id === socket.id)
@@ -117,7 +120,7 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("join room", (data) => {
-		
+
 		const user = {
 			name: data.name,
 			id: socket.id
@@ -136,6 +139,10 @@ io.on("connection", function (socket) {
 					// Här kallar vi på removeRoom i userContext som uppdaterar rooms listan som ska mappas ut
 					// Om rooms.users är tom sätt splice:a ut rummet ur roomslistan.
 					// Om users är en tom lista, ta bort rummet
+
+					// Om users === []
+					
+
 					
 					// const roomToRemove = rooms.findIndex((r) => r.roomId === data.prevRoomId)
 
@@ -147,6 +154,25 @@ io.on("connection", function (socket) {
 					if (leaver != -1) {
 						users.splice(leaver, 1);
 					}
+
+					// console.log(allRooms)
+					
+					// // Hitta index i öppna rum där id stämmer med prev rum
+					// const openRoomIndex = allRooms.open.findIndex((r)=> r.id === data.prevRoomId)
+
+					// // Ta bort det rummet från det indexet
+					// allRooms.open.splice(openRoomIndex, 1)
+
+					// console.log(allRooms)
+					
+					// // // Hitta vilket rum som ska tas bort
+					// // roomToRemove = allRooms.open.find((p) => p.id === data.prevRoomId)
+					
+
+					// // Skicka nya allRooms till userContext
+					// io.emit("remove room", {allRooms})
+					// // console.log(roomInformation);
+					
 
 					// Update sockets and rooms
 					io.emit("user left room", { username: user.name, room: data.prevRoomId, join: false });
