@@ -146,6 +146,9 @@ io.on("connection", function (socket) {
 					}
 
 					if(users.length === 0) {
+						const removeRoom = roomInformation.findIndex((room) => room.id === data.prevRoomId)
+						roomInformation.splice(removeRoom, 1)
+						
 						io.emit("remove room", {clearRoom: data.prevRoomId})
 					} else {
 						io.emit("user left room", {
