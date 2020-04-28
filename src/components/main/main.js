@@ -16,7 +16,6 @@ import {
 	TextField,
 	Typography,
 	ListItem,
-	withTheme,
 } from "@material-ui/core";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import LockIcon from "@material-ui/icons/Lock";
@@ -54,11 +53,7 @@ const useStyles = makeStyles((theme) =>
 				padding: theme.spacing(0.3, 0, 0, 0.8),
 			},
 			"& .MuiSvgIcon-root": {
-				margin: theme.spacing(1, 2, 1, 1),
-			},
-			"& .MuiSvgIcon-root": {
-				margin: theme.spacing(0.5),
-				color: "rgba(0, 0, 0, 0.45)",
+				margin: theme.spacing(1),
 			},
 			"& > .MuiGrid-item": {
 				margin: theme.spacing(0.5, 0),
