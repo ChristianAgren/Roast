@@ -239,7 +239,6 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("messageError", (error) => {
-		console.log("error", error);
 
 		io.to(socket.id).emit("notice", {
 			message: error,
