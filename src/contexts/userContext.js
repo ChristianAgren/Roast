@@ -244,7 +244,7 @@ export default class UserProvider extends React.Component {
 		let updateArray;
 		let anchor;
 
-		if (room.password.length != 0) {
+		if (room.password.length !== 0) {
 			updateArray = [...this.state.availableRooms.locked];
 			anchor = "locked";
 		} else {
