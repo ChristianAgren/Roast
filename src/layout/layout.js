@@ -9,7 +9,6 @@ import ChatRoom from "../components/chatRoom/chatRoom";
 import RoomNavigation from "../components/roomNavigation/roomNavigation";
 import logo from "./ROAST_logo.png";
 
-
 function Layout() {
 	const classes = useStyles();
 

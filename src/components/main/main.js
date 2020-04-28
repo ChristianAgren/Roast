@@ -50,26 +50,36 @@ function Main(props) {
 			roomColor: event.target.id,
 		});
 	};
+	const [firstTime, setFirstTime] = React.useState(true)
 
-	const [firstTimeOnSite, setFirstTimeOnSite] = React.useState({
-		firstTime: true,
-		name: '',
-	})
+	const [name, setName] = React.useState('')
+
+
 
 	const handleClose = () => {
 		setOpen(false);
-	  };
+	};
 
 	const [open, setOpen] = React.useState(true);
 
-	const handleCreateName = (event, createName, handleClose) => {
+	const handleNameInputChange = (event) => {
+		event.preventDefault();
+		setName(
+			event.target.value
+		)
+
+	}
+
+	const handleCreateName = (event, createName, handleClose, name) => {
 		event.preventDefault()
+		createName(name)
 		handleClose()
-		createName(firstTimeOnSite.name)
-		setFirstTimeOnSite({
-			firstTimeOnSite: false
+
+		setFirstTime({
+			firstTime: false,
 		})
 	}
+
 
 	const handleInputChange = (event, anchor) => {
 		setRoomInputValues({
@@ -89,12 +99,6 @@ function Main(props) {
 		event.preventDefault();
 	};
 
-	const handleNameInputChange = (event) => {
-		event.preventDefault();
-		setFirstTimeOnSite({
-			name: event.target.value
-		})
-	}
 
 	const handleCreateRoomClick = (createNewRoom) => {
 		const { roomId, roomPassword, roomColor } = roomInputValues;
@@ -109,7 +113,7 @@ function Main(props) {
 			för att stänga när man skrivit in namn. disableEscapeKeyDown kan behövas för att tvinga att skriva namn. onRendered för att modalen ska sättas till true när man kommer in på sidan första gången*/}
 			{(user) => (
 				<Container maxWidth="sm">
-					{firstTimeOnSite &&
+					{firstTime &&
 						<Modal
 							className={classes.modalContainer}
 							open={open}
@@ -125,21 +129,34 @@ function Main(props) {
 									id="nameInput"
 									type="input"
 									focused={true}
+									placeholder="Enter your nickname..."
 									inputProps={{
-										className: classes.createNameInput}}
+										className: classes.createNameInput
+									}}
 									variant="outlined"
 									className={classes.createNameInput}
 									onChange={(event) => handleNameInputChange(event, "name")}
 								/>
-								<Button
-									label="name"
-									variant="contained"
-									color="primary"
-									onClick={(e) => handleCreateName(e, user.createName, handleClose)}
-								>
-									Send
-								</Button>
+								{name !== undefined && name.length > 2
+									?
+									<Button
+										label="name"
+										variant="contained"
+										color="primary"
+										onClick={(e) => handleCreateName(e, user.createName, handleClose, name)}
+									>
+										Submit
+									</Button>
+									:
+									<Button
+										disabled
+										variant="contained"
+										color="primary"
 
+									>
+										Submit
+							 		</Button>
+								}
 							</FormControl>}
 						</Modal>
 
