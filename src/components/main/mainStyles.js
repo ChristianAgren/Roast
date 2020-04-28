@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) =>
 			flexDirection: "row",
 			color: "#b1c0c4",
 
+
 			"& .MuiTypography-overline": {
 				fontFamily: ' "Quantico", sans-serif',
 				fontSize: "1.2rem",
@@ -25,13 +26,20 @@ const useStyles = makeStyles((theme) =>
 				lineHeight: "1.2rem",
 				letterSpacing: ".1rem",
 				padding: theme.spacing(0.8, 0),
+				[theme.breakpoints.down("xs")]: {
+					fontSize: "1rem",
+				},
 			},
 			"& .MuiInputBase-root": {
 				background: "#b1c0c4",
 				padding: theme.spacing(0.3, 0, 0, 0.8),
 			},
 			"& .MuiSvgIcon-root": {
-				margin: theme.spacing(1),
+				margin: theme.spacing(0.5),
+				color: "rgba(0, 0, 0, 0.45)",
+				[theme.breakpoints.down("xs")]: {
+					fontSize: "2rem",
+				},
 			},
 			"& > .MuiGrid-item": {
 				margin: theme.spacing(0.5, 0),
@@ -44,12 +52,13 @@ const useStyles = makeStyles((theme) =>
 		},
 		title: {
 			color: "#0005",
-			margin: theme.spacing(3, 0, 2, 0),
+			margin: theme.spacing(4, 0, 2, 0),
 			textAlign: "center",
 			textDecoration: "underline",
 			letterSpacing: ".06rem",
-			[theme.breakpoints.down("xs")]: {
-				fontSize: "1.6rem",
+			[theme.breakpoints.down('xs')]: {
+				fontSize: "1.8rem",
+				margin: theme.spacing(8, 0, 2, 0)
 			},
 		},
 		colorWrapper: {
@@ -57,11 +66,19 @@ const useStyles = makeStyles((theme) =>
 			justifyContent: "center",
 			flexWrap: "wrap",
 
+
 			"& > *": {
 				margin: ".5rem",
 				width: "4rem",
 				height: "4rem",
+				[theme.breakpoints.down("xs")]: {
+					margin: ".2rem",
+					width: "3rem",
+					height: "3rem",
+				},
+
 			},
+
 		},
 		modalContainer: {
 			display: "flex",
@@ -72,16 +89,16 @@ const useStyles = makeStyles((theme) =>
 			display: "flex",
 			width: "20rem",
 			justifyContent: "center",
+			alignItems: 'space-between',
 			background: '#224',
-			textAlign: 'center',
-			outline: 'none',
-			
+			textAlign: 'center'
+
 		},
 		createNameInput: {
 			color: "white"
 		},
-		
-		
+
+
 	})
 );
 
