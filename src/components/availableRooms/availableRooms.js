@@ -169,7 +169,7 @@ function AvailableRooms(props) {
 	}
 
 	const handlePasswordOpen = (event, value) => {
-		if (event != "close") {
+		if (event !== "close") {
 			setPasswordInput({
 				...passwordInput,
 				room: event.target.id
@@ -188,7 +188,7 @@ function AvailableRooms(props) {
 		const newList = users.slice(0, 5)
 		return (
 			newList.map((user, index) =>
-				newList.length - 1 != index
+				newList.length - 1 !== index
 					? `${user.name}, `
 					: `and more... `
 			)
@@ -257,7 +257,7 @@ function AvailableRooms(props) {
 													<Typography className={classes.activeUsers}>
 														{room.users.length} : active users
 													</Typography>
-													{(room.users.length != 0) ?
+													{(room.users.length !== 0) ?
 														<Typography
 															className={classes.users}
 															style={{ color: room.color }}>
