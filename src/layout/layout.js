@@ -19,6 +19,11 @@ const useStyles = makeStyles((theme, drawer) =>
 
 			background: "#ff8866",
 			borderRadius: ".5rem",
+			[theme.breakpoints.down("xs")]: {
+				width: "6rem",
+				height: "1.5rem",
+				top: "3rem",
+			},
 		},
 		logo: {
 			position: "absolute",
@@ -27,6 +32,9 @@ const useStyles = makeStyles((theme, drawer) =>
 
 			width: "calc(100% - .8rem)",
 			imageRendering: "pixelated",
+			[theme.breakpoints.down("xs")]: {
+				width: "calc(100% - 0.8rem)",
+			},
 		},
 	})
 );

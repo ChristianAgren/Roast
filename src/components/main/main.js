@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) =>
 			flexDirection: "row",
 			color: "#b1c0c4",
 
+
 			"& .MuiTypography-overline": {
 				fontFamily: ' "Quantico", sans-serif',
 				fontSize: "1.2rem",
@@ -48,17 +49,20 @@ const useStyles = makeStyles((theme) =>
 				lineHeight: "1.2rem",
 				letterSpacing: ".1rem",
 				padding: theme.spacing(0.8, 0),
+				[theme.breakpoints.down("xs")]: {
+					fontSize: "1rem",
+				},
 			},
 			"& .MuiInputBase-root": {
 				background: "#b1c0c4",
 				padding: theme.spacing(0.3, 0, 0, 0.8),
 			},
 			"& .MuiSvgIcon-root": {
-				margin: theme.spacing(1, 2, 1, 1),
-			},
-			"& .MuiSvgIcon-root": {
 				margin: theme.spacing(0.5),
 				color: "rgba(0, 0, 0, 0.45)",
+				[theme.breakpoints.down("xs")]: {
+					fontSize: "2rem",
+				},
 			},
 			"& > .MuiGrid-item": {
 				margin: theme.spacing(0.5, 0),
@@ -71,12 +75,13 @@ const useStyles = makeStyles((theme) =>
 		},
 		title: {
 			color: "#0005",
-			margin: theme.spacing(3, 0, 2, 0),
+			margin: theme.spacing(4, 0, 2, 0),
 			textAlign: "center",
 			textDecoration: "underline",
 			letterSpacing: ".06rem",
-			[theme.breakpoints.down("xs")]: {
-				fontSize: "1.6rem",
+			[theme.breakpoints.down('xs')]: {
+				fontSize: "1.8rem",
+				margin: theme.spacing(8, 0, 2, 0)
 			},
 		},
 		colorWrapper: {
@@ -84,11 +89,19 @@ const useStyles = makeStyles((theme) =>
 			justifyContent: "center",
 			flexWrap: "wrap",
 
+
 			"& > *": {
 				margin: ".5rem",
 				width: "4rem",
 				height: "4rem",
+				[theme.breakpoints.down("xs")]: {
+					margin: ".2rem",
+					width: "3rem",
+					height: "3rem",
+				},
+
 			},
+
 		},
 		modalContainer: {
 			display: "flex",
@@ -102,13 +115,13 @@ const useStyles = makeStyles((theme) =>
 			alignItems: 'space-between',
 			background: '#224',
 			textAlign: 'center'
-			
+
 		},
 		createNameInput: {
 			color: "white"
 		},
-		
-		
+
+
 	})
 );
 
@@ -134,39 +147,41 @@ function Main(props) {
 	});
 
 	const switchColor = (event) => {
-		console.log(event.target.id);
-
 		setRoomInputValues({
 			...roomInputValues,
 			roomColor: event.target.id,
 		});
 	};
-	const [firstTimeOnSite, setFirstTimeOnSite] = React.useState({
-		firstTime: true,
-		name: '',
-	})
+	const [firstTime, setFirstTime] = React.useState(true)
+
+	const [name, setName] = React.useState('')
+
+
 
 	const handleClose = () => {
 		setOpen(false);
-	  };
+	};
 
 	const [open, setOpen] = React.useState(true);
 
-	const handleCreateName = (event, createName, handleClose) => {
-		event.preventDefault()
+	const handleNameInputChange = (event) => {
+		event.preventDefault();
+		setName(
+			event.target.value
+		)
 
+	}
+
+	const handleCreateName = (event, createName, handleClose, name) => {
+		event.preventDefault()
+		createName(name)
 		handleClose()
 
-		console.log('in: handleFirstTimeOnSite');
-		if(firstTimeOnSite.name === '') {
-			createName('Guest')
-		} else {
-			createName(firstTimeOnSite.name)
-		}
-		setFirstTimeOnSite({
-			firstTimeOnSite: false
+		setFirstTime({
+			firstTime: false,
 		})
 	}
+
 
 	const handleInputChange = (event, anchor) => {
 		setRoomInputValues({
@@ -186,12 +201,6 @@ function Main(props) {
 		event.preventDefault();
 	};
 
-	const handleNameInputChange = (event) => {
-		event.preventDefault();
-		setFirstTimeOnSite({
-			name: event.target.value
-		})
-	}
 
 	const handleCreateRoomClick = (createNewRoom) => {
 		console.log(`Will create room with following:`);
@@ -206,7 +215,7 @@ function Main(props) {
 		props.changeView(true)
 	};
 
-	  
+
 
 	return (
 		<UserContext.Consumer>
@@ -215,7 +224,7 @@ function Main(props) {
 			för att stänga när man skrivit in namn. disableEscapeKeyDown kan behövas för att tvinga att skriva namn. onRendered för att modalen ska sättas till true när man kommer in på sidan första gången*/}
 			{(user) => (
 				<Container maxWidth="sm">
-					{firstTimeOnSite &&
+					{firstTime &&
 						<Modal
 							className={classes.modalContainer}
 							open={open}
@@ -223,27 +232,39 @@ function Main(props) {
 							aria-describedby="forces user to create a name to chat"
 						>
 							{<FormControl className={classes.createNameContainer}>
-								<Typography style={{color: "White", padding: "2rem"}}>Please enter your nickname:</Typography>
+								<Typography style={{ color: "White", padding: "2rem" }}>Please enter your nickname:</Typography>
 								<TextField
 									size="small"
 									id="nameInput"
 									type="input"
-									placeholder="Join as 'Guest'..."
+									placeholder="Enter your nickname..."
 									inputProps={{
-										className: classes.createNameInput}}
+										className: classes.createNameInput
+									}}
 									variant="outlined"
 									className={classes.createNameInput}
 									onChange={(event) => handleNameInputChange(event, "name")}
 								/>
-								<Button
-									label="name"
-									variant="contained"
-									color="primary"
-									onClick={(e) => handleCreateName(e, user.createName, handleClose)}
-								>
-									Send
-								</Button>
+								{name !== undefined && name.length > 2
+									?
+									<Button
+										label="name"
+										variant="contained"
+										color="primary"
+										onClick={(e) => handleCreateName(e, user.createName, handleClose, name)}
+									>
+										Submit
+									</Button>
+									:
+									<Button
+										disabled
+										variant="contained"
+										color="primary"
 
+									>
+										Submit
+							 		</Button>
+								}
 							</FormControl>}
 						</Modal>
 
