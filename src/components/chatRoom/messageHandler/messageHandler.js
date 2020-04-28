@@ -9,6 +9,7 @@ import {
 	Container,
 	Snackbar,
 	Fade,
+	Typography,
 } from "@material-ui/core";
 import OutdoorGrillTwoToneIcon from "@material-ui/icons/OutdoorGrillTwoTone";
 
@@ -61,10 +62,22 @@ const useStyles = makeStyles((theme) =>
 				fontSize: ".7rem",
 			},
 		},
+		isTyping: {
+			position: "absolute",
+			top: "-1.5rem",
+			left: 0,
+			right: 0,
+
+			padding: "0 1rem",
+
+			background: "#000a",
+			color: "#fff9",
+		},
 	})
 );
 
 function MessageHandler(props) {
+
 	const classes = useStyles();
 
 	const [messageValue, setMessageValue] = React.useState("");
@@ -74,13 +87,7 @@ function MessageHandler(props) {
 
 		setMessageValue(event.target.value);
 
-		// props.user.emitTyping(isTyping);
-
-		// if (event.target.value.length > 0) {
-		//     handleClick();
-		// } else {
-		// 	handleClose();
-		// }
+		props.user.emitTyping(isTyping);
 	};
 
 	const onSendClick = (createNewMessage) => {
@@ -88,6 +95,7 @@ function MessageHandler(props) {
 
 		createNewMessage(messageValue);
 		setMessageValue("");
+		props.user.emitTyping(false);
 	};
 
 	const [state, setState] = React.useState({
@@ -114,11 +122,45 @@ function MessageHandler(props) {
 				open={state.open}
 				onClose={handleClose}
 				TransitionComponent={state.Transition}
-				message={props.user.name + " is typing..."}
+				message={
+					props.user.usersTyping.length > 0 ? (
+						<Typography
+							onChange={() => {
+								if (props.user.usersTyping) {
+									handleClick();
+								} else {
+									handleClose();
+								}
+							}}>
+							{props.user.usersTyping.map((user) =>
+								user.isTyping ? user.name : null
+							)}
+							: is typing
+						</Typography>
+					) : null
+				}
 				className={classes.snackbar}
 			/>
 
-			<Container maxWidth="md" className={classes.inputWrapperContainer}>
+			<Container
+				maxWidth="md"
+				style={{ position: "relative", background: "#e7e7e7" }}>
+				{props.user.usersTyping.length > 0 ? (
+					<Typography
+						className={classes.isTyping}
+						onChange={() => {
+							if (props.user.usersTyping) {
+								handleClick();
+							} else {
+								handleClose();
+							}
+						}}>
+						{props.user.usersTyping.map((user) =>
+							user.isTyping ? user.name : null
+						)}
+						: is typing
+					</Typography>
+				) : null}
 				<Container maxWidth="sm" className={classes.inputWrapper}>
 					<FormControl fullWidth>
 						<TextField
@@ -128,7 +170,6 @@ function MessageHandler(props) {
 							value={messageValue}
 							size="small"
 							autoComplete="off"
-						
 							onChange={(event) => onInputChange(event, props)}
 						/>
 					</FormControl>

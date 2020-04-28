@@ -122,7 +122,6 @@ function AvailableRooms(props) {
 				<Container className={classes.mainContainer}>
 					<Typography variant="overline">Open rooms</Typography>
 					<div className={classes.hideRoomOverFlow}>
-						{/* {console.log(user)} */}
 						<Grid container className={classes.roomsContainer}>
 							<List dense>
 								{user.availableRooms.open.map((room) => (
