@@ -59,7 +59,7 @@ function Layout() {
 					<RoomNavigation changeView={handleChangeView} />
 
 					<div className={classes.logoContainer}>
-						<img src={logo} className={classes.logo} />
+						<img src={logo} alt="roast_logotype" className={classes.logo} />
 					</div>
 
 					{changeView ? <ChatRoom /> : <Main changeView={handleChangeView}/>}
