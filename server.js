@@ -8,10 +8,6 @@ const io = socket(server);
 const port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, "build")));
 
-server.listen(port, () => {
-	console.log(`Listening to requests on http://localhost:${port}`);
-});
-
 let roomInformation = [
 	// {
 	// 	id: "1",
@@ -97,7 +93,6 @@ io.on("connection", function (socket) {
 	socket.on("disconnecting", () => {
 		// Manipulate local data
 		const rooms = Object.keys(socket.rooms)
-		console.log("rooms",rooms)
 		let clearRoom 
 		rooms.forEach((room) => {
 			if (room != socket.id) {
@@ -167,9 +162,10 @@ io.on("connection", function (socket) {
 			}
 			socket.join(data.roomId, () => {
 				// Manipulate local data
-				const { users } = roomInformation.find((r) => r.id === data.roomId);
+				const { users, color } = roomInformation.find((r) => r.id === data.roomId);
+				// const { color } = roomInformation.find((h) => h.id === data.roomId);
 				users.push(user);
-				io.to(socket.id).emit("join successful", data);
+				io.to(socket.id).emit("join successful", {...data, roomColor: color} );
 
 				//Update all socket's room information
 				io.emit("user joined room", {
@@ -192,17 +188,13 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("typing", (typingUser) => {
-		console.log("axaxa", typingUser);
-
 		socket.broadcast
 			.to(typingUser.roomId)
 			.emit("typing", { name: typingUser.name, isTyping: typingUser.isTyping });
 	});
 
 	socket.on("message", (newMessage) => {
-		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
-		const { color } = roomInformation.find((h) => h.id === newMessage.roomId);
-		console.log(color);
+		const { history, color } = roomInformation.find((h) => h.id === newMessage.roomId);
 		
 		const message = {
 			name: newMessage.name,
@@ -237,4 +229,8 @@ io.on("connection", function (socket) {
 		io.emit("created new room", response);
 		
 	});
+});
+
+server.listen(port, () => {
+	console.log(`Listening to requests on http://localhost:${port}`);
 });
