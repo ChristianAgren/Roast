@@ -219,8 +219,10 @@ function AvailableRooms(props) {
 				error: false,
 				errMsg: ''
 			})
+			props.changeView(true)
+			handlePasswordOpen("close", false)
+			user.joinRoom('lock', { id: inputs.room })
 		}
-		console.log(shouldEnter);
 	}
 
 	const validatePassword = (room, inputs) => {
