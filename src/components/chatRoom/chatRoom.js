@@ -18,16 +18,16 @@ const useStyles = makeStyles((theme) => ({
 		position: "relative",
 
 		height: "100%",
-		width: "100%",
-		overflow: "hidden",
 		maxHeight: "calc(100% - 5rem)",
+		width: "100%",
+
+		overflow: "hidden",
 
 		"& .MuiGrid-container": {
 			display: "block",
 		},
 		"& .MuiListItemAvatar-root": {
 			margin: ".5rem",
-
 			minWidth: "0",
 		},
 		"& .MuiListItem-gutters": {
@@ -55,23 +55,38 @@ const useStyles = makeStyles((theme) => ({
 	},
 
 	msg: {
-		width: "75%",
-		paddingLeft: " 1rem",
+		width: "fit-content",
+		maxWidth: "75%",
+
+		padding: ".2rem 1rem",
 
 		"& > *": {
 			display: "flex",
 			alignItems: "end",
 			borderRadius: "1.8rem",
 		},
+		"& .MuiListItem-root": {
+			margin: ".5rem",
+		},
+		"& .MuiListItem-root h6": {
+			marginTop: "-.5rem",
+		},
 	},
 
-	clientMsg: {},
+	clientMsg: {
+		"& img": {
+			marginRight: "-1rem",
+			border: "1px solid red",
+		},
+	},
 	yourMsg: {
-		marginLeft: "auto",
 		flexDirection: "row-reverse",
 		filter: " hue-rotate(20deg)",
 
-		"& .MuiListItemText-multiline": {
+		"& .MuiListItem-root,": {
+			// margin: ".2rem 0 .5rem .5rem",
+		},
+		"& .MuiListItem-root > *": {
 			textAlign: "right",
 		},
 	},
@@ -82,6 +97,23 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: theme.shape.borderRadius,
 		"& p": {
 			color: "#fff4",
+		},
+	},
+	chatTextWrapper: {
+		width: "100%",
+		padding: "0 1rem",
+
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "left",
+		alignItems: "end",
+
+		"&  > *": {
+			width: "100%",
+		},
+
+		"& img": {
+			borderRadius: "1.5rem",
 		},
 	},
 }));
@@ -124,10 +156,19 @@ function ChatRoom() {
 															{generateShortHand(msg.name)}
 														</Avatar>
 													</ListItemAvatar>
-													<ListItemText
-														primary={msg.name}
-														secondary={msg.message}
-													/>
+													<ListItem className={classes.chatTextWrapper}>
+														<Typography variant="h6">{msg.name}</Typography>
+
+														{msg.message.slice(0, 8) === "https://" ? (
+															<img
+																src={msg.message}
+																className={classes.chatImage}></img>
+														) : (
+															<Typography variant="body2">
+																{msg.message}
+															</Typography>
+														)}
+													</ListItem>
 												</ListItem>
 											</List>
 										</Grid>

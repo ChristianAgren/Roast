@@ -32,6 +32,9 @@ export default class UserProvider extends React.Component {
 
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
+
+			invalidRequest: this.invalidRequest,
+
 			//rooms: [], //rooms array för att uppdatera state på rooms när rummet är tomt
 			emitTyping: this.emitTyping,
 			usersTyping: [],
@@ -50,7 +53,7 @@ export default class UserProvider extends React.Component {
 			this.generateChatMessage(data)
 		);
 		this.state.socket.on("notice", (data) => this.generateChatMessage(data));
-		// this.state.socket.on("server message", (data) => console.log(data));
+
 		this.state.socket.on("created new room", (data) =>
 			this.updateAvailableRooms(data)
 		);
@@ -65,7 +68,6 @@ export default class UserProvider extends React.Component {
 	}
 
 	setAvailableRoomsInState = (data) => {
-		console.log("yaay");
 		this.setState({
 			availableRooms: data,
 		});
@@ -162,6 +164,15 @@ export default class UserProvider extends React.Component {
 			prevRoomId,
 			roomColor,
 		});
+	};
+
+	// if the /GIPHY request is invalid who a message to the sender only
+	invalidRequest = (error) => {
+		console.log(error);
+
+		const errorMessage = "Invalid /GIPHY input";
+
+		this.state.socket.emit("messageError", errorMessage);
 	};
 
 	// removeRoom = (roomToRemove) => {

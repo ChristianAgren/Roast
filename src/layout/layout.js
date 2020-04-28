@@ -3,6 +3,9 @@ import React from "react";
 import { Container, makeStyles, createStyles } from "@material-ui/core";
 import Main from "../components/main/main";
 import ChatRoom from "../components/chatRoom/chatRoom";
+
+import ApiTest from "./apiTest";
+
 import RoomNavigation from "../components/roomNavigation/roomNavigation";
 import { UserContext } from "../contexts/userContext";
 import logo from "./ROAST_logo.png";
@@ -17,7 +20,7 @@ const useStyles = makeStyles((theme, drawer) =>
 			width: "8rem",
 			height: "2rem",
 
-			background: "#ff8866",
+			// background: "#ff8866",
 			borderRadius: ".5rem",
 		},
 		logo: {
@@ -35,9 +38,14 @@ function Layout() {
 	const classes = useStyles();
 
 	const [changeView, setChangeView] = React.useState(false);
+	const [changeColor, setChangeColor] = React.useState();
 
 	const handleChangeView = (roomId) => {
 		setChangeView(roomId);
+	};
+
+	const getColorFromChild = (color) => {
+		setChangeColor(color);
 	};
 
 	return (
@@ -54,15 +62,17 @@ function Layout() {
 
 						display: "flex",
 						alignItems: "center",
-						
 					}}>
 					<RoomNavigation changeView={handleChangeView} />
 
-					<div className={classes.logoContainer}>
+					<div
+						className={classes.logoContainer}
+						style={{ background: changeColor }}>
 						<img src={logo} className={classes.logo} />
 					</div>
 
-					{changeView ? <ChatRoom /> : <Main />}
+					{changeView ? <ChatRoom /> : <Main getColor={getColorFromChild} />}
+					{/* <ApiTest /> */}
 				</Container>
 			)}
 		</UserContext.Consumer>

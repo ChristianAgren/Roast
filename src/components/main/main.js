@@ -23,8 +23,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import SaveIcon from "@material-ui/icons/Save";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import Modal from '@material-ui/core/Modal';
-
+import Modal from "@material-ui/core/Modal";
 
 const useStyles = makeStyles((theme) =>
 	createStyles({
@@ -93,38 +92,38 @@ const useStyles = makeStyles((theme) =>
 		modalContainer: {
 			display: "flex",
 			justifyContent: "center",
-			alignItems: "center"
+			alignItems: "center",
 		},
 		createNameContainer: {
 			display: "flex",
 			width: "20rem",
 			justifyContent: "center",
-			alignItems: 'space-between',
-			background: '#224',
-			textAlign: 'center'
-			
+			alignItems: "space-between",
+			background: "#224",
+			textAlign: "center",
 		},
 		createNameInput: {
-			color: "white"
+			color: "white",
 		},
-		
-		
 	})
 );
 
-function Main() {
+function Main(props) {
 	const classes = useStyles();
 	const roomColors = [
-		"#ff8866",
-		"#ffdc7a",
+		"#ff8866", // sweet red
+		"#ff5259", // old ketchup
+		"#fdc438", // mustard
+		"#ffdc7a", // lemon
+		"#eb65bd", // juicy plum
+		"#ef7e95", // lavender
 
-		"#56bff4",
-		"#7a8bff",
-
-		"#7affce",
-		"#eb65bd",
-
-		"#ff5259",
+		"#2795a0", // stale teal
+		"#7a8bff", // not so deep purple
+		"#56bff4", // mr.Blueksy
+		"#7affce", // faded bud
+		"#329e8b", // hedgerow
+		"#72c472", // leaf
 	];
 	const [roomInputValues, setRoomInputValues] = React.useState({
 		roomId: "",
@@ -133,6 +132,7 @@ function Main() {
 		showPassword: false,
 	});
 
+	props.getColor(roomInputValues.roomColor);
 	const switchColor = (event) => {
 		console.log(event.target.id);
 
@@ -143,27 +143,27 @@ function Main() {
 	};
 	const [firstTimeOnSite, setFirstTimeOnSite] = React.useState({
 		firstTime: true,
-		name: '',
-	})
+		name: "",
+	});
 
 	const handleClose = () => {
 		setOpen(false);
-	  };
+	};
 
 	const [open, setOpen] = React.useState(true);
 
 	const handleCreateName = (event, createName, handleClose) => {
-		event.preventDefault()
+		event.preventDefault();
 
-		handleClose()
+		handleClose();
 
-		console.log('in: handleFirstTimeOnSite');
+		console.log("in: handleFirstTimeOnSite");
 
-		createName(firstTimeOnSite.name)
+		createName(firstTimeOnSite.name);
 		setFirstTimeOnSite({
-			firstTimeOnSite: false
-		})
-	}
+			firstTimeOnSite: false,
+		});
+	};
 
 	const handleInputChange = (event, anchor) => {
 		setRoomInputValues({
@@ -186,9 +186,9 @@ function Main() {
 	const handleNameInputChange = (event) => {
 		event.preventDefault();
 		setFirstTimeOnSite({
-			name: event.target.value
-		})
-	}
+			name: event.target.value,
+		});
+	};
 
 	const handleCreateRoomClick = (createNewRoom) => {
 		console.log(`Will create room with following:`);
@@ -202,7 +202,9 @@ function Main() {
 		createNewRoom({ roomId, roomPassword, roomColor });
 	};
 
-	  
+	const handleSwitchColor = (event, switchColor) => {
+		switchColor(event);
+	};
 
 	return (
 		<UserContext.Consumer>
@@ -211,39 +213,41 @@ function Main() {
 			för att stänga när man skrivit in namn. disableEscapeKeyDown kan behövas för att tvinga att skriva namn. onRendered för att modalen ska sättas till true när man kommer in på sidan första gången*/}
 			{(user) => (
 				<Container maxWidth="sm">
-					{firstTimeOnSite &&
+					{firstTimeOnSite && (
 						<Modal
 							className={classes.modalContainer}
 							open={open}
 							aria-labelledby="create-name-modal"
-							aria-describedby="forces user to create a name to chat"
-						>
-							{<FormControl className={classes.createNameContainer}>
-								<Typography style={{color: "White", padding: "2rem"}}>Please enter your nickname:</Typography>
-								<TextField
-									size="small"
-									id="nameInput"
-									type="input"
-									inputProps={{
-										className: classes.createNameInput}}
-									variant="outlined"
-									className={classes.createNameInput}
-									onChange={(event) => handleNameInputChange(event, "name")}
-								/>
-								<Button
-									label="name"
-									variant="contained"
-									color="primary"
-									onClick={(e) => handleCreateName(e, user.createName, handleClose)}
-								>
-									Send
-								</Button>
-
-							</FormControl>}
+							aria-describedby="forces user to create a name to chat">
+							{
+								<FormControl className={classes.createNameContainer}>
+									<Typography style={{ color: "White", padding: "2rem" }}>
+										Please enter your nickname:
+									</Typography>
+									<TextField
+										size="small"
+										id="nameInput"
+										type="input"
+										inputProps={{
+											className: classes.createNameInput,
+										}}
+										variant="outlined"
+										className={classes.createNameInput}
+										onChange={(event) => handleNameInputChange(event, "name")}
+									/>
+									<Button
+										label="name"
+										variant="contained"
+										color="primary"
+										onClick={(e) =>
+											handleCreateName(e, user.createName, handleClose)
+										}>
+										Send
+									</Button>
+								</FormControl>
+							}
 						</Modal>
-
-					}
-
+					)}
 
 					<Grid container spacing={1} className={classes.mainContainer}>
 						<Grid item xs={12}>
@@ -271,8 +275,8 @@ function Main() {
 								{roomInputValues.roomPassword.length !== 0 ? (
 									<LockIcon fontSize="large" />
 								) : (
-										<LockOpenIcon fontSize="large" />
-									)}
+									<LockOpenIcon fontSize="large" />
+								)}
 								<FormControl fullWidth>
 									<Input
 										size="small"
@@ -280,7 +284,7 @@ function Main() {
 										type={roomInputValues.showPassword ? "text" : "password"}
 										style={
 											roomInputValues.roomPassword.length !== 0
-												? { background: "#ff8866" }
+												? { background: roomInputValues.roomColor }
 												: null
 										}
 										value={roomInputValues.roomPassword}
@@ -296,8 +300,8 @@ function Main() {
 													{roomInputValues.showPassword ? (
 														<Visibility />
 													) : (
-															<VisibilityOff />
-														)}
+														<VisibilityOff />
+													)}
 												</IconButton>
 											</InputAdornment>
 										}
@@ -305,8 +309,8 @@ function Main() {
 									<FormHelperText
 										style={
 											roomInputValues.roomPassword.length !== 0
-												? { color: "#ff8866" }
-												: { color: "#99ffc5" }
+												? { color: roomInputValues.roomColor }
+												: { color: "#b1c0c4" }
 										}>
 										{roomInputValues.roomPassword.length !== 0
 											? "Room will be locked"
@@ -322,17 +326,17 @@ function Main() {
 									<ListItem
 										key={color}
 										button
-										onClick={(e) => switchColor(e)}
+										onClick={(e) => handleSwitchColor(e, switchColor)}
 										id={color}
 										style={
 											color === roomInputValues.roomColor
 												? {
-													background: color,
-													border: ".5rem double #4a4949",
-												}
+														background: color,
+														border: ".5rem double #4a4949",
+												  }
 												: {
-													background: color,
-												}
+														background: color,
+												  }
 										}></ListItem>
 								))}
 							</List>

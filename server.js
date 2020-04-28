@@ -176,12 +176,11 @@ io.on("connection", function (socket) {
 				//Send history to socket
 				const { history } = roomInformation.find((h) => h.id === data.roomId);
 				io.to(socket.id).emit("chatlog", { server_chatlog: history });
+				io.to(data.roomId).emit("notice", {
+					message: user.name + " joined the room",
+				});
 
 				//Send message to chatroom
-				io.to(data.roomId).emit("notice", {
-					message: user.name + " has joined the room",
-					client: false,
-				});
 			});
 		}
 	});
@@ -228,5 +227,14 @@ io.on("connection", function (socket) {
 		roomInformation.push(newRoom);
 
 		io.emit("created new room", response);
+	});
+
+	socket.on("messageError", (error) => {
+		console.log("error", error);
+
+		io.to(socket.id).emit("notice", {
+			message: error,
+			client: false,
+		});
 	});
 });

@@ -106,20 +106,16 @@ function AvailableRooms(props) {
 	};
 
 	const generateFiveUsers = (users) => {
-		const newList = users.slice(0, 5)
-		return (
-			newList.map((user, index) => 
-				newList.length - 1 != index
-				? `${user.name}, `
-				: `and more... `
-			)
-		)
-	}
+		const newList = users.slice(0, 5);
+		return newList.map((user, index) =>
+			newList.length - 1 != index ? `${user.name}, ` : `and more... `
+		);
+	};
 
 	return (
 		<UserContext.Consumer>
 			{(user) => (
-				<Container className={classes.mainContainer}>
+				<Container className={classes.mainContainer} maxWidth="sm">
 					<Typography variant="overline">Open rooms</Typography>
 					<div className={classes.hideRoomOverFlow}>
 						<Grid container className={classes.roomsContainer}>
@@ -138,30 +134,26 @@ function AvailableRooms(props) {
 											{room.name}
 											<em style={{ color: "#0008" }}>{room.id}</em>
 										</Typography>
-										{(room.users) ?
+										{room.users ? (
 											<>
 												<Typography className={classes.activeUsers}>
 													{room.users.length} : active users
 												</Typography>
-												{(room.users.length != 0) ?
+												{room.users.length != 0 ? (
 													<Typography
 														className={classes.users}
 														style={{ color: room.color }}>
-														{room.users.length < 5 ?
-															room.users.map((user, index) => 
-																room.users.length - 1 === index
-																	? `${user.name} `
-																	: `${user.name}, `
-															)
-															: generateFiveUsers(room.users)
-														}
+														{room.users.length < 5
+															? room.users.map((user, index) =>
+																	room.users.length - 1 === index
+																		? `${user.name} `
+																		: `${user.name}, `
+															  )
+															: generateFiveUsers(room.users)}
 													</Typography>
-													: null
-												}
+												) : null}
 											</>
-											: null
-										}
-
+										) : null}
 									</ListItem>
 								))}
 							</List>
@@ -195,14 +187,13 @@ function AvailableRooms(props) {
 										<Typography
 											className={classes.users}
 											style={{ color: room.color }}>
-											{room.users.length < 5 ?
-												room.users.map((user, index) => 
-													room.users.length - 1 === index
-														? `${user.name} `
-														: `${user.name}, `
-												)
-												: generateFiveUsers(room.users)
-											}
+											{room.users.length < 5
+												? room.users.map((user, index) =>
+														room.users.length - 1 === index
+															? `${user.name} `
+															: `${user.name}, `
+												  )
+												: generateFiveUsers(room.users)}
 										</Typography>
 									</ListItem>
 								))}
