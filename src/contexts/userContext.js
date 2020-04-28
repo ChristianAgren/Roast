@@ -34,7 +34,6 @@ export default class UserProvider extends React.Component {
 
 			invalidRequest: this.invalidRequest,
 
-			//rooms: [], //rooms array för att uppdatera state på rooms när rummet är tomt
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 

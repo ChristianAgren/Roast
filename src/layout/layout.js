@@ -1,8 +1,9 @@
 // @ts-nocheck
 import React from "react";
-import useStyles from "./layoutStyles";
-
-import { Container } from "@material-ui/core";
+import useStyles from './layoutStyles'
+import {
+	Container,
+} from "@material-ui/core";
 import Main from "../components/main/main";
 import ChatRoom from "../components/chatRoom/chatRoom";
 
@@ -15,8 +16,8 @@ function Layout() {
 	const [changeView, setChangeView] = React.useState(false);
 	const [changeColor, setChangeColor] = React.useState();
 
-	const handleChangeView = (roomId) => {
-		setChangeView(roomId);
+	const handleChangeView = (enteredRoom) => {
+		setChangeView(enteredRoom);
 	};
 
 	const getColorFromChild = (color) => {

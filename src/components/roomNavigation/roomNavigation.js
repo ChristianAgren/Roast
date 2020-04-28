@@ -1,10 +1,13 @@
 // @ts-nocheck
 import React from "react";
-import useStyles from "./roomNavigationStyles";
-
+import useStyles from './roomNavigationStyles'
 import AvailableRooms from "../availableRooms/availableRooms";
-
-import { Container, Collapse, List, ListItem } from "@material-ui/core";
+import {
+	Container,
+	Collapse,
+	List,
+	ListItem,
+} from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 

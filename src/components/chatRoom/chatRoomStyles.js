@@ -1,4 +1,6 @@
-import { makeStyles } from "@material-ui/core";
+import {
+	makeStyles,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	chatroomWrapper: {
@@ -70,11 +72,8 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: "row-reverse",
 		filter: " hue-rotate(20deg)",
 
-		"& .MuiListItem-root,": {
-			// margin: ".2rem 0 .5rem .5rem",
-		},
 		"& .MuiListItem-root > *": {
-			textAlign: "right",
+			textAlign: "left",
 		},
 	},
 
