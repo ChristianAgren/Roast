@@ -19,7 +19,7 @@ import {
 	Modal,
 	createStyles,
 } from "@material-ui/core";
-import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+// import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import LockIcon from "@material-ui/icons/Lock";
 
 const useStyles = makeStyles((theme) =>
@@ -97,10 +97,13 @@ const useStyles = makeStyles((theme) =>
 			},
 		},
 		passwordModal: {
+			position: 'relative',
 			display: 'flex',
 			justifyContent: 'center',
 			alignItems: 'center',
 			'& > .MuiFormControl-root': {
+				display: 'flex',
+				alignItems: 'center',
 				borderRadius: '.4rem',
 				background: '#224',
 				padding: theme.spacing(1),
@@ -113,9 +116,35 @@ const useStyles = makeStyles((theme) =>
 					height: '60%'
 				},
 				'& .MuiTypography-root': {
-					margin: theme.spacing(2, 1)
-				}
+					margin: theme.spacing(2, 1),
+					maxWidth: '20rem'
+				},
+				'& .MuiFormControl-root': {
+					'& .MuiInputBase-root': {
+						color: 'white',
+						backgroundColor: '#fff1'
+					},
+					position: 'absolute',
+					bottom: '8rem',
+					left: '50%',
+					transform: 'translateX(-50%)',
+					width: '80%',
+					maxWidth: '20rem',
+				},
 			}
+		},
+		passBtnContainer: {
+			position: 'absolute',
+			bottom: '2.5rem',
+			left: 0,
+			right: 0,
+			'& .MuiButton-root': {
+				width: '7rem'
+			},
+			display: 'flex',
+			justifyContent: 'space-evenly',
+
+			// margin: theme.spacing(3, 0)
 		}
 	})
 );
@@ -123,8 +152,29 @@ const useStyles = makeStyles((theme) =>
 function AvailableRooms(props) {
 	const classes = useStyles();
 	const [passwordOpen, setPasswordOpen] = React.useState(false)
+	const [passwordInput, setPasswordInput] = React.useState({
+		room: '',
+		pwInput: '',
+		error: false,
+		errMsg: ''
+	})
 
-	const handlePasswordOpen = (value) => {
+	const handlePasswordInputChange = (event) => {
+		setPasswordInput({
+			...passwordInput,
+			pwInput: event.target.value,
+			error: false,
+			errMsg: ''
+		})
+	}
+
+	const handlePasswordOpen = (event, value) => {
+		if (event != "close") {
+			setPasswordInput({
+				...passwordInput,
+				room: event.target.id
+			})
+		}
 		setPasswordOpen(value)
 	}
 
@@ -145,6 +195,38 @@ function AvailableRooms(props) {
 		)
 	}
 
+	const shouldGiveAccess = (user, inputs) => {
+		let shouldEnter = false
+		const room = user.availableRooms.locked.find((r) => r.id === inputs.room)
+		if (room) {
+			shouldEnter = validatePassword(room, inputs)
+		} else {
+			setPasswordInput({
+				...passwordInput,
+				errMsg: 'Could not find room'
+			})
+		}
+
+		if (!shouldEnter) {
+			setPasswordInput({
+				...passwordInput,
+				error: true,
+				errMsg: 'Invalid password'
+			})
+		} else {
+			setPasswordInput({
+				...passwordInput,
+				error: false,
+				errMsg: ''
+			})
+		}
+		console.log(shouldEnter);
+	}
+
+	const validatePassword = (room, inputs) => {
+		return room.password === inputs.pwInput
+	}
+
 	return (
 		<UserContext.Consumer>
 			{(user) => (
@@ -163,7 +245,7 @@ function AvailableRooms(props) {
 											style={{ background: room.color }}
 											className={classes.room}>
 											<div className={classes.cutout}></div>
-	
+
 											<Typography>
 												{room.name}
 												<em style={{ color: "#0008" }}>{room.id}</em>
@@ -191,13 +273,13 @@ function AvailableRooms(props) {
 												</>
 												: null
 											}
-	
+
 										</ListItem>
 									))}
 								</List>
 							</Grid>
 						</div>
-	
+
 						<Typography variant="overline">Locked rooms</Typography>
 						<div className={classes.hideRoomOverFlow}>
 							<Grid container className={classes.roomsContainer}>
@@ -205,7 +287,7 @@ function AvailableRooms(props) {
 									{user.availableRooms.locked.map((room) => (
 										<ListItem
 											button
-											onClick={() => handlePasswordOpen(true)}
+											onClick={(event) => handlePasswordOpen(event, true)}
 											id={room.id}
 											key={`${room.id}:${room.name}`}
 											style={{ background: room.color }}
@@ -213,7 +295,7 @@ function AvailableRooms(props) {
 											<div className={classes.cutout}>
 												<LockIcon style={{ color: room.color }} />
 											</div>
-	
+
 											<Typography>
 												{room.name}
 												<em style={{ color: "#0008" }}>{room.id}</em>
@@ -221,7 +303,7 @@ function AvailableRooms(props) {
 											<Typography className={classes.activeUsers}>
 												{room.users.length} : active users
 											</Typography>
-	
+
 											<Typography
 												className={classes.users}
 												style={{ color: room.color }}>
@@ -252,25 +334,32 @@ function AvailableRooms(props) {
 							<TextField
 								size="small"
 								id="passwordInput"
+								error={passwordInput.error}
 								type="input"
 								variant="outlined"
+								value={passwordInput.pwInput}
+								onChange={(event) => handlePasswordInputChange(event)}
+								helperText={passwordInput.errMsg}
 							/>
-							<Button
-								label="send"
-								variant="contained"
-								color="primary"
-							>
-								Join room
-									</Button>
-							<Button
-								label="send"
-								variant="contained"
-								color="default"
-								onClick={() => handlePasswordOpen(false)}
-							>
-								Close
-									</Button>
-	
+							<div className={classes.passBtnContainer}>
+								<Button
+									label="send"
+									variant="contained"
+									color="primary"
+									onClick={() => shouldGiveAccess(user, passwordInput)}
+								>
+									Join room
+										</Button>
+								<Button
+									label="send"
+									variant="contained"
+									color="default"
+									onClick={() => handlePasswordOpen("close", false)}
+								>
+									Close
+										</Button>
+							</div>
+
 						</FormControl>}
 					</Modal>
 				</>
