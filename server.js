@@ -9,48 +9,48 @@ const port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, "build")));
 
 let roomInformation = [
-	{
-		id: "1",
-		name: "room",
-		users: [],
-		password: "",
-		color: "#ff69b4",
-		history: [
-			{
-				name: "Blob",
-				message: "Hej hej hej hej hje",
-				client: true,
-			},
-		],
-	},
-	{
-		id: "3",
-		name: "room",
-		users: [],
-		password: "",
-		color: "#ff69b4",
-		history: [
-			{
-				name: "Blob",
-				message: "Hej hej hej hej hje",
-				client: true,
-			},
-		],
-	},
-	{
-		id: "asdf",
-		name: "room",
-		users: [],
-		password: "lock",
-		color: "#123388",
-		history: [
-			{
-				name: "Alvin",
-				message: "it do b like that",
-				client: true,
-			},
-		],
-	},
+	// {
+	// 	id: "1",
+	// 	name: "room",
+	// 	users: [],
+	// 	password: "",
+	// 	color: "#ff69b4",
+	// 	history: [
+	// 		{
+	// 			name: "Blob",
+	// 			message: "Hej hej hej hej hje",
+	// 			client: true,
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	id: "3",
+	// 	name: "room",
+	// 	users: [],
+	// 	password: "",
+	// 	color: "#ff69b4",
+	// 	history: [
+	// 		{
+	// 			name: "Blob",
+	// 			message: "Hej hej hej hej hje",
+	// 			client: true,
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	id: "asdf",
+	// 	name: "room",
+	// 	users: [],
+	// 	password: "lock",
+	// 	color: "#123388",
+	// 	history: [
+	// 		{
+	// 			name: "Alvin",
+	// 			message: "it do b like that",
+	// 			client: true,
+	// 		},
+	// 	],
+	// },
 ];
 
 const routesWithChildren = ["/"];
@@ -130,7 +130,7 @@ io.on("connection", function (socket) {
 		const user = {
 			name: data.name,
 			id: socket.id,
-		};
+		};	
 
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
@@ -195,7 +195,8 @@ io.on("connection", function (socket) {
 	socket.on("message", (newMessage) => {
 		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
 		const { color } = roomInformation.find((h) => h.id === newMessage.roomId);
-
+		console.log(color);
+		
 		const message = {
 			name: newMessage.name,
 			message: newMessage.message,
@@ -224,8 +225,10 @@ io.on("connection", function (socket) {
 		};
 
 		roomInformation.push(newRoom);
-
+		
+		io.to(socket.id).emit("room has been created", response)
 		io.emit("created new room", response);
+		
 	});
 });
 
