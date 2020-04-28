@@ -2,7 +2,7 @@
 import React from "react";
 import io from "socket.io-client";
 
-const userSocket = io();
+const userSocket = io("http://localhost:8080");
 
 const user = {
 	// name: "bobo" + Math.floor(Math.random() * 100),
@@ -65,6 +65,7 @@ export default class UserProvider extends React.Component {
 		this.state.socket.on("typing", (data) => this.handleTyping(data));
 	}
 
+	
 	removeRoom = (data) => {
 		const { clearRoom } = data
 
@@ -78,9 +79,7 @@ export default class UserProvider extends React.Component {
 				(room) => room.id === clearRoom
 			);
 		}
-		console.log("findRoom",findRoom);
-		console.log("roomAnchor",roomAnchor);
-		
+
 
 		if (findRoom !== -1) {
 			const copiedRoomsList = [...this.state.availableRooms[roomAnchor]];
@@ -88,14 +87,13 @@ export default class UserProvider extends React.Component {
 			this.setState({
 				availableRooms: {
 					...this.state.availableRooms,
-							[roomAnchor]: copiedRoomsList,
+					[roomAnchor]: copiedRoomsList,
 				}
 			})
 		}
 	}
 
 	setAvailableRoomsInState = (data) => {
-		console.log("yaay");
 		this.setState({
 			availableRooms: data,
 		});
@@ -237,7 +235,6 @@ export default class UserProvider extends React.Component {
 	updateAvailableRooms = (room) => {
 		let updateArray;
 		let anchor;
-		console.log(room)
 
 		if (room.password.length != 0) {
 			updateArray = [...this.state.availableRooms.locked];
@@ -268,8 +265,6 @@ export default class UserProvider extends React.Component {
 	};
 
 	handleTyping = (typingUser) => {
-		console.log(typingUser);
-
 		const found = this.state.usersTyping.find(
 			(typer) => typer.name === typingUser.name
 		);
