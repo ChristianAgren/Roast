@@ -96,25 +96,37 @@ io.on("connection", function (socket) {
 
 	socket.on("disconnecting", () => {
 		// Manipulate local data
-		const rooms = Object.keys(socket.rooms);
-		let clearRoom;
+		const rooms = Object.keys(socket.rooms)
+		console.log("rooms",rooms)
+		let clearRoom 
 		rooms.forEach((room) => {
 			if (room != socket.id) {
 				clearRoom = room;
 			}
-		});
+		})
+		
 		if (clearRoom) {
 			const { users } = roomInformation.find((room) => room.id === clearRoom);
 			const leaverInfo = users.find((user) => user.id === socket.id);
 			const leaverIndex = users.findIndex((user) => user.id === socket.id);
 			users.splice(leaverIndex, 1);
 
+			// Remove room if no users
+			if(users.length === 0) {
+				const removeRoom = roomInformation.findIndex((r) => r.id === clearRoom)
+				
+				roomInformation.splice(removeRoom, 1)
+				io.emit("remove room", {clearRoom})
+			}
+			
 			//Emit to sockets
-			io.emit("user left room", {
-				username: leaverInfo.name,
-				room: clearRoom,
-				join: false,
-			});
+			if(users.length !== 0) {
+				io.emit("user left room", {
+					username: leaverInfo.name,
+					room: clearRoom,
+					join: false,
+				});
+			}
 		}
 		console.log(`${socket.id} disconnected`);
 	});
@@ -134,30 +146,23 @@ io.on("connection", function (socket) {
 					);
 					const leaver = users.findIndex((u) => u.id === user.id);
 
-					// rooms måste skicka users så vi kan ta bort rummet om det är tomt
-					// Här kallar vi på removeRoom i userContext som uppdaterar rooms listan som ska mappas ut
-					// Om rooms.users är tom sätt splice:a ut rummet ur roomslistan.
-					// Om users är en tom lista, ta bort rummet
-
-					// const roomToRemove = rooms.findIndex((r) => r.roomId === data.prevRoomId)
-
-					// if (users === []) {
-					// 	removeRoom(roomToRemove)
-					// }
-
 					if (leaver != -1) {
 						users.splice(leaver, 1);
 					}
 
-					// Update sockets and rooms
-					io.emit("user left room", {
-						username: user.name,
-						room: data.prevRoomId,
-						join: false,
-					});
-					io.to(data.prevRoomId).emit("notice", {
-						message: user.name + " has left the room",
-					});
+					if(users.length === 0) {
+						io.emit("remove room", {clearRoom: data.prevRoomId})
+					} else {
+						io.emit("user left room", {
+							username: user.name,
+							room: data.prevRoomId,
+							join: false,
+						});
+						io.to(data.prevRoomId).emit("notice", {
+							message: user.name + " has left the room",
+						});
+					}
+
 				});
 			}
 			socket.join(data.roomId, () => {
