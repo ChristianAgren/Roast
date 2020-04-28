@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 
 	msg: {
-		width: "75%",
+		maxWidth: "75%",
 		paddingLeft: " 1rem",
 
 		"& > *": {
@@ -67,12 +67,15 @@ const useStyles = makeStyles((theme) => ({
 
 	clientMsg: {},
 	yourMsg: {
-		marginLeft: "auto",
+		
 		flexDirection: "row-reverse",
 		filter: " hue-rotate(20deg)",
+		overflow: "hidden",
+
 
 		"& .MuiListItemText-multiline": {
-			textAlign: "right",
+			textAlign: "left",
+			marginLeft: theme.spacing(2),
 		},
 	},
 

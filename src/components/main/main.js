@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) =>
 	})
 );
 
-function Main() {
+function Main(props) {
 	const classes = useStyles();
 	const roomColors = [
 		"#ff8866",
@@ -200,6 +200,7 @@ function Main() {
 		console.log(roomId, roomPassword, roomColor);
 
 		createNewRoom({ roomId, roomPassword, roomColor });
+		props.changeView(true)
 	};
 
 	  

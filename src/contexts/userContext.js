@@ -46,6 +46,7 @@ export default class UserProvider extends React.Component {
 			this.setRoomInState(data)
 		);
 		this.state.socket.on("chatlog", (data) => this.generateChatLog(data));
+
 		this.state.socket.on("user message", (data) =>
 			this.generateChatMessage(data)
 		);
@@ -54,6 +55,9 @@ export default class UserProvider extends React.Component {
 		this.state.socket.on("created new room", (data) =>
 			this.updateAvailableRooms(data)
 		);
+
+		this.state.socket.on("room has been created", (data) => this.joinCreatedRoom(data));
+		
 		this.state.socket.on("user left room", (data) =>
 			this.updateUsersinRoom(data)
 		);
@@ -63,6 +67,10 @@ export default class UserProvider extends React.Component {
 		this.state.socket.on("remove room", (data) => this.removeRoom(data));
 
 		this.state.socket.on("typing", (data) => this.handleTyping(data));
+	}
+
+	joinCreatedRoom = (data) => {
+		this.joinRoom('server', data)
 	}
 
 	removeRoom = (data) => {
@@ -177,14 +185,22 @@ export default class UserProvider extends React.Component {
 		}, () => console.log(this.state.availableRooms))
 	}
 
-	joinRoom = (event) => {
-		event.preventDefault();
+	joinRoom = (event, createdRoomId) => {
+		let roomId = ''
+		let roomColor = ''
 
 		const name = this.state.name;
-		const roomId = event.target.id;
-		const prevRoomId = this.state.connectedRoom;
+		
+		if(createdRoomId) {
+			roomId = createdRoomId.id
+			roomColor = createdRoomId.color
+		} else {
+			event.preventDefault();
+			roomId = event.target.id;
+			roomColor = event.target.style.background;
+		}
 
-		const roomColor = event.target.style.background;
+		const prevRoomId = this.state.connectedRoom;
 
 		this.setState({
 			firstTime: true,

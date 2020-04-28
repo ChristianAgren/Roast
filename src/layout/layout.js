@@ -36,8 +36,8 @@ function Layout() {
 
 	const [changeView, setChangeView] = React.useState(false);
 
-	const handleChangeView = (roomId) => {
-		setChangeView(roomId);
+	const handleChangeView = (enteredRoom) => {
+		setChangeView(enteredRoom);
 	};
 
 	return (
@@ -62,7 +62,7 @@ function Layout() {
 						<img src={logo} className={classes.logo} />
 					</div>
 
-					{changeView ? <ChatRoom /> : <Main />}
+					{changeView ? <ChatRoom /> : <Main changeView={handleChangeView}/>}
 				</Container>
 			)}
 		</UserContext.Consumer>

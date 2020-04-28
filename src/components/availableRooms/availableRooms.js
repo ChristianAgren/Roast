@@ -101,7 +101,7 @@ function AvailableRooms(props) {
 
 	const onJoinClick = (event, joinRoom) => {
 		joinRoom(event);
-		props.changeView(event.target.id);
+		props.changeView(true);
 		props.toggleDrawer();
 	};
 
