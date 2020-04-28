@@ -162,9 +162,10 @@ io.on("connection", function (socket) {
 			}
 			socket.join(data.roomId, () => {
 				// Manipulate local data
-				const { users } = roomInformation.find((r) => r.id === data.roomId);
+				const { users, color } = roomInformation.find((r) => r.id === data.roomId);
+				// const { color } = roomInformation.find((h) => h.id === data.roomId);
 				users.push(user);
-				io.to(socket.id).emit("join successful", data);
+				io.to(socket.id).emit("join successful", {...data, roomColor: color} );
 
 				//Update all socket's room information
 				io.emit("user joined room", {
@@ -193,9 +194,7 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("message", (newMessage) => {
-		const { history } = roomInformation.find((h) => h.id === newMessage.roomId);
-		const { color } = roomInformation.find((h) => h.id === newMessage.roomId);
-		console.log(color);
+		const { history, color } = roomInformation.find((h) => h.id === newMessage.roomId);
 		
 		const message = {
 			name: newMessage.name,
