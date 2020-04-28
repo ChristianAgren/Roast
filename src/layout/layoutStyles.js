@@ -1,10 +1,19 @@
-import { 
-	makeStyles, 
-	createStyles 
-} from "@material-ui/core";
+// @ts-nocheck
+import { makeStyles, createStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme, drawer) =>
+const useStyles = makeStyles((theme) =>
 	createStyles({
+		container: {
+			position: "relative",
+			background: "#3e404c",
+			padding: "3rem 0",
+
+			height: "100vh",
+
+			display: "flex",
+			alignItems: "center",
+		},
+
 		logoContainer: {
 			position: "absolute",
 			top: "2.5rem",
@@ -35,4 +44,4 @@ const useStyles = makeStyles((theme, drawer) =>
 	})
 );
 
-export default useStyles
+export default useStyles;

@@ -31,6 +31,9 @@ export default class UserProvider extends React.Component {
 
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
+
+			invalidRequest: this.invalidRequest,
+
 			emitTyping: this.emitTyping,
 			usersTyping: [],
 
@@ -201,6 +204,15 @@ export default class UserProvider extends React.Component {
 			prevRoomId,
 			// roomColor,
 		});
+	};
+
+	// if the /GIPHY request is invalid who a message to the sender only
+	invalidRequest = (error) => {
+		console.log(error);
+
+		const errorMessage = "Invalid /GIPHY input";
+
+		this.state.socket.emit("messageError", errorMessage);
 	};
 
 	generateChatLog = (serverChat) => {

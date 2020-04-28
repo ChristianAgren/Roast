@@ -31,27 +31,6 @@ const useStyles = makeStyles((theme) =>
 				margin: theme.spacing(0, 2, 0, 0),
 			},
 		},
-		snackbar: {
-			marginBottom: "3rem",
-			padding: "0",
-
-			width: "100%",
-			borderRadius: "0",
-
-			display: "block",
-
-			"& >* ": {
-				padding: "0",
-				paddingLeft: ".5rem",
-
-				borderRadius: "0",
-				boxShadow: "none",
-				background: "#555",
-				color: "#e7e7e7",
-
-				fontSize: ".7rem",
-			},
-		},
 		isTyping: {
 			position: "absolute",
 			top: "-1.5rem",
@@ -66,4 +45,4 @@ const useStyles = makeStyles((theme) =>
 	})
 );
 
-export default useStyles
+export default useStyles;

@@ -1,11 +1,15 @@
 // @ts-nocheck
+
 const express = require("express");
 const path = require("path");
+
 const app = express();
 const socket = require("socket.io");
 const server = require("http").createServer(app);
+
 const io = socket(server);
 const port = process.env.PORT || 8080;
+
 app.use(express.static(path.join(__dirname, "build")));
 
 let roomInformation = [
@@ -92,14 +96,14 @@ io.on("connection", function (socket) {
 
 	socket.on("disconnecting", () => {
 		// Manipulate local data
-		const rooms = Object.keys(socket.rooms)
-		let clearRoom 
+		const rooms = Object.keys(socket.rooms);
+		let clearRoom;
 		rooms.forEach((room) => {
 			if (room != socket.id) {
 				clearRoom = room;
 			}
-		})
-		
+		});
+
 		if (clearRoom) {
 			const { users } = roomInformation.find((room) => room.id === clearRoom);
 			const leaverInfo = users.find((user) => user.id === socket.id);
@@ -107,15 +111,15 @@ io.on("connection", function (socket) {
 			users.splice(leaverIndex, 1);
 
 			// Remove room if no users
-			if(users.length === 0) {
-				const removeRoom = roomInformation.findIndex((r) => r.id === clearRoom)
-				
-				roomInformation.splice(removeRoom, 1)
-				io.emit("remove room", {clearRoom})
+			if (users.length === 0) {
+				const removeRoom = roomInformation.findIndex((r) => r.id === clearRoom);
+
+				roomInformation.splice(removeRoom, 1);
+				io.emit("remove room", { clearRoom });
 			}
-			
+
 			//Emit to sockets
-			if(users.length !== 0) {
+			if (users.length !== 0) {
 				io.emit("user left room", {
 					username: leaverInfo.name,
 					room: clearRoom,
@@ -130,7 +134,7 @@ io.on("connection", function (socket) {
 		const user = {
 			name: data.name,
 			id: socket.id,
-		};	
+		};
 
 		if (data.roomId != data.prevRoomId) {
 			if (data.prevRoomId) {
@@ -160,15 +164,16 @@ io.on("connection", function (socket) {
 							message: user.name + " has left the room",
 						});
 					}
-
 				});
 			}
 			socket.join(data.roomId, () => {
 				// Manipulate local data
-				const { users, color } = roomInformation.find((r) => r.id === data.roomId);
+				const { users, color } = roomInformation.find(
+					(r) => r.id === data.roomId
+				);
 				// const { color } = roomInformation.find((h) => h.id === data.roomId);
 				users.push(user);
-				io.to(socket.id).emit("join successful", {...data, roomColor: color} );
+				io.to(socket.id).emit("join successful", { ...data, roomColor: color });
 
 				//Update all socket's room information
 				io.emit("user joined room", {
@@ -180,12 +185,11 @@ io.on("connection", function (socket) {
 				//Send history to socket
 				const { history } = roomInformation.find((h) => h.id === data.roomId);
 				io.to(socket.id).emit("chatlog", { server_chatlog: history });
+				io.to(data.roomId).emit("notice", {
+					message: user.name + " joined the room",
+				});
 
 				//Send message to chatroom
-				io.to(data.roomId).emit("notice", {
-					message: user.name + " has joined the room",
-					client: false,
-				});
 			});
 		}
 	});
@@ -197,8 +201,10 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("message", (newMessage) => {
-		const { history, color } = roomInformation.find((h) => h.id === newMessage.roomId);
-		
+		const { history, color } = roomInformation.find(
+			(h) => h.id === newMessage.roomId
+		);
+
 		const message = {
 			name: newMessage.name,
 			message: newMessage.message,
@@ -227,10 +233,18 @@ io.on("connection", function (socket) {
 		};
 
 		roomInformation.push(newRoom);
-		
-		io.to(socket.id).emit("room has been created", response)
+
+		io.to(socket.id).emit("room has been created", response);
 		io.emit("created new room", response);
-		
+	});
+
+	socket.on("messageError", (error) => {
+		console.log("error", error);
+
+		io.to(socket.id).emit("notice", {
+			message: error,
+			client: false,
+		});
 	});
 });
 

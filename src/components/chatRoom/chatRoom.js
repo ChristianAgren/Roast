@@ -1,5 +1,6 @@
+// @ts-nocheck
 import React from "react";
-import useStyles from './chatRoomStyles'
+import useStyles from "./chatRoomStyles";
 import {
 	List,
 	ListItem,
@@ -11,7 +12,6 @@ import {
 } from "@material-ui/core";
 import MessageHandler from "./messageHandler/messageHandler";
 import { UserContext } from "../../contexts/userContext";
-
 
 function ChatRoom() {
 	const classes = useStyles();
@@ -39,7 +39,7 @@ function ChatRoom() {
 													: null
 											}>
 											<List dense className={classes.msg}>
-												<ListItem
+												<List dense
 													style={{ background: `${user.connectedRoomColor}` }}
 													className={
 														msg.name === user.name
@@ -51,11 +51,20 @@ function ChatRoom() {
 															{generateShortHand(msg.name)}
 														</Avatar>
 													</ListItemAvatar>
-													<ListItemText
-														primary={msg.name}
-														secondary={msg.message}
-													/>
-												</ListItem>
+													<ListItem className={classes.chatTextWrapper}>
+														<Typography variant="h6">{msg.name}</Typography>
+
+														{msg.message.slice(0, 8) === "https://" ? (
+															<img
+																src={msg.message}
+																className={classes.chatImage}></img>
+														) : (
+															<Typography variant="body2">
+																{msg.message}
+															</Typography>
+														)}
+													</ListItem>
+												</List>
 											</List>
 										</Grid>
 									) : (
