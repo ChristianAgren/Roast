@@ -149,8 +149,11 @@ io.on("connection", function (socket) {
 						users.splice(leaver, 1);
 					}
 
-					if (users.length === 0) {
-						io.emit("remove room", { clearRoom: data.prevRoomId });
+					if(users.length === 0) {
+						const removeRoom = roomInformation.findIndex((room) => room.id === data.prevRoomId)
+						roomInformation.splice(removeRoom, 1)
+						
+						io.emit("remove room", {clearRoom: data.prevRoomId})
 					} else {
 						io.emit("user left room", {
 							username: user.name,
@@ -236,7 +239,6 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("messageError", (error) => {
-		console.log("error", error);
 
 		io.to(socket.id).emit("notice", {
 			message: error,

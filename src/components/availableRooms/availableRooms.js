@@ -86,6 +86,7 @@ function AvailableRooms(props) {
 				errMsg: ''
 			})
 			props.changeView(true)
+			props.toggleDrawer()
 			handlePasswordOpen("close", false)
 			user.joinRoom('lock', { id: inputs.room })
 		}
