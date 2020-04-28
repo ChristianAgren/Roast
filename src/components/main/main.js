@@ -134,13 +134,12 @@ function Main(props) {
 	});
 
 	const switchColor = (event) => {
-		console.log(event.target.id);
-
 		setRoomInputValues({
 			...roomInputValues,
 			roomColor: event.target.id,
 		});
 	};
+
 	const [firstTimeOnSite, setFirstTimeOnSite] = React.useState({
 		firstTime: true,
 		name: '',
@@ -154,11 +153,7 @@ function Main(props) {
 
 	const handleCreateName = (event, createName, handleClose) => {
 		event.preventDefault()
-
 		handleClose()
-
-		console.log('in: handleFirstTimeOnSite');
-
 		createName(firstTimeOnSite.name)
 		setFirstTimeOnSite({
 			firstTimeOnSite: false
@@ -191,14 +186,7 @@ function Main(props) {
 	}
 
 	const handleCreateRoomClick = (createNewRoom) => {
-		console.log(`Will create room with following:`);
-		console.log(`Name: ${roomInputValues.roomId}`);
-		console.log(`Password: ${roomInputValues.roomPassword}`);
-		console.log(`Color: ${roomInputValues.roomColor}`);
-
 		const { roomId, roomPassword, roomColor } = roomInputValues;
-		console.log(roomId, roomPassword, roomColor);
-
 		createNewRoom({ roomId, roomPassword, roomColor });
 		props.changeView(true)
 	};
