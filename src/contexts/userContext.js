@@ -24,10 +24,12 @@ export default class UserProvider extends React.Component {
 
 			connectedRoom: "",
 			connectedRoomColor: "",
+
 			joinRoom: this.joinRoom,
 			createName: this.createName,
 			availableRooms: {},
 			chatlog: [],
+			
 			leaveChatRoom: this.leaveChatRoom,
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,

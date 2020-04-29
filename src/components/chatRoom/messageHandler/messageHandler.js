@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import OutdoorGrillTwoToneIcon from "@material-ui/icons/OutdoorGrillTwoTone";
 import { UserContext } from "../../../contexts/userContext";
-import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
 
 function MessageHandler(props) {
 	const classes = useStyles();
@@ -26,11 +26,9 @@ function MessageHandler(props) {
 	};
 
 	const handleClickLeave = (leaveChatRoom) => {
-		
-		leaveChatRoom()
-		props.changeView(false)
-
-	}
+		leaveChatRoom();
+		props.changeView(false);
+	};
 
 	const onSendClick = (createNewMessage, invalidRequest) => {
 		const key = "017OsVu1S3JfdgoAgGOSlyvqt0f1iDsT";
@@ -46,7 +44,6 @@ function MessageHandler(props) {
 			)
 				.then((response) => response.json())
 				.then((content) => {
-
 					createNewMessage(content.data.images.downsized.url);
 				})
 				.catch((err) => {
@@ -81,7 +78,7 @@ function MessageHandler(props) {
 
 	return (
 		<UserContext.Consumer>
-			{user => (
+			{(user) => (
 				<div className={classes.inputMessage}>
 					<Container
 						maxWidth="md"
@@ -95,11 +92,9 @@ function MessageHandler(props) {
 							</Typography>
 						) : null}
 						<Container maxWidth="sm" className={classes.inputWrapper}>
-							<Button
-								onClick={() => handleClickLeave(user.leaveChatRoom)}
-							>
-								<MeetingRoomIcon/>
-						</Button>
+							<Button onClick={() => handleClickLeave(user.leaveChatRoom)}>
+								<MeetingRoomIcon style={{color:"#242020"}}/>
+							</Button>
 							<FormControl fullWidth focused={true}>
 								<TextField
 									id="outlined-size-small"
@@ -108,24 +103,24 @@ function MessageHandler(props) {
 									value={messageValue}
 									size="small"
 									autoComplete="off"
+									autoFocus={true}
 									onChange={(event) => onInputChange(event, props)}
 									onKeyPress={
 										messageValue.length === 0
 											? null
 											: (e) => {
-												if (e.key.trim() === "Enter") {
-													onSendClick(
-														props.user.createNewMessage,
-														props.user.invalidRequest
-													);
-												}
-											}
+													if (e.key.trim() === "Enter") {
+														onSendClick(
+															props.user.createNewMessage,
+															props.user.invalidRequest
+														);
+													}
+											  }
 									}
 								/>
 							</FormControl>
 							<Button
-							
-						style={messageValue.length === 0 ? null : { color: "#ff8866" }}
+								style={messageValue.length === 0 ? null : { color: "#ff8866" }}
 								onClick={() =>
 									onSendClick(
 										props.user.createNewMessage,
