@@ -43,7 +43,6 @@ function Layout() {
 				<ChatRoom changeView={handleChangeView}/>
 			) : (
 				<Main 
-				getColor={getColorFromChild}
 				changeView={handleChangeView}
 				handleSetFirstTime={handleSetFirstTime}
 				firstTime={firstTime}
