@@ -208,8 +208,6 @@ export default class UserProvider extends React.Component {
 
 	// if the /GIPHY request is invalid who a message to the sender only
 	invalidRequest = (error) => {
-		console.log(error);
-
 		const errorMessage = "Invalid /GIPHY input";
 
 		this.state.socket.emit("messageError", errorMessage);

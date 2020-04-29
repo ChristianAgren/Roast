@@ -110,9 +110,6 @@ function Main(props) {
 
 	return (
 		<UserContext.Consumer>
-			{/* Om första gången på sidan, spara boolean  'firstTimeOnSite' === true visa modal där du skriver in namn
-			uppdatera 'user' i localstorage, funktion med onclick som kör createName som uppdaterar state från localstorage user, behövs knapp och inputfält, använd closeAfterTransition
-			för att stänga när man skrivit in namn. disableEscapeKeyDown kan behövas för att tvinga att skriva namn. onRendered för att modalen ska sättas till true när man kommer in på sidan första gången*/}
 			{(user) => (
 				<Container maxWidth="sm">
 					{firstTime && (

@@ -31,14 +31,12 @@ function MessageHandler(props) {
 				.slice(5, messageValue.length)
 				.toString()
 				.trim();
-			console.log("make GIPHY request on:", searchword);
 
 			fetch(
 				`https://api.giphy.com/v1/gifs/random?api_key=${key}&tag=${searchword}&limit=1`
 			)
 				.then((response) => response.json())
 				.then((content) => {
-					console.log(content);
 
 					createNewMessage(content.data.images.downsized.url);
 				})
