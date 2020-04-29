@@ -12,33 +12,21 @@ function Layout() {
 	const classes = useStyles();
 
 	const [changeView, setChangeView] = React.useState(false);
-	const [changeColor, setChangeColor] = React.useState();
 
 	const handleChangeView = (enteredRoom) => {
 		setChangeView(enteredRoom);
-	};
-
-	const getColorFromChild = (color) => {
-		setChangeColor(color);
 	};
 
 	return (
 		<Container maxWidth="md" className={classes.container}>
 			<RoomNavigation changeView={handleChangeView} />
 
-			<div
-				className={classes.logoContainer}
-				style={{ background: changeColor }}>
+			<div className={classes.logoContainer}>
 				<img src={logo} className={classes.logo} />
 			</div>
 
-			{changeView ? (
-				<ChatRoom />
-			) : (
-				<Main getColor={getColorFromChild} changeView={handleChangeView} />
-			)}
+			{changeView ? <ChatRoom /> : <Main changeView={handleChangeView} />}
 		</Container>
 	);
 }
-
 export default Layout;
