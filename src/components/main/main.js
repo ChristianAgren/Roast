@@ -135,6 +135,15 @@ function Main(props) {
 										variant="outlined"
 										className={classes.createNameInput}
 										onChange={(event) => handleNameInputChange(event, "name")}
+										onKeyPress={
+											name.length < 3
+												? null
+												: (e) => {
+													if (e.key.trim() === "Enter") {
+														handleCreateName(e, user.createName, handleClose, name)
+													}
+												}
+										}
 									/>
 									{name !== undefined && name.length > 2 ? (
 										<Button
@@ -147,10 +156,10 @@ function Main(props) {
 											Submit
 										</Button>
 									) : (
-										<Button disabled variant="contained" color="primary">
-											Submit
-										</Button>
-									)}
+											<Button disabled variant="contained" color="primary">
+												Submit
+											</Button>
+										)}
 								</FormControl>
 							}
 						</Modal>
@@ -182,8 +191,8 @@ function Main(props) {
 								{roomInputValues.roomPassword.length !== 0 ? (
 									<LockIcon fontSize="large" />
 								) : (
-									<LockOpenIcon fontSize="large" />
-								)}
+										<LockOpenIcon fontSize="large" />
+									)}
 								<FormControl fullWidth>
 									<Input
 										size="small"
@@ -207,8 +216,8 @@ function Main(props) {
 													{roomInputValues.showPassword ? (
 														<Visibility />
 													) : (
-														<VisibilityOff />
-													)}
+															<VisibilityOff />
+														)}
 												</IconButton>
 											</InputAdornment>
 										}
@@ -238,12 +247,12 @@ function Main(props) {
 										style={
 											color === roomInputValues.roomColor
 												? {
-														background: color,
-														border: ".5rem double #4a4949",
-												  }
+													background: color,
+													border: ".5rem double #4a4949",
+												}
 												: {
-														background: color,
-												  }
+													background: color,
+												}
 										}></ListItem>
 								))}
 							</List>
