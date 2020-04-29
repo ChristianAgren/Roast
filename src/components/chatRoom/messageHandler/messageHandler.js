@@ -85,7 +85,7 @@ function MessageHandler(props) {
 				<div className={classes.inputMessage}>
 					<Container
 						maxWidth="md"
-						style={{ position: "relative", background: "#e7e7e7" }}>
+						style={{ position: "relative", background: "#727070" }}>
 						{props.user.usersTyping.length > 0 ? (
 							<Typography className={classes.isTyping}>
 								{props.user.usersTyping.map((user) =>
@@ -124,6 +124,8 @@ function MessageHandler(props) {
 								/>
 							</FormControl>
 							<Button
+							
+						style={messageValue.length === 0 ? null : { color: "#ff8866" }}
 								onClick={() =>
 									onSendClick(
 										props.user.createNewMessage,

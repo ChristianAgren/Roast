@@ -41,7 +41,17 @@ function ChatRoom(props) {
 											}>
 											<List dense className={classes.msg}>
 												<List
-													style={{ background: `${user.connectedRoomColor}` }}
+													style={
+														msg.name === user.name
+															? {
+																	borderLeft: `.2rem solid ${user.connectedRoomColor}`,
+																	background: `linear-gradient(90deg, ${user.connectedRoomColor} 40%, #fff0 100%)`,
+																}
+																: {
+																	borderRight: `.2rem solid ${user.connectedRoomColor}`,
+																	background: `linear-gradient(-90deg, ${user.connectedRoomColor} 40%, #fff0 100%)`,
+															  }
+													}
 													className={
 														msg.name === user.name
 															? classes.yourMsg

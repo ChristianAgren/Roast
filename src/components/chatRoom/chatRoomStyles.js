@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
 	msg: {
 		width: "fit-content",
 		maxWidth: "75%",
+		[theme.breakpoints.down(550)]: {
+			maxWidth: "100%",
+		},
 
 		padding: ".2rem 1rem",
 
@@ -61,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 			margin: "0",
 			display: "flex",
 			alignItems: "end",
-			borderRadius: "1.8rem",
+			borderRadius: ".3rem",
 		},
 		"& .MuiListItem-root": {
 			margin: ".5rem",
@@ -71,7 +74,6 @@ const useStyles = makeStyles((theme) => ({
 		},
 		"& .MuiListItem-root p": {
 			padding: ".5rem",
-			paddingTop: "0",
 		},
 	},
 
@@ -82,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		"& .MuiListItem-root h6": {
 			textAlign: "left",
+			marginRight: "1rem",
 		},
 		"& img": {
 			marginRight: "-1rem",
@@ -118,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 
 		"& img": {
-			borderRadius: "1.5rem",
+			borderRadius: ".2rem",
 		},
 	},
 }));
