@@ -14,6 +14,7 @@ import {
 	Modal,
 } from "@material-ui/core";
 import LockIcon from "@material-ui/icons/Lock";
+import PersonIcon from '@material-ui/icons/Person';
 
 function AvailableRooms(props) {
 	const classes = useStyles();
@@ -122,7 +123,7 @@ function AvailableRooms(props) {
 											{(room.users) ?
 												<>
 													<Typography className={classes.activeUsers}>
-														{room.users.length} : active users
+														  <PersonIcon fontSize="small"/> {room.users.length} 
 													</Typography>
 													{(room.users.length !== 0) ?
 														<Typography

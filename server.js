@@ -125,10 +125,44 @@ io.on("connection", function (socket) {
 					room: clearRoom,
 					join: false,
 				});
+
+				io.to(clearRoom).emit("typing", { name: leaverInfo.name, isTyping: false })
 			}
 		}
 		console.log(`${socket.id} disconnected`);
 	});
+
+	socket.on("leave room", (prevRoomId) => {
+		socket.leave(prevRoomId, () => {
+			const { users } = roomInformation.find(
+				(r) => r.id === prevRoomId)
+
+			const leaverIndex = users.findIndex((u) => u.id === socket.id);
+			const leaver = users.find((u) => u.id === socket.id);
+
+
+			if (leaverIndex != -1) {
+				users.splice(leaverIndex, 1);
+			}
+
+			if (users.length === 0) {
+				const removeRoom = roomInformation.findIndex((room) => room.id === prevRoomId)
+				roomInformation.splice(removeRoom, 1)
+
+				io.emit("remove room", { clearRoom: prevRoomId })
+			} else {
+				io.emit("user left room", {
+					username: leaver.name,
+					room: prevRoomId,
+					join: false,
+				});
+				io.to(prevRoomId).emit("typing", { name: leaver.name, isTyping: false })
+				io.to(prevRoomId).emit("notice", {
+					message: leaver.name + " has left the room",
+				});
+			}
+		})
+	})
 
 	socket.on("join room", (data) => {
 		const user = {
@@ -149,17 +183,18 @@ io.on("connection", function (socket) {
 						users.splice(leaver, 1);
 					}
 
-					if(users.length === 0) {
+					if (users.length === 0) {
 						const removeRoom = roomInformation.findIndex((room) => room.id === data.prevRoomId)
 						roomInformation.splice(removeRoom, 1)
-						
-						io.emit("remove room", {clearRoom: data.prevRoomId})
+
+						io.emit("remove room", { clearRoom: data.prevRoomId })
 					} else {
 						io.emit("user left room", {
 							username: user.name,
 							room: data.prevRoomId,
 							join: false,
 						});
+						io.to(data.prevRoomId).emit("typing", { name: user.name, isTyping: false })
 						io.to(data.prevRoomId).emit("notice", {
 							message: user.name + " has left the room",
 						});
