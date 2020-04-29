@@ -2,6 +2,7 @@
 import React from "react";
 import useStyles from "./chatRoomStyles";
 import {
+	Button,
 	List,
 	ListItem,
 	ListItemAvatar,
@@ -39,7 +40,7 @@ function ChatRoom() {
 													: null
 											}>
 											<List dense className={classes.msg}>
-												<List dense
+												<List
 													style={{ background: `${user.connectedRoomColor}` }}
 													className={
 														msg.name === user.name
