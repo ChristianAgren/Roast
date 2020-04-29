@@ -1,13 +1,13 @@
-import {
-	makeStyles,
-} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	chatroomWrapper: {
 		position: "relative",
+		marginBottom: "1rem",
 
 		height: "100%",
-		maxHeight: "calc(100% - 5rem)",
+		maxHeight: "calc(100% - 7rem)",
+
 		width: "100%",
 
 		overflow: "hidden",
@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
 		},
 		"& .MuiListItem-gutters": {
 			padding: "0 !important",
+		},
+		"& .MuiList-padding": {
+			padding: "0",
+			marginTop: theme.spacing(1),
 		},
 	},
 
@@ -41,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		flexDirection: "column",
 		justifyContent: "space-between",
+
+		"& > div:last-child": {
+			marginBottom: "1rem",
+		},
 	},
 
 	msg: {
@@ -50,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: ".2rem 1rem",
 
 		"& > *": {
+			margin: "0",
 			display: "flex",
 			alignItems: "end",
 			borderRadius: "1.8rem",
@@ -58,11 +67,22 @@ const useStyles = makeStyles((theme) => ({
 			margin: ".5rem",
 		},
 		"& .MuiListItem-root h6": {
-			marginTop: "-.5rem",
+			textAlign: "left",
+		},
+		"& .MuiListItem-root p": {
+			padding: ".5rem",
+			paddingTop: "0",
 		},
 	},
 
 	clientMsg: {
+		"& .MuiListItem-root p": {
+			padding: 0,
+			marginRight: ".5rem",
+		},
+		"& .MuiListItem-root h6": {
+			textAlign: "left",
+		},
 		"& img": {
 			marginRight: "-1rem",
 		},
@@ -71,8 +91,8 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: "row-reverse",
 		filter: " hue-rotate(20deg)",
 
-		"& .MuiListItem-root > *": {
-			textAlign: "left",
+		"& .MuiListItem-root h6": {
+			display: "none",
 		},
 	},
 

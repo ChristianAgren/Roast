@@ -48,7 +48,6 @@ function Main(props) {
 		showPassword: false,
 	});
 
-	props.getColor(roomInputValues.roomColor);
 	const switchColor = (event) => {
 		setRoomInputValues({
 			...roomInputValues,
