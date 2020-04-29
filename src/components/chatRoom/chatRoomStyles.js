@@ -54,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 	msg: {
 		width: "fit-content",
 		maxWidth: "75%",
+
+		wordBreak: "break-all",
 		[theme.breakpoints.down(550)]: {
 			maxWidth: "100%",
 		},
@@ -123,6 +125,17 @@ const useStyles = makeStyles((theme) => ({
 		"& img": {
 			borderRadius: ".2rem",
 		},
+	},
+	roomName: {
+		position: "absolute",
+		top: "1rem",
+		right: ".5rem",
+
+		height: "1.5rem",
+		padding: ".2rem .5rem",
+		color: "#242020",
+
+		borderRadius: ".5rem",
 	},
 }));
 

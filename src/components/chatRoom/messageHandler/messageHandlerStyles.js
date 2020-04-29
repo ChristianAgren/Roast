@@ -1,10 +1,12 @@
-import {
-	makeStyles,
-	createStyles,
-} from "@material-ui/core";
+import { makeStyles, createStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) =>
 	createStyles({
+		root: {
+			"& .MuiOutlinedInput-notchedOutline": {
+				// borderColor: "#fff0",
+			},
+		},
 		inputMessage: {
 			position: "fixed",
 			bottom: 0,
