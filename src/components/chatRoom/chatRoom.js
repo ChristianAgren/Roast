@@ -14,7 +14,7 @@ import {
 import MessageHandler from "./messageHandler/messageHandler";
 import { UserContext } from "../../contexts/userContext";
 
-function ChatRoom() {
+function ChatRoom(props) {
 	const classes = useStyles();
 
 	const generateShortHand = (name) => {
@@ -89,7 +89,7 @@ function ChatRoom() {
 						</Grid>
 					</div>
 
-					<MessageHandler user={user} />
+					<MessageHandler user={user} changeView={props.changeView}/>
 				</div>
 			)}
 		</UserContext.Consumer>

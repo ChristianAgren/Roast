@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) =>
 			},
 			"& .MuiSvgIcon-root": {
 				margin: theme.spacing(0.5),
-				color: "rgba(0, 0, 0, 0.45)",
+				// color: "rgba(0, 0, 0, 0.45)",
 				[theme.breakpoints.down("xs")]: {
 					fontSize: "2rem",
 				},
@@ -56,25 +56,42 @@ const useStyles = makeStyles((theme) =>
 			textAlign: "center",
 			textDecoration: "underline",
 			letterSpacing: ".06rem",
-			[theme.breakpoints.down('xs')]: {
+			[theme.breakpoints.down(376)]: {
+				margin: theme.spacing(10, 0, 2, 0)
+			},
+			[theme.breakpoints.down(321)]: {
 				fontSize: "1.8rem",
-				margin: theme.spacing(8, 0, 2, 0)
+				margin: theme.spacing(10, 0, 2, 0)
+			},
+		},
+		roomNameInput: {
+			"& .MuiFormHelperText-root": {
+				color: "#b1c0c4",
 			},
 		},
 		colorWrapper: {
 			display: "flex",
 			justifyContent: "center",
 			flexWrap: "wrap",
+			"& .MuiListItem-gutters": {
+				padding: 0,
+			},
 
 
 			"& > *": {
 				margin: ".5rem",
 				width: "4rem",
 				height: "4rem",
-				[theme.breakpoints.down("xs")]: {
+				[theme.breakpoints.between(361, "xs")]: {
 					margin: ".2rem",
 					width: "3rem",
 					height: "3rem",
+				},
+				[theme.breakpoints.down(361)]: {
+					margin: ".2rem",
+					width: "2rem",
+					height: "2rem",
+					
 				},
 
 			},

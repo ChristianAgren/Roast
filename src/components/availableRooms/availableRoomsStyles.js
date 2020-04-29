@@ -59,7 +59,10 @@ const useStyles = makeStyles((theme) =>
 		},
 		activeUsers: {
 			marginLeft: "auto",
-			marginRight: "2rem",
+			marginRight: "1.2rem",
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center"
 		},
 		users: {
 			position: "absolute",
