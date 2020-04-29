@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) =>
 
 		logoContainer: {
 			position: "absolute",
-			top: "2.5rem",
-			left: "1rem",
+			top: "3rem",
+			left: "3rem",
 
 			width: "8rem",
 			height: "2rem",
@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme) =>
 			[theme.breakpoints.down("xs")]: {
 				width: "6rem",
 				height: "1.5rem",
-				top: "3rem",
+				left: "0.5rem",
+				top: "1rem",
 			},
 		},
 		logo: {
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) =>
 			width: "calc(100% - .8rem)",
 			imageRendering: "pixelated",
 			[theme.breakpoints.down("xs")]: {
-				width: "calc(100% - 0.8rem)",
+				width: "calc(100% - 1.2rem)",
 			},
 		},
 	})

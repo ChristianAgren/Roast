@@ -55,29 +55,21 @@ function Main(props) {
 			roomColor: event.target.id,
 		});
 	};
-	const [firstTime, setFirstTime] = React.useState(true);
+	
 
 	const [name, setName] = React.useState("");
-
-	const handleClose = () => {
-		setOpen(false);
-	};
-
-	const [open, setOpen] = React.useState(true);
 
 	const handleNameInputChange = (event) => {
 		event.preventDefault();
 		setName(event.target.value);
 	};
 
-	const handleCreateName = (event, createName, handleClose, name) => {
+	const handleCreateName = (event, createName, name) => {
 		event.preventDefault();
 		createName(name);
-		handleClose();
+		props.handleClose();
 
-		setFirstTime({
-			firstTime: false,
-		});
+		props.handleSetFirstTime()
 	};
 
 	const handleInputChange = (event, anchor) => {
@@ -112,10 +104,10 @@ function Main(props) {
 		<UserContext.Consumer>
 			{(user) => (
 				<Container maxWidth="sm">
-					{firstTime && (
+					{props.firstTime && (
 						<Modal
 							className={classes.modalContainer}
-							open={open}
+							open={props.open}
 							aria-labelledby="create-name-modal"
 							aria-describedby="forces user to create a name to chat">
 							{
@@ -136,28 +128,28 @@ function Main(props) {
 										className={classes.createNameInput}
 										onChange={(event) => handleNameInputChange(event, "name")}
 										onKeyPress={
-											name.length < 3
-												? null
-												: (e) => {
+											name.length > 2 && name.length < 11
+												? (e) => {
 													if (e.key.trim() === "Enter") {
-														handleCreateName(e, user.createName, handleClose, name)
+														handleCreateName(e, user.createName, name)
 													}
 												}
+												: null
 										}
 									/>
-									{name !== undefined && name.length > 2 ? (
+									{name !== undefined && name.length > 2 && name.length < 11 ? (
 										<Button
 											label="name"
 											variant="contained"
 											color="primary"
 											onClick={(e) =>
-												handleCreateName(e, user.createName, handleClose, name)
+												handleCreateName(e, user.createName, name)
 											}>
 											Submit
 										</Button>
 									) : (
-											<Button disabled variant="contained" color="primary">
-												Submit
+											<Button style={{color:"#fff8"}}disabled variant="contained" color="primary">
+												Between 3-10 characters
 											</Button>
 										)}
 								</FormControl>
@@ -173,8 +165,9 @@ function Main(props) {
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant="overline">Name *</Typography>
-							<FormControl fullWidth>
+							<FormControl className={classes.roomNameInput}fullWidth>
 								<TextField
+									helperText="Enter 3-12 characters"
 									size="small"
 									id="room-name"
 									value={roomInputValues.roomID}
@@ -259,6 +252,7 @@ function Main(props) {
 						</Grid>
 						<Grid item xs={12}>
 							<Button
+								disabled={roomInputValues.roomId.length < 3 || roomInputValues.roomId.length > 12}
 								variant="contained"
 								color="primary"
 								size="large"

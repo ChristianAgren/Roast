@@ -28,7 +28,7 @@ export default class UserProvider extends React.Component {
 			createName: this.createName,
 			availableRooms: {},
 			chatlog: [],
-
+			leaveChatRoom: this.leaveChatRoom,
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
 
@@ -62,12 +62,23 @@ export default class UserProvider extends React.Component {
 		this.state.socket.on("user left room", (data) =>
 			this.updateUsersinRoom(data)
 		);
+
 		this.state.socket.on("user joined room", (data) =>
 			this.updateUsersinRoom(data)
 		);
 		this.state.socket.on("remove room", (data) => this.removeRoom(data));
 
 		this.state.socket.on("typing", (data) => this.handleTyping(data));
+	}
+
+	leaveChatRoom = () => {
+		this.state.socket.emit('leave room', this.state.connectedRoom)
+		this.setState({
+			connectedRoom: '',
+			connectedRoomColor: '',
+			usersTyping: [],
+		});
+
 	}
 
 	joinCreatedRoom = (data) => {
@@ -222,14 +233,16 @@ export default class UserProvider extends React.Component {
 
 	generateChatMessage = (chatMessage) => {
 		const chatWindow = document.getElementById("chat");
-		const prevContainerHeight = chatWindow.scrollHeight;
+		if (chatWindow) {
+			const prevContainerHeight = chatWindow.scrollHeight;
 
-		this.setState(
-			{
-				chatlog: [...this.state.chatlog, chatMessage],
-			},
-			() => this.scrollToBottom(prevContainerHeight)
-		);
+			this.setState(
+				{
+					chatlog: [...this.state.chatlog, chatMessage],
+				},
+				() => this.scrollToBottom(prevContainerHeight)
+			);
+		}
 	};
 
 	createNewMessage = (messageValue) => {

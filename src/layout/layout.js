@@ -11,6 +11,20 @@ import logo from "./ROAST_logo.png";
 function Layout() {
 	const classes = useStyles();
 
+	const [open, setOpen] = React.useState(true);
+
+	const handleClose = () => {
+		setOpen(false);
+	};
+	
+	const [firstTime, setFirstTime] = React.useState(true);
+
+	const handleSetFirstTime = () => {
+		setFirstTime({
+			firstTime: false,
+		});
+	}
+
 	const [changeView, setChangeView] = React.useState(false);
 	const [changeColor, setChangeColor] = React.useState();
 
@@ -33,9 +47,16 @@ function Layout() {
 			</div>
 
 			{changeView ? (
-				<ChatRoom />
+				<ChatRoom changeView={handleChangeView}/>
 			) : (
-				<Main getColor={getColorFromChild} changeView={handleChangeView} />
+				<Main 
+				getColor={getColorFromChild}
+				changeView={handleChangeView}
+				handleSetFirstTime={handleSetFirstTime}
+				firstTime={firstTime}
+				handleClose={handleClose}
+				open={open}
+				 />
 			)}
 		</Container>
 	);

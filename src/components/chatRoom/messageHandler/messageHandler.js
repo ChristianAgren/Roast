@@ -10,6 +10,8 @@ import {
 	Typography,
 } from "@material-ui/core";
 import OutdoorGrillTwoToneIcon from "@material-ui/icons/OutdoorGrillTwoTone";
+import { UserContext } from "../../../contexts/userContext";
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 
 function MessageHandler(props) {
 	const classes = useStyles();
@@ -22,6 +24,13 @@ function MessageHandler(props) {
 
 		props.user.emitTyping(isTyping);
 	};
+
+	const handleClickLeave = (leaveChatRoom) => {
+		
+		leaveChatRoom()
+		props.changeView(false)
+
+	}
 
 	const onSendClick = (createNewMessage, invalidRequest) => {
 		const key = "017OsVu1S3JfdgoAgGOSlyvqt0f1iDsT";
@@ -71,55 +80,64 @@ function MessageHandler(props) {
 	};
 
 	return (
-		<div className={classes.inputMessage}>
-			<Container
-				maxWidth="md"
-				style={{ position: "relative", background: "#e7e7e7" }}>
-				{props.user.usersTyping.length > 0 ? (
-					<Typography className={classes.isTyping}>
-						{props.user.usersTyping.map((user) =>
-							user.isTyping ? user.name : null
-						)}
-						<em style={{ fontSize: ".7rem" }}>: is typing</em>
-					</Typography>
-				) : null}
-				<Container maxWidth="sm" className={classes.inputWrapper}>
-					<FormControl fullWidth focused={true}>
-						<TextField
-							id="outlined-size-small"
-							placeholder="Send message..."
-							variant="outlined"
-							value={messageValue}
-							size="small"
-							autoComplete="off"
-							onChange={(event) => onInputChange(event, props)}
-							onKeyPress={
-								messageValue.length === 0
-									? null
-									: (e) => {
-											if (e.key.trim() === "Enter") {
-												onSendClick(
-													props.user.createNewMessage,
-													props.user.invalidRequest
-												);
+		<UserContext.Consumer>
+			{user => (
+				<div className={classes.inputMessage}>
+					<Container
+						maxWidth="md"
+						style={{ position: "relative", background: "#e7e7e7" }}>
+						{props.user.usersTyping.length > 0 ? (
+							<Typography className={classes.isTyping}>
+								{props.user.usersTyping.map((user) =>
+									user.isTyping ? user.name : null
+								)}
+								<em style={{ fontSize: ".7rem" }}>: is typing</em>
+							</Typography>
+						) : null}
+						<Container maxWidth="sm" className={classes.inputWrapper}>
+							<Button
+								onClick={() => handleClickLeave(user.leaveChatRoom)}
+							>
+								<MeetingRoomIcon/>
+						</Button>
+							<FormControl fullWidth focused={true}>
+								<TextField
+									id="outlined-size-small"
+									placeholder="Send message..."
+									variant="outlined"
+									value={messageValue}
+									size="small"
+									autoComplete="off"
+									onChange={(event) => onInputChange(event, props)}
+									onKeyPress={
+										messageValue.length === 0
+											? null
+											: (e) => {
+												if (e.key.trim() === "Enter") {
+													onSendClick(
+														props.user.createNewMessage,
+														props.user.invalidRequest
+													);
+												}
 											}
-									  }
-							}
-						/>
-					</FormControl>
-					<Button
-						onClick={() =>
-							onSendClick(
-								props.user.createNewMessage,
-								props.user.invalidRequest
-							)
-						}
-						disabled={messageValue.length === 0}>
-						<OutdoorGrillTwoToneIcon />
-					</Button>
-				</Container>
-			</Container>
-		</div>
+									}
+								/>
+							</FormControl>
+							<Button
+								onClick={() =>
+									onSendClick(
+										props.user.createNewMessage,
+										props.user.invalidRequest
+									)
+								}
+								disabled={messageValue.length === 0}>
+								<OutdoorGrillTwoToneIcon />
+							</Button>
+						</Container>
+					</Container>
+				</div>
+			)}
+		</UserContext.Consumer>
 	);
 }
 
