@@ -12,9 +12,6 @@ const useStyles = makeStyles((theme) =>
 			right: 0,
 			padding: theme.spacing(0),
 		},
-		inputWrapperContainer: {
-			background: "#727070",
-		},
 		inputWrapper: {
 			display: "flex",
 			justifyContent: "center",
