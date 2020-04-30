@@ -29,7 +29,7 @@ export default class UserProvider extends React.Component {
 			createName: this.createName,
 			availableRooms: {},
 			chatlog: [],
-			
+
 			leaveChatRoom: this.leaveChatRoom,
 			createNewMessage: this.createNewMessage,
 			createNewRoom: this.createNewRoom,
@@ -141,6 +141,8 @@ export default class UserProvider extends React.Component {
 		let findRoom = this.state.availableRooms.open.findIndex(
 			(room) => room.id === user.room
 		);
+		
+		
 		if (findRoom === -1) {
 			roomAnchor = "locked";
 			findRoom = this.state.availableRooms.locked.findIndex(
@@ -161,7 +163,7 @@ export default class UserProvider extends React.Component {
 				{ username: user.username },
 				copiedRoomsList,
 				findRoom,
-				roomAnchor
+				roomAnchor,
 			);
 		}
 	};
@@ -172,18 +174,23 @@ export default class UserProvider extends React.Component {
 	};
 
 	removeUserFromRoom = (user, roomsList, index, anchor) => {
-		const userIndex = roomsList[index].users.findIndex((userindex) => userindex.name === user.name)
-		roomsList[index].users.splice(userIndex, 1)
+		const userIndex = roomsList[index].users.findIndex((userindex) => userindex.name === user.username)
 
+		roomsList[index].users.splice(userIndex, 1)
 		this.setUpdatedUsersInState(roomsList, anchor)
+
+
+
+
+
 	}
 
 	setUpdatedUsersInState = (roomsList, anchor) => {
-		const indexEmptyRoom = roomsList.findIndex((r) => r.users === [])
+		// const indexEmptyRoom = roomsList.findIndex((r) => r.users === [])
 
-		if (roomsList.users === '') {
-			roomsList.splice(indexEmptyRoom, 1)
-		}
+		// if (roomsList.users === '') {
+		// 	roomsList.splice(indexEmptyRoom, 1)
+		// }
 
 		this.setState({
 			availableRooms: {
@@ -219,7 +226,7 @@ export default class UserProvider extends React.Component {
 	};
 
 	invalidRequest = (error) => {
-		const errorMessage = "Invalid /GIPHY input";
+		const errorMessage = "Invalid /gif or /sticker searchword";
 
 		this.state.socket.emit("messageError", errorMessage);
 	};
@@ -329,7 +336,7 @@ export default class UserProvider extends React.Component {
 			prevContainerHeight - 75
 		) {
 			chatWindow.scrollTop = chatWindow.scrollHeight;
-		} 
+		}
 	};
 
 	render() {
