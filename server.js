@@ -12,50 +12,7 @@ const port = process.env.PORT || 8080;
 
 app.use(express.static(path.join(__dirname, "build")));
 
-let roomInformation = [
-	// {
-	// 	id: "1",
-	// 	name: "room",
-	// 	users: [],
-	// 	password: "",
-	// 	color: "#ff69b4",
-	// 	history: [
-	// 		{
-	// 			name: "Blob",
-	// 			message: "Hej hej hej hej hje",
-	// 			client: true,
-	// 		},
-	// 	],
-	// },
-	// {
-	// 	id: "3",
-	// 	name: "room",
-	// 	users: [],
-	// 	password: "",
-	// 	color: "#ff69b4",
-	// 	history: [
-	// 		{
-	// 			name: "Blob",
-	// 			message: "Hej hej hej hej hje",
-	// 			client: true,
-	// 		},
-	// 	],
-	// },
-	// {
-	// 	id: "asdf",
-	// 	name: "room",
-	// 	users: [],
-	// 	password: "lock",
-	// 	color: "#123388",
-	// 	history: [
-	// 		{
-	// 			name: "Alvin",
-	// 			message: "it do b like that",
-	// 			client: true,
-	// 		},
-	// 	],
-	// },
-];
+let roomInformation = [];
 
 const routesWithChildren = ["/"];
 
@@ -224,7 +181,6 @@ io.on("connection", function (socket) {
 					message: user.name + " joined the room",
 				});
 
-				//Send message to chatroom
 			});
 		}
 	});

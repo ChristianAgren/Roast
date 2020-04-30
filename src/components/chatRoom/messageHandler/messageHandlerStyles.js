@@ -4,7 +4,6 @@ const useStyles = makeStyles((theme) =>
 	createStyles({
 		root: {
 			"& .MuiOutlinedInput-notchedOutline": {
-				// borderColor: "#fff0",
 			},
 		},
 		inputMessage: {
