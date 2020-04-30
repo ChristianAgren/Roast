@@ -100,7 +100,7 @@ function AvailableRooms(props) {
 	return (
 		<UserContext.Consumer>
 			{(user) => (
-				<>	
+				<>
 					<Container className={classes.mainContainer} maxWidth="sm">
 						<Typography variant="overline">Open rooms</Typography>
 						<div className={classes.hideRoomOverFlow}>
@@ -123,7 +123,7 @@ function AvailableRooms(props) {
 											{(room.users) ?
 												<>
 													<Typography className={classes.activeUsers}>
-														  <PersonIcon fontSize="small"/> {room.users.length} 
+														<PersonIcon fontSize="small" /> {room.users.length}
 													</Typography>
 													{(room.users.length !== 0) ?
 														<Typography
@@ -171,7 +171,7 @@ function AvailableRooms(props) {
 												<em style={{ color: "#0008" }}>{room.id}</em>
 											</Typography>
 											<Typography className={classes.activeUsers}>
-												{room.users.length} : active users
+												<PersonIcon fontSize="small" /> {room.users.length}
 											</Typography>
 
 											<Typography
