@@ -20,8 +20,9 @@ To start the project run:
 ### `node server.js`
 
 to start the server.
-    
+
+To run the frontend, open another terminal in your IDE and run:
+
 ### `npm start`
 
-To run the front-end.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
