@@ -128,7 +128,7 @@ export default class UserProvider extends React.Component {
 		});
 	};
 
-	// Kör funktion när knapp trycks ner, ta bort tidigare localstorage uppdaterar name i localstorage som uppdaterar state till det i input
+
 	createName = (inputName) => {
 		const newUser = inputName;
 		this.setState({
@@ -210,16 +210,14 @@ export default class UserProvider extends React.Component {
 			firstTime: true,
 		});
 
-		// emit
+
 		this.state.socket.emit("join room", {
 			name,
 			roomId,
 			prevRoomId,
-			// roomColor,
 		});
 	};
 
-	// if the /GIPHY request is invalid who a message to the sender only
 	invalidRequest = (error) => {
 		const errorMessage = "Invalid /GIPHY input";
 
@@ -331,9 +329,7 @@ export default class UserProvider extends React.Component {
 			prevContainerHeight - 75
 		) {
 			chatWindow.scrollTop = chatWindow.scrollHeight;
-		} else {
-			//show a clickable notice that takes you to the bottom
-		}
+		} 
 	};
 
 	render() {

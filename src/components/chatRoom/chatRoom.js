@@ -26,7 +26,6 @@ function ChatRoom(props) {
 		if (!findRoom) {
 			findRoom = rooms.locked.find((room) => room.id === id);
 		}
-		console.log(findRoom);
 
 		if (findRoom) {
 			return findRoom.name;

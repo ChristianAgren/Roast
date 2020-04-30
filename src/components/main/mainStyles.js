@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) =>
 			},
 			"& .MuiSvgIcon-root": {
 				margin: theme.spacing(0.5),
-				// color: "rgba(0, 0, 0, 0.45)",
 				[theme.breakpoints.down("xs")]: {
 					fontSize: "2rem",
 				},

@@ -57,7 +57,6 @@ function MessageHandler(props) {
 				.slice(9, messageValue.length)
 				.toString()
 				.trim();
-			console.log("make GIPHY request on:", searchword);
 
 			fetch(
 				`https://api.giphy.com/v1/stickers/random?api_key=${key}&tag=${searchword}&limit=1`
