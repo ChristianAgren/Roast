@@ -2,14 +2,14 @@ import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	chatroomWrapper: {
-		position: "relative",
-		marginBottom: "1rem",
-
-		height: "100%",
-		maxHeight: "calc(100% - 7rem)",
-
-		width: "100%",
-
+		position: "absolute",
+		top: '4rem',
+		left: '1rem',
+		right: '1rem',
+		bottom: '5rem',
+		[theme.breakpoints.down("xs")]: {
+			top: '3.5rem'
+		},
 		overflow: "hidden",
 
 		"& .MuiGrid-container": {
