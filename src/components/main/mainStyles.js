@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) =>
 			display: "flex",
 			flexDirection: "row",
 			color: "#b1c0c4",
-
+			paddingBottom: '1rem',
 
 			"& .MuiTypography-overline": {
 				fontFamily: ' "Quantico", sans-serif',

@@ -7,7 +7,8 @@ const useStyles = makeStyles((theme) =>
 			position: "relative",
 			background: "#3e404ccc",
 
-			height: "100vh",
+			height: "100%",
+			minHeight: "100vh",
 
 			display: "flex",
 			alignItems: "center",
@@ -15,8 +16,8 @@ const useStyles = makeStyles((theme) =>
 
 		logoContainer: {
 			position: "absolute",
-			top: "3rem",
-			left: "3rem",
+			top: "1.5rem",
+			left: "1rem",
 
 			width: "8rem",
 			height: "2rem",
@@ -37,7 +38,8 @@ const useStyles = makeStyles((theme) =>
 
 			width: "calc(100% - .8rem)",
 			imageRendering: "pixelated",
-
+			imageRendering:" -moz-crisp-edges",
+            imageRendering:" crisp-edges",
 			[theme.breakpoints.down("xs")]: {
 				width: "calc(100% - 1.2rem)",
 			},
